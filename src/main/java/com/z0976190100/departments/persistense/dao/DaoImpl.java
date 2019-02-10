@@ -19,12 +19,11 @@ public class DaoImpl<T> implements Dao<T>, General, Messages {
 
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
-            throw new AppRuntimeException("Connection to DB is failed");
+            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
     }
 
-    @Override
-    public ResultSet saveEntity(String query) {
+    private ResultSet getResultSet(String query) {
         try (Connection connection = getConnection()) {
 
             PreparedStatement ps = connection.prepareStatement(query);
@@ -33,10 +32,20 @@ public class DaoImpl<T> implements Dao<T>, General, Messages {
 
             return rs;
 
-        } catch (SQLException e) {
+        } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
-            return null;
+            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
+    }
+
+    @Override
+    public ResultSet getEntitiesList(String query) {
+        return getResultSet(query);
+    }
+
+    @Override
+    public ResultSet saveEntity(String query) {
+        return getResultSet(query);
     }
 
     @Override
@@ -52,18 +61,7 @@ public class DaoImpl<T> implements Dao<T>, General, Messages {
     @Override
     public ResultSet getEntityById(String query) {
 
-        try (Connection connection = getConnection()) {
-
-            PreparedStatement ps = connection.prepareStatement(query);
-
-            ResultSet rs = ps.executeQuery();
-
-            return rs;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return getResultSet(query);
     }
 
     @Override

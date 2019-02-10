@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="com.z0976190100.departments.app_constants.URLs" %>
+<%@ page import="com.z0976190100.departments.app_constants.General" %>
 <%@ page import="com.z0976190100.departments.app_constants.ParameterNames" %>
 <html>
 <head>
@@ -16,7 +16,7 @@
     <div class="nav-wrapper container">
         <a id="logo-container" href="#" class="brand-logo">gh</a>
         <ul class="right">
-            <li><a class="waves-effect waves-light light-green btn" href=<%= URLs.WELCOME_PAGE_URL%>>< Welcome Page </a>
+            <li><a class="waves-effect waves-light light-green btn" href=<%= General.WELCOME_PAGE_JSP%>>< Welcome Page </a>
             </li>
         </ul>
     </div>
@@ -28,23 +28,13 @@
             <table class="highlight centered">
                 <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Title</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>Justice</td>
-                    <td class="right">
-                        <a class="waves-effect waves-light blue-grey btn" href="${department.getId()}/employees">Employees
-                            list</a>
-                        <a class="waves-effect waves-light blue-grey btn"
-                           href="departments/${department.getId()}/update">Edit</a>
-                        <a onclick="M.toast({html: 'I am a toast'})" class="waves-effect waves-light red btn"
-                           href="departments/${department.getId()}/delete">Delete</a>
-                    </td>
-                </tr>
-                <c:if test="${empty departmentsList}">
+                <c:if test="${empty departments_list}">
                     <tr>
                         <td colspan="5">
                             No Departments yet... Sad...
@@ -52,25 +42,31 @@
                     </tr>
                 </c:if>
 
-                <c:forEach var="department" items="${departmentsList}">
+                <c:forEach var="department" items="${departments_list}">
                     <tr>
-                        <td><c:out value="${department.title}"/></td>
+                        <td><c:out value="${department.getId()}"/></td>
+                        <td><c:out value="${department.getTitle()}"/></td>
                         <td class="right">
-                            <a class="waves-effect waves-light blue-grey btn"
+                               <div class="col s4 center-align no-pad-bot"><form class="inline"><a class="waves-effect waves-light blue-grey btn"
+                               title="To list of Employees of this Department."
                                href="${department.getId()}/employees"
                             >
-                                Employees list
-                            </a>
-                            <a class="waves-effect waves-light blue-grey btn"
+                                Employees
+                            </a></form></div>
+                           <div class="col s3 center-align offset-s1"> <form class="inline"><a class="waves-effect waves-light blue-grey btn"
+                               title="Smack to edit this Department."
                                href="departments/${department.getId()}/update"
                             >
                                 Edit
                             </a>
-                            <a class="waves-effect waves-light red btn"
+                           </form>
+                           </div>
+                            <div class="col s4 center-align"><a class="waves-effect waves-light red btn "
+                               title="Delete this Department."
                                href="departments/${department.getId()}/delete"
                             >
                                 Delete
-                            </a>
+                            </a></div>
                         </td>
                     </tr>
                 </c:forEach>
@@ -120,16 +116,15 @@
         </div>
     </div>
 </footer>
-<h6>${department.getTitle()}</h6>
 <script src="materialize/js/materialize.min.js"></script>
 <script src="js/index.js"></script>
+<!-- Notification pop-up -->
 <c:if test="${not empty errors}">
     <script>
         notification("${errors}");
     </script>
 </c:if>
-
-<!-- Modal Structure -->
+<!-- Modal Add Department Form -->
 <div id="add_form" class="modal">
     <div class="modal-content">
         <h4>Add Department</h4>
@@ -151,6 +146,7 @@
         </div>
     </div>
 </div>
+
 </div>
 
 </body>

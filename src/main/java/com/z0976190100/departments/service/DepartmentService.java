@@ -1,5 +1,6 @@
 package com.z0976190100.departments.service;
 
+import com.sun.xml.internal.bind.v2.model.core.ID;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
 import com.z0976190100.departments.persistense.dao.DaoImpl;
 import com.z0976190100.departments.persistense.entity.Department;
@@ -8,14 +9,42 @@ import com.z0976190100.departments.persistense.entity.EntityDescription;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+import static com.z0976190100.departments.app_constants.General.TITLE;
 import static com.z0976190100.departments.app_constants.Messages.DEPARTMENT_NOT_FOUND_MESSSAGE;
 import static com.z0976190100.departments.app_constants.Messages.RESOURCE_NOT_FOUND_MESSAGE;
+import static com.z0976190100.departments.app_constants.General.ID;
 
 public class DepartmentService {
 
     private EntityDescription departmentEntityDescription = new DepartmentEntityDescription();
     private DaoImpl<Department> departmentDao = new DaoImpl<>();
+
+    private Department buildDepartmentFromResult(ResultSet r) throws SQLException {
+
+        return new Department(
+                r.getInt(ID),
+                r.getString(TITLE));
+
+    }
+
+    public List<Department> getDepartmentsList() throws SQLException {
+
+        String query = "SELECT * FROM " + departmentEntityDescription.getTableName() + ";";
+
+        ResultSet resultSet = departmentDao.getEntitiesList(query);
+
+        List<Department> departmentList = new ArrayList<>();
+
+        while (resultSet.next()) {
+            departmentList.add(new Department(resultSet.getInt(ID), resultSet.getString(TITLE)));
+            System.out.println(resultSet.getInt(ID) + resultSet.getString(TITLE));
+        }
+
+        return departmentList;
+    }
 
     public Department getDepartmentById(int id) throws ResourceNotFoundException, SQLException {
 
@@ -25,7 +54,8 @@ public class DepartmentService {
 
         System.out.println("result --- " + result);
 
-        if(!result.next()) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE + DEPARTMENT_NOT_FOUND_MESSSAGE);
+        if (!result.next())
+            throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE + DEPARTMENT_NOT_FOUND_MESSSAGE);
 
         Department department = buildDepartmentFromResult(result);
 
@@ -53,11 +83,4 @@ public class DepartmentService {
         return department;
     }
 
-    private Department buildDepartmentFromResult(ResultSet r) throws SQLException {
-
-            return new Department(
-                    r.getInt("id"),
-                    r.getString("title"));
-
-    }
 }

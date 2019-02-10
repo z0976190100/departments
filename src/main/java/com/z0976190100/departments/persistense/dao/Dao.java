@@ -16,5 +16,7 @@ public interface Dao<T> {
 
     public List<Map<String, Object>> getAllEntitiesWhere(String query);
 
+    public ResultSet getEntitiesList(String query);
+
 
 }

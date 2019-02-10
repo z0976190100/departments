@@ -15,8 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.z0976190100.departments.app_constants.Messages.DB_CONNECTION_FAILURE_MESSAGE;
+import static com.z0976190100.departments.app_constants.ParameterNames.DEPARTMENTS_LIST_PARAM;
 import static com.z0976190100.departments.app_constants.ParameterNames.DEPARTMENT_TITLE_PARAM;
 import static com.z0976190100.departments.app_constants.ParameterNames.ERRORS_ATTRIBUTE_NAME;
 
@@ -28,20 +31,43 @@ public class DepartmentServlet extends HttpServlet implements General, URLs {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        try {
-            Department department = departmentService.getDepartmentById(Integer.parseInt(req.getParameter(ID)));
-            req.setAttribute(DEPARTMENT_RESOURCE_KEY, department);
-            requestDispatch(req, resp, DEPARTMENTS_JSP);
-        } catch (NumberFormatException e) {
-            forwardWithError(req,resp, e, 400, e.getMessage());
-        } catch (ResourceNotFoundException e) {
-            forwardWithError(req, resp, e, 404,e.getMessage());
-        }catch (SQLException e){
-            forwardWithError(req, resp, e, 500, DB_CONNECTION_FAILURE_MESSAGE);
-        } catch (Exception e) {
-            // FIXME
-            e.printStackTrace();
-            resp.sendError(500);
+        String forCase = "all";
+
+        switch (forCase) {
+            case "all":
+                try {
+                    List<Department> departmentsList = departmentService.getDepartmentsList();
+                    req.setAttribute(DEPARTMENTS_LIST_PARAM, departmentsList);
+                    requestDispatch(req, resp, DEPARTMENTS_JSP);
+                    System.out.println("all done");
+                } catch (SQLException e) {
+                    forwardWithError(req, resp, e, 500, DB_CONNECTION_FAILURE_MESSAGE);
+                } catch (Exception e) {
+                    // FIXME
+                    e.printStackTrace();
+                    resp.sendError(500);
+                }
+                break;
+            case "id":
+                try {
+                    Department department = departmentService.getDepartmentById(Integer.parseInt(req.getParameter(ID)));
+                    req.setAttribute(DEPARTMENT_RESOURCE_KEY, department);
+                    requestDispatch(req, resp, DEPARTMENTS_JSP);
+                } catch (NumberFormatException e) {
+                    forwardWithError(req, resp, e, 400, e.getMessage());
+                } catch (ResourceNotFoundException e) {
+                    forwardWithError(req, resp, e, 404, e.getMessage());
+                } catch (SQLException e) {
+                    forwardWithError(req, resp, e, 500, DB_CONNECTION_FAILURE_MESSAGE);
+                } catch (Exception e) {
+                    // FIXME
+                    e.printStackTrace();
+                    resp.sendError(500);
+                }
+                break;
+            default:
+                System.out.println("default case");
+
         }
     }
 
@@ -56,8 +82,8 @@ public class DepartmentServlet extends HttpServlet implements General, URLs {
             resp.setStatus(201);
             requestDispatch(req, resp, DEPARTMENTS_JSP);
         } catch (RequestParameterValidationException e) {
-            forwardWithError(req,resp, e, 400, e.getMessage());
-        }catch (SQLException e){
+            forwardWithError(req, resp, e, 400, e.getMessage());
+        } catch (SQLException e) {
             forwardWithError(req, resp, e, 500, DB_CONNECTION_FAILURE_MESSAGE);
         } catch (Exception e) {
             e.printStackTrace();
