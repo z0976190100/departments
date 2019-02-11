@@ -64,6 +64,6 @@ public class TempDepartmentDeleteServlet extends HttpServlet {
         e.printStackTrace();
         resp.setStatus(sc);
         req.setAttribute(ERRORS_ATTRIBUTE_NAME, error_message);
-        requestDispatch(req, resp, DEPARTMENTS_JSP);
+        resp.sendRedirect(DEPARTMENTS_URL);
     }
 }

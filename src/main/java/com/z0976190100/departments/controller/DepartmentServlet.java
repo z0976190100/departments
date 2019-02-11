@@ -15,13 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.z0976190100.departments.app_constants.Messages.DB_CONNECTION_FAILURE_MESSAGE;
-import static com.z0976190100.departments.app_constants.ParameterNames.DEPARTMENTS_LIST_PARAM;
-import static com.z0976190100.departments.app_constants.ParameterNames.DEPARTMENT_TITLE_PARAM;
-import static com.z0976190100.departments.app_constants.ParameterNames.ERRORS_ATTRIBUTE_NAME;
+import static com.z0976190100.departments.app_constants.ParameterNames.*;
 
 public class DepartmentServlet extends HttpServlet implements General, URLs {
 
@@ -36,8 +33,7 @@ public class DepartmentServlet extends HttpServlet implements General, URLs {
         switch (forCase) {
             case "all":
                 try {
-                    List<Department> departmentsList = departmentService.getDepartmentsList();
-                    req.setAttribute(DEPARTMENTS_LIST_PARAM, departmentsList);
+                    listToAttribute(req);
                     requestDispatch(req, resp, DEPARTMENTS_JSP);
                 } catch (SQLException e) {
                     forwardWithError(req, resp, e, 500, DB_CONNECTION_FAILURE_MESSAGE);
@@ -73,14 +69,20 @@ public class DepartmentServlet extends HttpServlet implements General, URLs {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String departmentTitle = req.getParameter(DEPARTMENT_TITLE_PARAM);
+        String departmentTitle = req.getParameter(DEPARTMENT_NEW_TITLE_PARAM);
         try {
             validator.isValidDepartmentTitle(departmentTitle);
-            Department department = departmentService.saveDepartment(departmentTitle);
-            req.setAttribute(DEPARTMENT_RESOURCE_KEY, department);
+            departmentService.saveDepartment(departmentTitle);
             resp.setStatus(201);
+            System.out.println("save");
             resp.sendRedirect(DEPARTMENTS_URL);
         } catch (RequestParameterValidationException e) {
+            try {
+                listToAttribute(req);
+                req.setAttribute(DEPARTMENT_NEW_TITLE_PARAM, req.getParameter(DEPARTMENT_NEW_TITLE_PARAM));
+            } catch (SQLException e1) {
+                forwardWithError(req, resp, e1, 500, DB_CONNECTION_FAILURE_MESSAGE);
+            }
             forwardWithError(req, resp, e, 400, e.getMessage());
         } catch (SQLException e) {
             forwardWithError(req, resp, e, 500, DB_CONNECTION_FAILURE_MESSAGE);
@@ -107,4 +109,10 @@ public class DepartmentServlet extends HttpServlet implements General, URLs {
         req.setAttribute(ERRORS_ATTRIBUTE_NAME, error_message);
         requestDispatch(req, resp, DEPARTMENTS_JSP);
     }
+
+    private void listToAttribute(HttpServletRequest req) throws SQLException {
+        List<Department> departmentsList = departmentService.getDepartmentsList();
+        req.setAttribute(DEPARTMENTS_LIST_PARAM, departmentsList);
+    }
+
 }

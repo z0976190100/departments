@@ -6,7 +6,7 @@ import java.util.Map;
 
 public interface Dao<T> {
 
-    public ResultSet saveEntity(String query);
+    public void saveEntity(String query);
 
     public void deleteEntity(String query);
 

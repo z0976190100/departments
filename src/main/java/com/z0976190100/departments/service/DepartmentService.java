@@ -48,7 +48,6 @@ public class DepartmentService {
 
         String query = "SELECT * FROM " + departmentEntityDescription.getTableName() + " WHERE id = " + id;
         ResultSet resultSet = departmentDao.getEntityById(query);
-        System.out.println("result --- " + resultSet);
 
         if (!resultSet.next())
             throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE + DEPARTMENT_NOT_FOUND_MESSSAGE);
@@ -63,19 +62,16 @@ public class DepartmentService {
 //        return department;
     }
 
-    public Department saveDepartment(String title) throws SQLException {
+    public void saveDepartment(String title) throws SQLException {
 
-        String query = "INSERT INTO " + departmentEntityDescription.getTableName() + " (title , id) VALUES ( '" + title + "', DEFAULT) RETURNING *;";
-        ResultSet resultSet = departmentDao.saveEntity(query);
-        resultSet.next();
+        String query = "INSERT INTO " + departmentEntityDescription.getTableName() + " (title , id) VALUES ( '" + title + "', DEFAULT);";
+        departmentDao.saveEntity(query);
 
-        Department department = buildDepartmentFromResult(resultSet);
-
-        resultSet.close();
-        return department;
     }
 
     public void deleteDepartment(int id) throws SQLException{
+
+        //TODO: delete all EMPLOYEES
         String query = "DELETE FROM " + departmentEntityDescription.getTableName() + " WHERE ID = " + id + ";";
         departmentDao.deleteEntity(query);
     }

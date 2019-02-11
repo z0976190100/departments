@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.z0976190100.departments.app_constants.General" %>
 <%@ page import="com.z0976190100.departments.app_constants.ParameterNames" %>
 <html>
@@ -60,12 +59,13 @@
                             >
                                 Edit
                             </a>
-                            <a class="waves-effect waves-light red btn "
+                            <button class="waves-effect waves-light red btn modal-trigger"
                                title="Delete this Department."
-                               href="departments/delete/${department.getId()}"
+                                    onclick="setDeleteModalValues('${department.getId()}', '${department.getTitle()}')"
+                                    data-target="delete-confirmation-modal"
                             >
                                 Delete
-                            </a>
+                            </button>
                         </td>
                     </tr>
                 </c:forEach>
@@ -127,14 +127,14 @@
 <!-- Modal Add Department Form -->
 <div id="add_form" class="modal">
     <div class="modal-content">
-        <h4>Add Department</h4>
+        <h4>Add Department </h4>
         <div class="row">
             <form action="/departments" method="post" class="col s12">
                 <div class="row">
                     <div class="input-field col s12">
-                        <input name=<%= ParameterNames.DEPARTMENT_TITLE_PARAM %> id="department_title" type="text"
-                               class="validate" required>
-                        <label for=<%= ParameterNames.DEPARTMENT_TITLE_PARAM %>>Title</label>
+                        <input name=<%= ParameterNames.DEPARTMENT_NEW_TITLE_PARAM %> id=<%= ParameterNames.DEPARTMENT_NEW_TITLE_PARAM %> type="text"
+                               class="validate"  required>
+                        <label for=<%= ParameterNames.DEPARTMENT_NEW_TITLE_PARAM %>>Title</label>
                         <span class="helper-text" data-error="${errors}" data-success="Well done!">Feel free to type letters and numbers, even do hyphens.
                             And that's all. No other symbols are permitted! 22 characters, not more.</span>
                     </div>
@@ -147,7 +147,29 @@
         </div>
     </div>
 </div>
-
+<!-- Modal Delete Department Confirmation Form -->
+<div id="delete-confirmation-modal" class="modal">
+    <div class="modal-content">
+        <h4 id="delete-confirmation-modal-title">Delete Modal</h4>
+        <h6 class="red-text">You now completely deleting us.</h6>
+        <div class="row">
+            <form id="delete-confirmation-modal-form" method="post" class="col s12">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input type ="hidden" name="delete_department" id="delete-confirmation-modal-input"
+                               class="validate">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="modal-close waves-effect waves-green btn-flat ">Nope</a>
+                    <button type="submit" class="waves-effect waves-green btn-flat green-text">Sure</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+href="departments/delete/${department.getId()}"
+value="${department_new_title}"
 </div>
 
 </body>

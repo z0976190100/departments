@@ -55,8 +55,8 @@ public class DaoImpl<T> implements Dao<T>, General, Messages {
     }
 
     @Override
-    public ResultSet saveEntity(String query) {
-        return getResultSet(query);
+    public void saveEntity(String query) {
+        doExecuteUpdate(query);
     }
 
     @Override
