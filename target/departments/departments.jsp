@@ -16,7 +16,8 @@
     <div class="nav-wrapper container">
         <a id="logo-container" href="#" class="brand-logo">gh</a>
         <ul class="right">
-            <li><a class="waves-effect waves-light light-green btn" href=<%= General.WELCOME_PAGE_JSP%>>< Welcome Page </a>
+            <li><a class="waves-effect waves-light light-green btn" href=<%= General.WELCOME_PAGE_JSP%>>< Welcome
+                Page </a>
             </li>
         </ul>
     </div>
@@ -47,26 +48,24 @@
                         <td><c:out value="${department.getId()}"/></td>
                         <td><c:out value="${department.getTitle()}"/></td>
                         <td class="right">
-                               <div class="col s4 center-align no-pad-bot"><form class="inline"><a class="waves-effect waves-light blue-grey btn"
+                            <a class="waves-effect waves-light blue-grey btn"
                                title="To list of Employees of this Department."
                                href="${department.getId()}/employees"
                             >
                                 Employees
-                            </a></form></div>
-                           <div class="col s3 center-align offset-s1"> <form class="inline"><a class="waves-effect waves-light blue-grey btn"
+                            </a>
+                            <a class="waves-effect waves-light blue-grey btn"
                                title="Smack to edit this Department."
                                href="departments/${department.getId()}/update"
                             >
                                 Edit
                             </a>
-                           </form>
-                           </div>
-                            <div class="col s4 center-align"><a class="waves-effect waves-light red btn "
+                            <a class="waves-effect waves-light red btn "
                                title="Delete this Department."
-                               href="departments/${department.getId()}/delete"
+                               href="departments/delete/${department.getId()}"
                             >
                                 Delete
-                            </a></div>
+                            </a>
                         </td>
                     </tr>
                 </c:forEach>
@@ -77,7 +76,8 @@
     <div class="section">
         <div class="row">
             <div class="col s6 offset-s3 right-align">
-                <a class="btn-floating btn-large waves-effect waves-light blue-grey modal-trigger" title="Add Department" data-target="add_form">
+                <a class="btn-floating btn-large waves-effect waves-light blue-grey modal-trigger"
+                   title="Add Department" data-target="add_form">
                     <i class="material-icons">add</i>
                 </a>
             </div>
@@ -132,7 +132,8 @@
             <form action="/departments" method="post" class="col s12">
                 <div class="row">
                     <div class="input-field col s12">
-                        <input name=<%= ParameterNames.DEPARTMENT_TITLE_PARAM %> id="department_title" type="text" class="validate" required>
+                        <input name=<%= ParameterNames.DEPARTMENT_TITLE_PARAM %> id="department_title" type="text"
+                               class="validate" required>
                         <label for=<%= ParameterNames.DEPARTMENT_TITLE_PARAM %>>Title</label>
                         <span class="helper-text" data-error="${errors}" data-success="Well done!">Feel free to type letters and numbers, even do hyphens.
                             And that's all. No other symbols are permitted! 22 characters, not more.</span>

@@ -33,34 +33,29 @@ public class DepartmentService {
     public List<Department> getDepartmentsList() throws SQLException {
 
         String query = "SELECT * FROM " + departmentEntityDescription.getTableName() + ";";
-
         ResultSet resultSet = departmentDao.getEntitiesList(query);
-
         List<Department> departmentList = new ArrayList<>();
 
         while (resultSet.next()) {
             departmentList.add(new Department(resultSet.getInt(ID), resultSet.getString(TITLE)));
-            System.out.println(resultSet.getInt(ID) + resultSet.getString(TITLE));
         }
 
+        resultSet.close();
         return departmentList;
     }
 
     public Department getDepartmentById(int id) throws ResourceNotFoundException, SQLException {
 
         String query = "SELECT * FROM " + departmentEntityDescription.getTableName() + " WHERE id = " + id;
+        ResultSet resultSet = departmentDao.getEntityById(query);
+        System.out.println("result --- " + resultSet);
 
-        ResultSet result = departmentDao.getEntityById(query);
-
-        System.out.println("result --- " + result);
-
-        if (!result.next())
+        if (!resultSet.next())
             throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE + DEPARTMENT_NOT_FOUND_MESSSAGE);
 
-        Department department = buildDepartmentFromResult(result);
+        Department department = buildDepartmentFromResult(resultSet);
 
-        result.close();
-
+        resultSet.close();
         return department;
 
         //throw new NullPointerException("Department Exception");
@@ -71,16 +66,18 @@ public class DepartmentService {
     public Department saveDepartment(String title) throws SQLException {
 
         String query = "INSERT INTO " + departmentEntityDescription.getTableName() + " (title , id) VALUES ( '" + title + "', DEFAULT) RETURNING *;";
+        ResultSet resultSet = departmentDao.saveEntity(query);
+        resultSet.next();
 
-        ResultSet result = departmentDao.saveEntity(query);
+        Department department = buildDepartmentFromResult(resultSet);
 
-        result.next();
-
-        Department department = buildDepartmentFromResult(result);
-
-        result.close();
-
+        resultSet.close();
         return department;
+    }
+
+    public void deleteDepartment(int id) throws SQLException{
+        String query = "DELETE FROM " + departmentEntityDescription.getTableName() + " WHERE ID = " + id + ";";
+        departmentDao.deleteEntity(query);
     }
 
 }

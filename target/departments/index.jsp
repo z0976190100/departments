@@ -14,12 +14,12 @@
     <div class="nav-wrapper container">
         <a id="logo-container" href="#" class="brand-logo">gh</a>
         <ul class="right">
-            <li><a class="waves-effect waves-light btn" href=<%= General.DEPARTMENTS_JSP%>>Departments ></a></li>
+            <li><a class="waves-effect waves-light btn" href=<%= URLs.DEPARTMENTS_URL%>>Departments ></a></li>
         </ul>
     </div>
 </nav>
 <div class="container center">
-    <h1>WELCOMEPAGE</h1>
+    <h1>WELCOME PAGE</h1>
 </div>
 <footer class="page-footer">
     <div class="container">

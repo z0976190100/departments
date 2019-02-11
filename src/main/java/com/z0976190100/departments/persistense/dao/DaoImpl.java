@@ -38,6 +38,17 @@ public class DaoImpl<T> implements Dao<T>, General, Messages {
         }
     }
 
+    private void doExecuteUpdate(String query) {
+        try (Connection connection = getConnection()) {
+
+            connection.prepareStatement(query).executeUpdate();
+
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+        }
+    }
+
     @Override
     public ResultSet getEntitiesList(String query) {
         return getResultSet(query);
@@ -50,8 +61,9 @@ public class DaoImpl<T> implements Dao<T>, General, Messages {
 
     @Override
     public void deleteEntity(String query) {
-
+        doExecuteUpdate(query);
     }
+
 
     @Override
     public void updateEntity(T entity) {

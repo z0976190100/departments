@@ -62,7 +62,7 @@
                             </a>
                             <a class="waves-effect waves-light red btn "
                                title="Delete this Department."
-                               href="departments/${department.getId()}/delete"
+                               href="departments/delete/${department.getId()}"
                             >
                                 Delete
                             </a>

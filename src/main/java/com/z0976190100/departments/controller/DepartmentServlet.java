@@ -39,7 +39,6 @@ public class DepartmentServlet extends HttpServlet implements General, URLs {
                     List<Department> departmentsList = departmentService.getDepartmentsList();
                     req.setAttribute(DEPARTMENTS_LIST_PARAM, departmentsList);
                     requestDispatch(req, resp, DEPARTMENTS_JSP);
-                    System.out.println("all done");
                 } catch (SQLException e) {
                     forwardWithError(req, resp, e, 500, DB_CONNECTION_FAILURE_MESSAGE);
                 } catch (Exception e) {
@@ -80,7 +79,7 @@ public class DepartmentServlet extends HttpServlet implements General, URLs {
             Department department = departmentService.saveDepartment(departmentTitle);
             req.setAttribute(DEPARTMENT_RESOURCE_KEY, department);
             resp.setStatus(201);
-            requestDispatch(req, resp, DEPARTMENTS_JSP);
+            resp.sendRedirect(DEPARTMENTS_URL);
         } catch (RequestParameterValidationException e) {
             forwardWithError(req, resp, e, 400, e.getMessage());
         } catch (SQLException e) {

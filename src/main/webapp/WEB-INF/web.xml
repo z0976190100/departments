@@ -27,4 +27,12 @@
         <servlet-name>DepartmentController</servlet-name>
         <url-pattern>/departments</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>TempDepartmentDeleteServlet</servlet-name>
+        <servlet-class>com.z0976190100.departments.controller.TempDepartmentDeleteServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TempDepartmentDeleteServlet</servlet-name>
+        <url-pattern>/departments/delete/*</url-pattern>
+    </servlet-mapping>
 </web-app>
