@@ -53,14 +53,15 @@
                             >
                                 Employees
                             </a>
-                            <a class="waves-effect waves-light blue-grey btn"
-                               title="Smack to edit this Department."
-                               href="departments/${department.getId()}/update"
+                            <button class="waves-effect waves-light blue-grey btn modal-trigger"
+                                    title="Smack to edit this Department."
+                                    onclick="setEditModalValues('${department.getId()}', '${department.getTitle()}')"
+                                    data-target="add-edit-modal"
                             >
                                 Edit
-                            </a>
+                            </button>
                             <button class="waves-effect waves-light red btn modal-trigger"
-                               title="Delete this Department."
+                                    title="Delete this Department."
                                     onclick="setDeleteModalValues('${department.getId()}', '${department.getTitle()}')"
                                     data-target="delete-confirmation-modal"
                             >
@@ -76,10 +77,12 @@
     <div class="section">
         <div class="row">
             <div class="col s6 offset-s3 right-align">
-                <a class="btn-floating btn-large waves-effect waves-light blue-grey modal-trigger"
-                   title="Add Department" data-target="add_form">
+                <button class="btn-floating btn-large waves-effect waves-light blue-grey modal-trigger"
+                        title="Add Department"
+                        onclick="setSaveModalValues()"
+                        data-target="add-edit-modal">
                     <i class="material-icons">add</i>
-                </a>
+                </button>
             </div>
         </div>
     </div>
@@ -125,18 +128,26 @@
     </script>
 </c:if>
 <!-- Modal Add Department Form -->
-<div id="add_form" class="modal">
+<div id="add-edit-modal" class="modal">
     <div class="modal-content">
-        <h4>Add Department </h4>
+        <h4 id="add-edit-modal-title">Add Department</h4>
         <div class="row">
-            <form action="/departments" method="post" class="col s12">
+            <form id="add-edit-modal-form" method="post" class="col s12">
                 <div class="row">
                     <div class="input-field col s12">
-                        <input name=<%= ParameterNames.DEPARTMENT_NEW_TITLE_PARAM %> id=<%= ParameterNames.DEPARTMENT_NEW_TITLE_PARAM %> type="text"
-                               class="validate"  required>
-                        <label for=<%= ParameterNames.DEPARTMENT_NEW_TITLE_PARAM %>>Title</label>
-                        <span class="helper-text" data-error="${errors}" data-success="Well done!">Feel free to type letters and numbers, even do hyphens.
-                            And that's all. No other symbols are permitted! 22 characters, not more.</span>
+                        <input name=<%= ParameterNames.DEPARTMENT_NEW_TITLE_PARAM %> id="add-edit-modal-input"
+                               type="text"
+                               class="validate"
+                               value="${department_new_title}" required
+                               placeholder="Title"
+                        >
+                        <span class="helper-text"
+                              data-error="${errors}"
+                              data-success="Well done!"
+                        >
+                            Feel free to type letters and numbers, even do hyphens.
+                            And that's all. No other symbols are permitted! 22 characters, not more.
+                        </span>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -156,7 +167,7 @@
             <form id="delete-confirmation-modal-form" method="post" class="col s12">
                 <div class="row">
                     <div class="input-field col s12">
-                        <input type ="hidden" name="delete_department" id="delete-confirmation-modal-input"
+                        <input type="hidden" name="delete_department" id="delete-confirmation-modal-input"
                                class="validate">
                     </div>
                 </div>
@@ -168,8 +179,6 @@
         </div>
     </div>
 </div>
-href="departments/delete/${department.getId()}"
-value="${department_new_title}"
 </div>
 
 </body>

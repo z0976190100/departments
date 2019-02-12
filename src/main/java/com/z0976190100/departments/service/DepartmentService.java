@@ -1,6 +1,7 @@
 package com.z0976190100.departments.service;
 
 import com.sun.xml.internal.bind.v2.model.core.ID;
+import com.z0976190100.departments.exceptions.RequestParameterValidationException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
 import com.z0976190100.departments.persistense.dao.DaoImpl;
 import com.z0976190100.departments.persistense.entity.Department;
@@ -13,9 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.z0976190100.departments.app_constants.General.TITLE;
-import static com.z0976190100.departments.app_constants.Messages.DEPARTMENT_NOT_FOUND_MESSSAGE;
-import static com.z0976190100.departments.app_constants.Messages.RESOURCE_NOT_FOUND_MESSAGE;
 import static com.z0976190100.departments.app_constants.General.ID;
+import static com.z0976190100.departments.app_constants.Messages.*;
 
 public class DepartmentService {
 
@@ -62,9 +62,15 @@ public class DepartmentService {
 //        return department;
     }
 
-    public void saveDepartment(String title) throws SQLException {
+    public void saveDepartment(String title) throws SQLException, RequestParameterValidationException {
 
-        String query = "INSERT INTO " + departmentEntityDescription.getTableName() + " (title , id) VALUES ( '" + title + "', DEFAULT);";
+        String query = "SELECT * FROM " + departmentEntityDescription.getTableName() + " WHERE title = '" + title + "';";
+
+        ResultSet resultSet = departmentDao.getAllEntitiesWhere(query);
+
+        if(resultSet.next()) throw new RequestParameterValidationException(DEPARTMENT_TITLE_NOT_UNIQUE_MESSAGE);
+
+        query = "INSERT INTO " + departmentEntityDescription.getTableName() + " (title , id) VALUES ( '" + title + "', DEFAULT);";
         departmentDao.saveEntity(query);
 
     }

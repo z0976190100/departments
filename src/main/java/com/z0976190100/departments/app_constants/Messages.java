@@ -10,4 +10,5 @@ public interface Messages {
     // DEPARTMENT
     String DEPARTMENT_TITLE_NOT_VALID_MESSAGE = "Title you provided not valid. Try another one. ";
     String DEPARTMENT_NOT_FOUND_MESSSAGE = "Department not found. ";
+    String DEPARTMENT_TITLE_NOT_UNIQUE_MESSAGE = "Department already exists. Try another title. ";
 }

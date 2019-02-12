@@ -5,8 +5,6 @@ import com.z0976190100.departments.app_constants.General;
 import com.z0976190100.departments.app_constants.Messages;
 
 import java.sql.*;
-import java.util.List;
-import java.util.Map;
 
 public class DaoImpl<T> implements Dao<T>, General, Messages {
 
@@ -77,7 +75,8 @@ public class DaoImpl<T> implements Dao<T>, General, Messages {
     }
 
     @Override
-    public List<Map<String, Object>> getAllEntitiesWhere(String query) {
-        return null;
+    public ResultSet getAllEntitiesWhere(String query) {
+
+        return getResultSet(query);
     }
 }

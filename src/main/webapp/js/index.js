@@ -14,20 +14,44 @@ function setDeleteModalValues(id, title) {
     }
 
     var modalTitle = byId("delete-confirmation-modal-title");
-    modalTitle.innerText = title + " Department.";
+    modalTitle.innerText = title + " Department";
 
     var form = byId("delete-confirmation-modal-form");
     form.action = "departments/delete/" + id;
 
-    console.log(form.action);
-
     var input = byId("delete-confirmation-modal-input");
     input.value = id;
+}
 
-    console.log(id, title);
+function setEditModalValues(id, title) {
 
+    function byId(id) {
+        return document.getElementById(id);
+    }
 
+    var modalTitle = byId("add-edit-modal-title");
+    modalTitle.innerText = "Edit Department";
 
+    var form = byId("add-edit-modal-form");
+    form.action = "departments/update/" + id;
+
+    var input = byId("add-edit-modal-input");
+    input.click = true;
+    input.focus = true;
+    input.value = title;
+}
+
+function setSaveModalValues() {
+
+    function byId(id) {
+        return document.getElementById(id);
+    }
+
+    var modalTitle = byId("add-edit-modal-title");
+    modalTitle.innerText = "Add Department";
+
+    var form = byId("add-edit-modal-form");
+    form.action = "departments";
 }
 
 function notification(text) {
