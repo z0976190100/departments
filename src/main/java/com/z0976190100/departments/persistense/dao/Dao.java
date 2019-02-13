@@ -1,6 +1,7 @@
 package com.z0976190100.departments.persistense.dao;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public interface Dao<T> {
 
@@ -15,6 +16,8 @@ public interface Dao<T> {
     public ResultSet getAllEntitiesWhere(String query);
 
     public ResultSet getEntitiesList(String query);
+
+    public int getRowCount(String query) throws SQLException;
 
 
 }

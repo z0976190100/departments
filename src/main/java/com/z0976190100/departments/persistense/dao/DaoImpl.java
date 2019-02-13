@@ -1,8 +1,8 @@
 package com.z0976190100.departments.persistense.dao;
 
-import com.z0976190100.departments.exceptions.AppRuntimeException;
 import com.z0976190100.departments.app_constants.General;
 import com.z0976190100.departments.app_constants.Messages;
+import com.z0976190100.departments.exceptions.AppRuntimeException;
 
 import java.sql.*;
 
@@ -36,10 +36,11 @@ public class DaoImpl<T> implements Dao<T>, General, Messages {
         }
     }
 
-    private void doExecuteUpdate(String query) {
+    private int doExecuteUpdate(String query) {
         try (Connection connection = getConnection()) {
 
-            connection.prepareStatement(query).executeUpdate();
+            int i = connection.prepareStatement(query).executeUpdate();
+            return i;
 
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
@@ -78,5 +79,15 @@ public class DaoImpl<T> implements Dao<T>, General, Messages {
     public ResultSet getAllEntitiesWhere(String query) {
 
         return getResultSet(query);
+    }
+
+    @Override
+    public int getRowCount(String query) throws SQLException {
+
+        ResultSet resultSet = getResultSet(query);
+        resultSet.next();
+        int rowCount = resultSet.getInt(1);
+        resultSet.close();
+        return rowCount;
     }
 }

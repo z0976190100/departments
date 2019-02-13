@@ -8,8 +8,8 @@
          version="3.0">
     <display-name>Departments</display-name>
     <error-page>
-        <error-code>400</error-code>
-        <location>/error.jsp</location>
+        <exception-type>java.lang.Exception</exception-type>
+        <location>/errorHandler</location>
     </error-page>
     <servlet>
         <servlet-name>ErrorHandlerController</servlet-name>

@@ -1,6 +1,5 @@
 package com.z0976190100.departments.service;
 
-import com.sun.xml.internal.bind.v2.model.core.ID;
 import com.z0976190100.departments.exceptions.RequestParameterValidationException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
 import com.z0976190100.departments.persistense.dao.DaoImpl;
@@ -30,9 +29,30 @@ public class DepartmentService {
 
     }
 
+    public int getRowCount() throws SQLException {
+        String query = "SELECT COUNT(*) FROM " + departmentEntityDescription.getTableName();
+        return departmentDao.getRowCount(query);
+    }
+
+    public List<Department> getDepartmentsList(int offset, int limit) throws SQLException {
+
+        String query = "SELECT * FROM " + departmentEntityDescription.getTableName() + " " +
+                "ORDER BY id " +
+                "LIMIT " + limit + " OFFSET " + offset + ";";
+        ResultSet resultSet = departmentDao.getEntitiesList(query);
+        List<Department> departmentList = new ArrayList<>();
+
+        while (resultSet.next()) {
+            departmentList.add(new Department(resultSet.getInt(ID), resultSet.getString(TITLE)));
+        }
+
+        resultSet.close();
+        return departmentList;
+    }
+
     public List<Department> getDepartmentsList() throws SQLException {
 
-        String query = "SELECT * FROM " + departmentEntityDescription.getTableName() + ";";
+        String query = "SELECT * FROM " + departmentEntityDescription.getTableName() + " ORDER BY id ;";
         ResultSet resultSet = departmentDao.getEntitiesList(query);
         List<Department> departmentList = new ArrayList<>();
 

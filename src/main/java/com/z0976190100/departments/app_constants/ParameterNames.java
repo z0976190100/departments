@@ -2,6 +2,9 @@ package com.z0976190100.departments.app_constants;
 
 public interface ParameterNames {
 
+    // PAGE
+    String ACTUAL_PAGE_PARAM = "actual_page";
+
     // DEPARTMENT
     String DEPARTMENT_TITLE_PARAM = "department_title";
     String DEPARTMENT_NEW_TITLE_PARAM = "department_new_title";

@@ -31,6 +31,7 @@ public class TempDepartmentDeleteServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
         String pathInfo = req.getPathInfo();
         System.out.println(pathInfo);
         String[] pathSplitted = pathInfo.split("/");

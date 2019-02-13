@@ -30,11 +30,22 @@ public class DepartmentServlet extends HttpServlet implements General, URLs {
 
         String forCase = "all";
 
+        int actualPage = 1;
+        int limit = 3;
+
         switch (forCase) {
             case "all":
                 try {
-                    listToAttribute(req);
+
+                    actualPage = 1;
+                    limit = 3;
+                    if(req.getParameter(ACTUAL_PAGE_PARAM) != null)
+                        actualPage = Integer.parseInt(req.getParameter(ACTUAL_PAGE_PARAM));
+                    req.setAttribute(ACTUAL_PAGE_PARAM, actualPage);
+                    setListToAttributes(req, limit*(actualPage-1), limit);
                     requestDispatch(req, resp, DEPARTMENTS_JSP);
+                } catch (NumberFormatException e) {
+                    forwardWithError(req, resp, e, 400, e.getMessage());
                 } catch (SQLException e) {
                     forwardWithError(req, resp, e, 500, DB_CONNECTION_FAILURE_MESSAGE);
                 } catch (Exception e) {
@@ -69,6 +80,9 @@ public class DepartmentServlet extends HttpServlet implements General, URLs {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        int actualPage = 1;
+        int limit = 3;
+
         String departmentTitle = req.getParameter(DEPARTMENT_NEW_TITLE_PARAM);
         try {
             validator.isValidDepartmentTitle(departmentTitle);
@@ -78,7 +92,7 @@ public class DepartmentServlet extends HttpServlet implements General, URLs {
             resp.sendRedirect(DEPARTMENTS_URL);
         } catch (RequestParameterValidationException e) {
             try {
-                listToAttribute(req);
+                setListToAttributes(req, limit*(actualPage-1), limit);
                 req.setAttribute(DEPARTMENT_NEW_TITLE_PARAM, req.getParameter(DEPARTMENT_NEW_TITLE_PARAM));
             } catch (SQLException e1) {
                 forwardWithError(req, resp, e1, 500, DB_CONNECTION_FAILURE_MESSAGE);
@@ -110,9 +124,28 @@ public class DepartmentServlet extends HttpServlet implements General, URLs {
         requestDispatch(req, resp, DEPARTMENTS_JSP);
     }
 
-    private void listToAttribute(HttpServletRequest req) throws SQLException {
+    private void setListToAttributes(HttpServletRequest req, int offset, int limit) throws SQLException {
+        int pages = paginationHelper(limit);
+        req.setAttribute("pages", pages);
+        List<Department> departmentsList = departmentService.getDepartmentsList(offset, limit);
+        req.setAttribute(DEPARTMENTS_LIST_PARAM, departmentsList);
+    }
+
+    private void setListToAttributes(HttpServletRequest req) throws SQLException {
+
         List<Department> departmentsList = departmentService.getDepartmentsList();
         req.setAttribute(DEPARTMENTS_LIST_PARAM, departmentsList);
+    }
+
+    private int paginationHelper(int rl) throws SQLException{
+
+        int rc = departmentService.getRowCount();
+
+        int p = rc/rl;
+
+        if( rc%rl != 0) p++ ;
+
+        return p;
     }
 
 }

@@ -22,11 +22,13 @@
     </div>
 </nav>
 <div class="container center">
-    <h4>Departments Page</h4>
+    <div class="section"></div>
+    <h4 class="blue-grey-text"><strong>DEPARTMENTS</strong></h4>
+    <div class="section"></div>
     <div class="row">
         <div class="col s6 offset-s3">
             <table class="highlight centered">
-                <thead>
+                <thead class="blue-grey-text">
                 <tr>
                     <th>ID</th>
                     <th>Title</th>
@@ -47,7 +49,7 @@
                         <td><c:out value="${department.getId()}"/></td>
                         <td><c:out value="${department.getTitle()}"/></td>
                         <td class="right">
-                            <a class="waves-effect waves-light blue-grey btn"
+                            <a class="disabled waves-effect waves-light blue-grey btn"
                                title="To list of Employees of this Department."
                                href="${department.getId()}/employees"
                             >
@@ -88,16 +90,15 @@
     </div>
     <div class="section">
         <ul class="pagination">
-            <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
-            <li class="active light-blue"><a href="#!">1</a></li>
-            <li class="waves-effect"><a href="#!">2</a></li>
-            <li class="waves-effect"><a href="#!">3</a></li>
-            <li class="waves-effect"><a href="#!">4</a></li>
-            <li class="waves-effect"><a href="#!">5</a></li>
-            <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+            <li id="page-back-switcher" class="disabled"><a href="/departments?actual_page=${actual_page - 1}"><i class="material-icons">chevron_left</i></a></li>
+            <c:forEach var="page" begin="1" end="${pages}">
+                <li id="page-indicator-${page}" class="waves-effect"><a href="/departments?actual_page=${page}">${page}</a></li>
+            </c:forEach>
+            <li id="page-forward-switcher" class="waves-effect"><a href="/departments?actual_page=${actual_page + 1}"><i class="material-icons">chevron_right</i></a></li>
         </ul>
     </div>
 </div>
+<div class="section"></div>
 <footer class="page-footer light-green">
     <div class="container">
         <div class="row">
@@ -105,10 +106,6 @@
                 <%--footer content--%>
             </div>
             <div class="col l4 offset-l2 s12">
-                <%--<h5 class="white-text">Links</h5>--%>
-                <%--<ul>--%>
-                <%--<li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>--%>
-                <%--</ul>--%>
             </div>
         </div>
     </div>
@@ -121,13 +118,18 @@
 </footer>
 <script src="materialize/js/materialize.min.js"></script>
 <script src="js/index.js"></script>
+<!-- set pagination pointer invocation -->
+<script>
+    setPaginationPointer(${actual_page}, ${pages});
+</script>
+
 <!-- Notification pop-up -->
 <c:if test="${not empty errors}">
     <script>
         notification("${errors}");
     </script>
 </c:if>
-<!-- Modal Add Department Form -->
+<!-- Modal Add Edit Department Form -->
 <div id="add-edit-modal" class="modal">
     <div class="modal-content">
         <h4 id="add-edit-modal-title">Add Department</h4>
@@ -140,9 +142,12 @@
                                class="validate"
                                value="${department_new_title}" required
                                placeholder="Title"
+                               pattern="^[A-Za-z0-9-\s]+$"
+                               maxlength="22"
                         >
                         <span class="helper-text"
-                              data-error="${errors}"
+                              data-error="Feel free to type LETTERS and NUMBERS, even do hyphens.
+                            No other symbols are permitted!"
                               data-success="Well done!"
                         >
                             Feel free to type letters and numbers, even do hyphens.
