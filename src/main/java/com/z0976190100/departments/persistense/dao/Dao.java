@@ -1,21 +1,24 @@
 package com.z0976190100.departments.persistense.dao;
 
-import java.sql.ResultSet;
+import com.z0976190100.departments.exceptions.ResourceNotFoundException;
+import com.z0976190100.departments.persistense.entity.Department;
+
 import java.sql.SQLException;
+import java.util.List;
 
 public interface Dao<T> {
 
-    public void saveEntity(String query);
+    public void saveEntity(String title);
 
-    public void deleteEntity(String query);
+    public void deleteEntity(int id) throws ResourceNotFoundException;
 
-    public void updateEntity(T entity);
+    public void updateEntity(T entity) throws ResourceNotFoundException;
 
-    public ResultSet getEntityById(String query);
+    public Department getEntityById(int id);
 
-    public ResultSet getAllEntitiesWhere(String query);
+    public List<T> getAllEntitiesWhere(String title);
 
-    public ResultSet getEntitiesList(String query);
+    public List<T> getEntitiesList(String query);
 
     public int getRowCount(String query) throws SQLException;
 

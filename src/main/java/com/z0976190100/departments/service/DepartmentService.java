@@ -2,104 +2,85 @@ package com.z0976190100.departments.service;
 
 import com.z0976190100.departments.exceptions.RequestParameterValidationException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
-import com.z0976190100.departments.persistense.dao.DaoImpl;
+import com.z0976190100.departments.persistense.dao.DepartmentDaoImpl;
 import com.z0976190100.departments.persistense.entity.Department;
 import com.z0976190100.departments.persistense.entity.DepartmentEntityDescription;
 import com.z0976190100.departments.persistense.entity.EntityDescription;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.z0976190100.departments.app_constants.General.TITLE;
-import static com.z0976190100.departments.app_constants.General.ID;
-import static com.z0976190100.departments.app_constants.Messages.*;
+import static com.z0976190100.departments.app_constants.MessagesConstants.*;
 
 public class DepartmentService {
 
-    private EntityDescription departmentEntityDescription = new DepartmentEntityDescription();
-    private DaoImpl<Department> departmentDao = new DaoImpl<>();
+    private EntityDescription description = new DepartmentEntityDescription();
+    private DepartmentDaoImpl departmentDao = new DepartmentDaoImpl();
+    private final String table = description.getTableName();
 
-    private Department buildDepartmentFromResult(ResultSet r) throws SQLException {
 
-        return new Department(
-                r.getInt(ID),
-                r.getString(TITLE));
-
-    }
-
+    // FIXME pagination- where it belongs?
     public int getRowCount() throws SQLException {
-        String query = "SELECT COUNT(*) FROM " + departmentEntityDescription.getTableName();
+        String query = "SELECT COUNT(*) FROM " + table;
         return departmentDao.getRowCount(query);
     }
 
-    public List<Department> getDepartmentsList(int offset, int limit) throws SQLException {
+    public List<Department> getDepartmentsList(int offset, int limit) {
 
-        String query = "SELECT * FROM " + departmentEntityDescription.getTableName() + " " +
+        String query = "SELECT * FROM " + table + " " +
                 "ORDER BY id " +
                 "LIMIT " + limit + " OFFSET " + offset + ";";
-        ResultSet resultSet = departmentDao.getEntitiesList(query);
-        List<Department> departmentList = new ArrayList<>();
+        List<Department> departmentList = departmentDao.getEntitiesList(query);
 
-        while (resultSet.next()) {
-            departmentList.add(new Department(resultSet.getInt(ID), resultSet.getString(TITLE)));
-        }
-
-        resultSet.close();
         return departmentList;
     }
 
-    public List<Department> getDepartmentsList() throws SQLException {
+    public List<Department> getDepartmentsList() {
 
-        String query = "SELECT * FROM " + departmentEntityDescription.getTableName() + " ORDER BY id ;";
-        ResultSet resultSet = departmentDao.getEntitiesList(query);
-        List<Department> departmentList = new ArrayList<>();
+        String query = "SELECT * FROM " + table + " ORDER BY id ;";
+        List<Department> departmentList = departmentDao.getEntitiesList(query);
 
-        while (resultSet.next()) {
-            departmentList.add(new Department(resultSet.getInt(ID), resultSet.getString(TITLE)));
-        }
-
-        resultSet.close();
         return departmentList;
     }
 
-    public Department getDepartmentById(int id) throws ResourceNotFoundException, SQLException {
+    public Department getDepartmentById(int id) throws ResourceNotFoundException {
 
-        String query = "SELECT * FROM " + departmentEntityDescription.getTableName() + " WHERE id = " + id;
-        ResultSet resultSet = departmentDao.getEntityById(query);
+        Department department = departmentDao.getEntityById(id);
 
-        if (!resultSet.next())
+        if (department == null)
             throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE + DEPARTMENT_NOT_FOUND_MESSSAGE);
 
-        Department department = buildDepartmentFromResult(resultSet);
-
-        resultSet.close();
         return department;
 
-        //throw new NullPointerException("Department Exception");
-//        Department department = new Department(1, "First");
-//        return department;
     }
 
-    public void saveDepartment(String title) throws SQLException, RequestParameterValidationException {
+    public void saveDepartment(String title) throws RequestParameterValidationException {
 
-        String query = "SELECT * FROM " + departmentEntityDescription.getTableName() + " WHERE title = '" + title + "';";
+        // check if department is unique by title
+        List<Department> departmentList = departmentDao.getAllEntitiesWhere(title);
 
-        ResultSet resultSet = departmentDao.getAllEntitiesWhere(query);
+        if(departmentList != null) throw new RequestParameterValidationException(DEPARTMENT_TITLE_NOT_UNIQUE_MESSAGE);
 
-        if(resultSet.next()) throw new RequestParameterValidationException(DEPARTMENT_TITLE_NOT_UNIQUE_MESSAGE);
-
-        query = "INSERT INTO " + departmentEntityDescription.getTableName() + " (title , id) VALUES ( '" + title + "', DEFAULT);";
-        departmentDao.saveEntity(query);
+        departmentDao.saveEntity(title);
 
     }
 
-    public void deleteDepartment(int id) throws SQLException{
+    public void deleteDepartment(int id) throws ResourceNotFoundException{
 
         //TODO: delete all EMPLOYEES
-        String query = "DELETE FROM " + departmentEntityDescription.getTableName() + " WHERE ID = " + id + ";";
-        departmentDao.deleteEntity(query);
+
+            departmentDao.deleteEntity(id);
+
+    }
+
+    public  void updateDepartment(int id, String newTitle) throws ResourceNotFoundException{
+
+        // TODO check if newTitle already exists
+
+        Department department = new Department(id, newTitle);
+
+        departmentDao.updateEntity(department);
+
     }
 
 }

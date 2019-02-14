@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="com.z0976190100.departments.app_constants.General" %>
-<%@ page import="com.z0976190100.departments.app_constants.ParameterNames" %>
+<%@ page import="com.z0976190100.departments.app_constants.GeneralConstants" %>
+<%@ page import="com.z0976190100.departments.app_constants.ParameterNamesConstants" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -15,7 +15,7 @@
     <div class="nav-wrapper container">
         <a id="logo-container" href="#" class="brand-logo">gh</a>
         <ul class="right">
-            <li><a class="waves-effect waves-light light-green btn" href=<%= General.WELCOME_PAGE_JSP%>>< Welcome
+            <li><a class="waves-effect waves-light light-green btn" href=<%= GeneralConstants.WELCOME_PAGE_JSP%>>< Welcome
                 Page </a>
             </li>
         </ul>
@@ -49,20 +49,20 @@
                         <td><c:out value="${department.getId()}"/></td>
                         <td><c:out value="${department.getTitle()}"/></td>
                         <td class="right">
-                            <a class="disabled waves-effect waves-light blue-grey btn"
+                            <a class="disabled waves-effect waves-light blue-grey btn s12"
                                title="To list of Employees of this Department."
                                href="${department.getId()}/employees"
                             >
                                 Employees
                             </a>
-                            <button class="waves-effect waves-light blue-grey btn modal-trigger"
+                            <button class="waves-effect waves-light blue-grey btn modal-trigger s12"
                                     title="Smack to edit this Department."
                                     onclick="setEditModalValues('${department.getId()}', '${department.getTitle()}')"
                                     data-target="add-edit-modal"
                             >
                                 Edit
                             </button>
-                            <button class="waves-effect waves-light red btn modal-trigger"
+                            <button class="waves-effect waves-light red btn modal-trigger s12"
                                     title="Delete this Department."
                                     onclick="setDeleteModalValues('${department.getId()}', '${department.getTitle()}')"
                                     data-target="delete-confirmation-modal"
@@ -103,7 +103,6 @@
     <div class="container">
         <div class="row">
             <div class="col l6 s12">
-                <%--footer content--%>
             </div>
             <div class="col l4 offset-l2 s12">
             </div>
@@ -111,18 +110,17 @@
     </div>
     <div class="footer-copyright">
         <div class="container">
-            © 2019 good habit. get another one is us.
-            <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+            © 2019 good habit. here another one is us.
+            <a class="grey-text text-lighten-4 right" href="http://github.com/z0976190100">My Github</a>
         </div>
     </div>
 </footer>
 <script src="materialize/js/materialize.min.js"></script>
 <script src="js/index.js"></script>
-<!-- set pagination pointer invocation -->
+<!-- set Pagination Pointer invocation -->
 <script>
     setPaginationPointer(${actual_page}, ${pages});
 </script>
-
 <!-- Notification pop-up -->
 <c:if test="${not empty errors}">
     <script>
@@ -137,7 +135,7 @@
             <form id="add-edit-modal-form" method="post" class="col s12">
                 <div class="row">
                     <div class="input-field col s12">
-                        <input name=<%= ParameterNames.DEPARTMENT_NEW_TITLE_PARAM %> id="add-edit-modal-input"
+                        <input name=<%= ParameterNamesConstants.DEPARTMENT_NEW_TITLE_PARAM %> id="add-edit-modal-input"
                                type="text"
                                class="validate"
                                value="${department_new_title}" required

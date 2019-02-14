@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="com.z0976190100.departments.app_constants.URLs" %>
-<%@ page import="com.z0976190100.departments.app_constants.General" %>
+<%@ page import="com.z0976190100.departments.app_constants.URLsConstants" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -14,12 +13,18 @@
     <div class="nav-wrapper container">
         <a id="logo-container" href="#" class="brand-logo">gh</a>
         <ul class="right">
-            <li><a class="waves-effect waves-light btn" href=<%= URLs.DEPARTMENTS_URL%>>Departments ></a></li>
+            <li><a class="waves-effect waves-light light-green btn" href=<%= URLsConstants.DEPARTMENTS_URL%>>Departments ></a></li>
         </ul>
     </div>
 </nav>
 <div class="container center">
+    <div class="section"></div>
+    <div class="section"></div>
+    <div class="section"></div>
     <h1>WELCOME PAGE</h1>
+    <div class="section"></div>
+    <div class="section"></div>
+    <div class="section"></div>
 </div>
 <footer class="page-footer">
     <div class="container">
@@ -31,7 +36,7 @@
     </div>
     <div class="footer-copyright">
         <div class="container">
-            © 2019 good habit. another one is us.
+            © 2019 good habit. get another one with us.
         </div>
     </div>
 </footer>

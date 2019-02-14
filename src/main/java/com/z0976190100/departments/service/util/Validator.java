@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.z0976190100.departments.app_constants.Messages.DEPARTMENT_TITLE_NOT_VALID_MESSAGE;
+import static com.z0976190100.departments.app_constants.MessagesConstants.DEPARTMENT_TITLE_NOT_VALID_MESSAGE;
 
 public class Validator {
 

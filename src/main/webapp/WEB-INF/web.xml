@@ -28,11 +28,19 @@
         <url-pattern>/departments</url-pattern>
     </servlet-mapping>
     <servlet>
-        <servlet-name>TempDepartmentDeleteServlet</servlet-name>
-        <servlet-class>com.z0976190100.departments.controller.TempDepartmentDeleteServlet</servlet-class>
+        <servlet-name>DepartmentDeleteServlet</servlet-name>
+        <servlet-class>com.z0976190100.departments.controller.DepartmentDeleteServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>TempDepartmentDeleteServlet</servlet-name>
+        <servlet-name>DepartmentDeleteServlet</servlet-name>
         <url-pattern>/departments/delete/*</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>DepartmentUpdateServlet</servlet-name>
+        <servlet-class>com.z0976190100.departments.controller.DepartmentUpdateServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DepartmentUpdateServlet</servlet-name>
+        <url-pattern>/departments/update/*</url-pattern>
     </servlet-mapping>
 </web-app>

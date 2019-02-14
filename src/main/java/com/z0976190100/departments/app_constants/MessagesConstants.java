@@ -1,6 +1,6 @@
 package com.z0976190100.departments.app_constants;
 
-public interface Messages {
+public interface MessagesConstants {
 
     // ERRORS AND EXCEPTIONS
     String BAD_REQUEST_MESSAGE = "Bad request or parameter. ";

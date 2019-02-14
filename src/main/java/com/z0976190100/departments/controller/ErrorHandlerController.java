@@ -12,8 +12,10 @@ public class ErrorHandlerController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        RequestDispatcher requestDispatcher = req.getRequestDispatcher("error.jsp");
-        requestDispatcher.forward(req, resp);
+        resp.sendError(500, "Smth Happend. its errorhandler report.");
+
+//        RequestDispatcher requestDispatcher = req.getRequestDispatcher("error.jsp");
+//        requestDispatcher.forward(req, resp);
     }
 
     @Override

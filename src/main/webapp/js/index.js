@@ -73,6 +73,3 @@ function notification(text) {
     M.toast({html: text, classes: "red"});
 };
 
-function setPage() {
-
-}

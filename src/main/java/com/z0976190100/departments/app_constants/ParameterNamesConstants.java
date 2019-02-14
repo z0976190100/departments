@@ -1,6 +1,6 @@
 package com.z0976190100.departments.app_constants;
 
-public interface ParameterNames {
+public interface ParameterNamesConstants {
 
     // PAGE
     String ACTUAL_PAGE_PARAM = "actual_page";
