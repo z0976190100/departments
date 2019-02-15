@@ -73,9 +73,13 @@ public class DepartmentService {
 
     }
 
-    public  void updateDepartment(int id, String newTitle) throws ResourceNotFoundException{
+    public  void updateDepartment(int id, String newTitle) throws ResourceNotFoundException, RequestParameterValidationException{
 
         // TODO check if newTitle already exists
+
+        List<Department> departmentList = departmentDao.getAllEntitiesWhere(newTitle);
+
+        if(departmentList.size() != 0) throw new RequestParameterValidationException(DEPARTMENT_TITLE_NOT_UNIQUE_MESSAGE);
 
         Department department = new Department(id, newTitle);
 

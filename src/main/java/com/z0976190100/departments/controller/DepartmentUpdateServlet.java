@@ -33,53 +33,20 @@ public class DepartmentUpdateServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        this.doPut(req, resp);
+       // this.doPut(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        this.doPut(req, resp);
+        //this.doPut(req, resp);
     }
 
-    @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-
-        String pathInfo = req.getPathInfo();
-        System.out.println(pathInfo);
-        String[] pathSplitted = pathInfo.split("/");
-        int id = Integer.valueOf(pathSplitted[pathSplitted.length - 1]);
-
-        String departmentTitle = req.getParameter(DEPARTMENT_NEW_TITLE_PARAM);
-
-        try {
-            validator.isValidDepartmentTitle(departmentTitle);
-            departmentService.updateDepartment(id, departmentTitle);
-            resp.sendRedirect(DEPARTMENTS_URL);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        } catch (RequestParameterValidationException e) {
-            try {
-                setListToAttributes(req, limit * (actualPage - 1), limit);
-                req.setAttribute(DEPARTMENT_NEW_TITLE_PARAM, req.getParameter(DEPARTMENT_NEW_TITLE_PARAM));
-            } catch (SQLException e1) {
-                forwardWithError(req, resp, e1, 500, DB_CONNECTION_FAILURE_MESSAGE);
-            }
-            forwardWithError(req, resp, e, 400, e.getMessage());
-        } catch (ResourceNotFoundException e) {
-            forwardWithError(req, resp, e, 404, e.getMessage());
-        } catch (Exception e) {
-            // FIXME
-            e.printStackTrace();
-            resp.sendError(500);
-        }
-
-    }
 
     private void requestDispatch(HttpServletRequest req, HttpServletResponse resp, String path) throws ServletException, IOException {
 
         RequestDispatcher requestDispatcher = req.getRequestDispatcher(path);
-        requestDispatcher.forward(req, resp);
+        requestDispatcher.include(req, resp);
     }
 
     private void forwardWithError(HttpServletRequest req,
@@ -91,7 +58,7 @@ public class DepartmentUpdateServlet extends HttpServlet {
         e.printStackTrace();
         resp.setStatus(sc);
         req.setAttribute(ERRORS_ATTRIBUTE_NAME, error_message);
-        requestDispatch(req, resp, DEPARTMENTS_JSP);
+        requestDispatch(req, resp, DEPARTMENTS_URL);
     }
 
     private void setListToAttributes(HttpServletRequest req, int offset, int limit) throws SQLException {

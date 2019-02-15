@@ -36,10 +36,10 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants, 
             case "all":
                 try {
 
-                    if(req.getParameter(ACTUAL_PAGE_PARAM) != null)
+                    if (req.getParameter(ACTUAL_PAGE_PARAM) != null)
                         actualPage = Integer.parseInt(req.getParameter(ACTUAL_PAGE_PARAM));
                     req.setAttribute(ACTUAL_PAGE_PARAM, actualPage);
-                    setListToAttributes(req, limit*(actualPage-1), limit);
+                    setListToAttributes(req, limit * (actualPage - 1), limit);
                     requestDispatch(req, resp, DEPARTMENTS_JSP);
                 } catch (NumberFormatException e) {
                     forwardWithError(req, resp, e, 400, e.getMessage());
@@ -75,26 +75,72 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants, 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        String command = req.getParameter(COMMAND_PARAM);
         String departmentTitle = req.getParameter(DEPARTMENT_NEW_TITLE_PARAM);
+
+
+        switch (command) {
+
+            case "save":
+
+                try {
+                    validator.isValidDepartmentTitle(departmentTitle);
+                    departmentService.saveDepartment(departmentTitle);
+                    resp.setStatus(201);
+                    System.out.println("save");
+                    resp.sendRedirect(DEPARTMENTS_URL);
+                } catch (RequestParameterValidationException e) {
+                    try {
+                        setListToAttributes(req, limit * (actualPage - 1), limit);
+                        req.setAttribute(DEPARTMENT_NEW_TITLE_PARAM, req.getParameter(DEPARTMENT_NEW_TITLE_PARAM));
+                    } catch (SQLException e1) {
+                        forwardWithError(req, resp, e1, 500, DB_CONNECTION_FAILURE_MESSAGE);
+                    }
+                    forwardWithError(req, resp, e, 400, e.getMessage());
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    resp.sendError(500);
+                }
+                break;
+
+            case "update":
+                this.doPut(req, resp);
+                break;
+
+            default:
+                resp.sendRedirect(DEPARTMENTS_URL);
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        String departmentTitle = req.getParameter(DEPARTMENT_NEW_TITLE_PARAM);
+
         try {
+            int id = Integer.parseInt(req.getParameter(DEPARTMENT_ID_PARAM));
             validator.isValidDepartmentTitle(departmentTitle);
-            departmentService.saveDepartment(departmentTitle);
-            resp.setStatus(201);
-            System.out.println("save");
+            departmentService.updateDepartment(id, departmentTitle);
             resp.sendRedirect(DEPARTMENTS_URL);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         } catch (RequestParameterValidationException e) {
             try {
-                setListToAttributes(req, limit*(actualPage-1), limit);
+                setListToAttributes(req, limit * (actualPage - 1), limit);
                 req.setAttribute(DEPARTMENT_NEW_TITLE_PARAM, req.getParameter(DEPARTMENT_NEW_TITLE_PARAM));
             } catch (SQLException e1) {
                 forwardWithError(req, resp, e1, 500, DB_CONNECTION_FAILURE_MESSAGE);
             }
             forwardWithError(req, resp, e, 400, e.getMessage());
-
+        } catch (ResourceNotFoundException e) {
+            forwardWithError(req, resp, e, 404, e.getMessage());
         } catch (Exception e) {
+            // FIXME
             e.printStackTrace();
             resp.sendError(500);
         }
+
     }
 
     private void requestDispatch(HttpServletRequest req, HttpServletResponse resp, String path) throws ServletException, IOException {
@@ -122,20 +168,17 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants, 
         req.setAttribute(DEPARTMENTS_LIST_PARAM, departmentsList);
     }
 
-    private void setListToAttributes(HttpServletRequest req) throws SQLException {
+    private void setListToAttributes(HttpServletRequest req) {
 
         List<Department> departmentsList = departmentService.getDepartmentsList();
         req.setAttribute(DEPARTMENTS_LIST_PARAM, departmentsList);
     }
 
-    private int paginationHelper(int rl) throws SQLException{
+    private int paginationHelper(int rl) throws SQLException {
 
         int rc = departmentService.getRowCount();
-
-        int p = rc/rl;
-
-        if( rc%rl != 0) p++ ;
-
+        int p = rc / rl;
+        if (rc % rl != 0) p++;
         return p;
     }
 

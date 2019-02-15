@@ -90,11 +90,11 @@
     </div>
     <div class="section">
         <ul class="pagination">
-            <li id="page-back-switcher" class="disabled"><a href="/departments?actual_page=${actual_page - 1}"><i class="material-icons">chevron_left</i></a></li>
+            <li id="page-back-switcher" class="disabled"><a href="/departments?page=${page - 1}"><i class="material-icons">chevron_left</i></a></li>
             <c:forEach var="page" begin="1" end="${pages}">
-                <li id="page-indicator-${page}" class="waves-effect"><a href="/departments?actual_page=${page}">${page}</a></li>
+                <li id="page-indicator-${page}" class="waves-effect"><a href="/departments?page=${page}">${page}</a></li>
             </c:forEach>
-            <li id="page-forward-switcher" class="waves-effect"><a href="/departments?actual_page=${actual_page + 1}"><i class="material-icons">chevron_right</i></a></li>
+            <li id="page-forward-switcher" class="waves-effect"><a href="/departments?page=${page + 1}"><i class="material-icons">chevron_right</i></a></li>
         </ul>
     </div>
 </div>
@@ -119,7 +119,7 @@
 <script src="js/index.js"></script>
 <!-- set Pagination Pointer invocation -->
 <script>
-    setPaginationPointer(${actual_page}, ${pages});
+    setPaginationPointer(${page}, ${pages});
 </script>
 <!-- Notification pop-up -->
 <c:if test="${not empty errors}">
@@ -130,11 +130,11 @@
 <!-- Modal Add Edit Department Form -->
 <div id="add-edit-modal" class="modal">
     <div class="modal-content">
-        <h4 id="add-edit-modal-title">Add Department</h4>
+        <h4 class="blue-grey-text" id="add-edit-modal-title">Add Department</h4>
         <div class="row">
             <form id="add-edit-modal-form" method="post" class="col s12">
                 <div class="row">
-                    <div class="input-field col s12">
+                    <div  class="input-field col s12">
                         <input name=<%= ParameterNamesConstants.DEPARTMENT_NEW_TITLE_PARAM %> id="add-edit-modal-input"
                                type="text"
                                class="validate"
@@ -142,7 +142,15 @@
                                placeholder="Title"
                                pattern="^[A-Za-z0-9-\s]+$"
                                maxlength="22"
-                        >
+                        />
+                        <input id="add-edit-modal-command-input"
+                               name="command"
+                               type="hidden"
+                        />
+                        <input id="add-edit-modal-id-input"
+                               name="department_id"
+                               type="hidden"
+                        />
                         <span class="helper-text"
                               data-error="Feel free to type LETTERS and NUMBERS, even do hyphens.
                             No other symbols are permitted!"
@@ -164,7 +172,7 @@
 <!-- Modal Delete Department Confirmation Form -->
 <div id="delete-confirmation-modal" class="modal">
     <div class="modal-content">
-        <h4 id="delete-confirmation-modal-title">Delete Modal</h4>
+        <h4 class="blue-grey-text" id="delete-confirmation-modal-title">Delete Modal</h4>
         <h6 class="red-text">You now completely deleting us.</h6>
         <div class="row">
             <form id="delete-confirmation-modal-form" method="post" class="col s12">
