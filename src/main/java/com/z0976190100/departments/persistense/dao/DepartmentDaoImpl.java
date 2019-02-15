@@ -54,29 +54,15 @@ public class DepartmentDaoImpl implements Dao<Department>, GeneralConstants, Mes
     }
 
     @Override
-    public List<Department> getEntitiesList(String query) {
+    public List<Department> getEntitiesList() {
 
         List<Department> departmentList = new ArrayList<>();
 
         try (Connection connection = getNullsafeConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement(query)) {
+            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + table + " ORDER BY id ;")) {
 
-                try {
-                    ResultSet rs = ps.executeQuery();
-
-                    while (rs.next()) {
-                        departmentList.add(new Department(rs.getInt(ID), rs.getString(TITLE)));
-                    }
-
-                } catch (SQLException e) {
-                    e.printStackTrace();
-
-                    for (Throwable t : e) {
-                        System.out.println(t.getMessage());
-                    }
-                    //TODO execute fails
-                }
+                getEntityListHelper(departmentList, ps);
 
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -89,6 +75,50 @@ public class DepartmentDaoImpl implements Dao<Department>, GeneralConstants, Mes
         }
 
         return departmentList;
+    }
+
+    @Override
+    public List<Department> getEntitiesList(int offset, int limit) {
+
+        List<Department> departmentList = new ArrayList<>();
+
+        try (Connection connection = getNullsafeConnection()) {
+
+            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + table +
+                    " ORDER BY id" +
+                    " LIMIT " + limit + " OFFSET " + offset + ";")) {
+
+                getEntityListHelper(departmentList, ps);
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // TODO prepared fails
+            }
+
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+        }
+
+        return departmentList;
+    }
+
+    private void getEntityListHelper(List<Department> departmentList, PreparedStatement ps) {
+        try {
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                departmentList.add(new Department(rs.getInt(ID), rs.getString(TITLE)));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+            for (Throwable t : e) {
+                System.out.println(t.getMessage());
+            }
+            //TODO execute fails
+        }
     }
 
     @Override

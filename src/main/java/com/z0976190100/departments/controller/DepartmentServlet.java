@@ -30,12 +30,29 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants, 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String forCase = "all";
+        String command = req.getParameter("command");
 
-        switch (forCase) {
-            case "all":
+        switch (command) {
+                // getting department by id
+            case "get":
                 try {
-
+                    Department department = departmentService.getDepartmentById(Integer.parseInt(req.getParameter(ID)));
+                    req.setAttribute(DEPARTMENT_RESOURCE_KEY, department);
+                    // TODO get employees by department id
+                    // TODO put them to attr
+                    requestDispatch(req, resp, DEPARTMENT_EMPLOYEES_JSP);
+                } catch (NumberFormatException e) {
+                    forwardWithError(req, resp, e, 400, e.getMessage());
+                } catch (ResourceNotFoundException e) {
+                    forwardWithError(req, resp, e, 404, e.getMessage());
+                } catch (Exception e) {
+                    // FIXME
+                    e.printStackTrace();
+                    resp.sendError(500);
+                }
+                break;
+            case "get_all":
+                try {
                     if (req.getParameter(ACTUAL_PAGE_PARAM) != null)
                         actualPage = Integer.parseInt(req.getParameter(ACTUAL_PAGE_PARAM));
                     req.setAttribute(ACTUAL_PAGE_PARAM, actualPage);
@@ -51,23 +68,8 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants, 
                     resp.sendError(500);
                 }
                 break;
-            case "id":
-                try {
-                    Department department = departmentService.getDepartmentById(Integer.parseInt(req.getParameter(ID)));
-                    req.setAttribute(DEPARTMENT_RESOURCE_KEY, department);
-                    requestDispatch(req, resp, DEPARTMENTS_JSP);
-                } catch (NumberFormatException e) {
-                    forwardWithError(req, resp, e, 400, e.getMessage());
-                } catch (ResourceNotFoundException e) {
-                    forwardWithError(req, resp, e, 404, e.getMessage());
-                } catch (Exception e) {
-                    // FIXME
-                    e.printStackTrace();
-                    resp.sendError(500);
-                }
-                break;
-            default:
-                System.out.println("default case");
+                default:
+                    resp.sendRedirect(DEPARTMENTS_JSP);
 
         }
     }
@@ -78,11 +80,8 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants, 
         String command = req.getParameter(COMMAND_PARAM);
         String departmentTitle = req.getParameter(DEPARTMENT_NEW_TITLE_PARAM);
 
-
         switch (command) {
-
             case "save":
-
                 try {
                     validator.isValidDepartmentTitle(departmentTitle);
                     departmentService.saveDepartment(departmentTitle);
@@ -108,6 +107,10 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants, 
                 this.doPut(req, resp);
                 break;
 
+            case "delete":
+                this.doDelete(req, resp);
+                break;
+
             default:
                 resp.sendRedirect(DEPARTMENTS_URL);
         }
@@ -122,9 +125,11 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants, 
             int id = Integer.parseInt(req.getParameter(DEPARTMENT_ID_PARAM));
             validator.isValidDepartmentTitle(departmentTitle);
             departmentService.updateDepartment(id, departmentTitle);
+            resp.setStatus(204);
             resp.sendRedirect(DEPARTMENTS_URL);
         } catch (NumberFormatException e) {
             e.printStackTrace();
+            forwardWithError(req, resp, e, 400, e.getMessage());
         } catch (RequestParameterValidationException e) {
             try {
                 setListToAttributes(req, limit * (actualPage - 1), limit);
@@ -142,6 +147,26 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants, 
         }
 
     }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        try {
+            int id = Integer.valueOf(req.getParameter(DEPARTMENT_ID_PARAM));
+            departmentService.deleteDepartment(id);
+            resp.setStatus(204);
+            resp.sendRedirect(DEPARTMENTS_URL);
+        } catch (NumberFormatException e) {
+            forwardWithError(req, resp, e, 400, e.getMessage());
+        } catch (ResourceNotFoundException e) {
+            forwardWithError(req, resp, e, 404, e.getMessage());
+        } catch (Exception e) {
+            // FIXME
+            e.printStackTrace();
+            resp.sendError(500);
+        }
+    }
+
 
     private void requestDispatch(HttpServletRequest req, HttpServletResponse resp, String path) throws ServletException, IOException {
 

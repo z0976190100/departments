@@ -13,7 +13,7 @@
     <div class="nav-wrapper container">
         <a id="logo-container" href="#" class="brand-logo">gh</a>
         <ul class="right">
-            <li><a class="waves-effect waves-light light-green btn" href=<%= URLsConstants.DEPARTMENTS_URL%>>Departments ></a></li>
+            <li><a class="waves-effect waves-light light-green btn" href="departments?command=get_all">Departments ></a></li>
         </ul>
     </div>
 </nav>

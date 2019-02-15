@@ -12,35 +12,21 @@
         <location>/errorHandler</location>
     </error-page>
     <servlet>
-        <servlet-name>ErrorHandlerController</servlet-name>
-        <servlet-class>com.z0976190100.departments.controller.ErrorHandlerController</servlet-class>
+        <servlet-name>ErrorHandlerServlet</servlet-name>
+        <servlet-class>com.z0976190100.departments.controller.ErrorHandlerServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>ErrorHandlerController</servlet-name>
+        <servlet-name>ErrorHandlerServlet</servlet-name>
         <url-pattern>/errorHandler</url-pattern>
     </servlet-mapping>
     <servlet>
-        <servlet-name>DepartmentController</servlet-name>
+        <servlet-name>DepartmentServlet</servlet-name>
         <servlet-class>com.z0976190100.departments.controller.DepartmentServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>DepartmentController</servlet-name>
+        <servlet-name>DepartmentServlet</servlet-name>
         <url-pattern>/departments</url-pattern>
     </servlet-mapping>
-    <servlet>
-        <servlet-name>DepartmentDeleteServlet</servlet-name>
-        <servlet-class>com.z0976190100.departments.controller.DepartmentDeleteServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>DepartmentDeleteServlet</servlet-name>
-        <url-pattern>/departments/delete/*</url-pattern>
-    </servlet-mapping>
-    <servlet>
-        <servlet-name>DepartmentUpdateServlet</servlet-name>
-        <servlet-class>com.z0976190100.departments.controller.DepartmentUpdateServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>DepartmentUpdateServlet</servlet-name>
-        <url-pattern>/departments/update/*</url-pattern>
-    </servlet-mapping>
+
+
 </web-app>

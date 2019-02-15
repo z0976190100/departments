@@ -18,7 +18,9 @@ public interface Dao<T> {
 
     public List<T> getAllEntitiesWhere(String title);
 
-    public List<T> getEntitiesList(String query);
+    public List<T> getEntitiesList();
+
+    public List<T> getEntitiesList(int offset, int limit);
 
     public int getRowCount(String query) throws SQLException;
 

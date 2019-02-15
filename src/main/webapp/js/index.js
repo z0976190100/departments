@@ -28,7 +28,7 @@ function setDeleteModalValues(id, title) {
     modalTitle.innerText = title + " Department";
 
     var form = byId("delete-confirmation-modal-form");
-    form.action = "departments/delete/" + id;
+    form.action = "departments";
 
     var input = byId("delete-confirmation-modal-input");
     input.value = id;

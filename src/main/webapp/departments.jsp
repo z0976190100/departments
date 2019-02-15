@@ -49,9 +49,9 @@
                         <td><c:out value="${department.getId()}"/></td>
                         <td><c:out value="${department.getTitle()}"/></td>
                         <td class="right">
-                            <a class="disabled waves-effect waves-light blue-grey btn s12"
+                            <a class="waves-effect waves-light blue-grey btn s12"
                                title="To list of Employees of this Department."
-                               href="${department.getId()}/employees"
+                               href="departments?command=get&id=${department.getId()}"
                             >
                                 Employees
                             </a>
@@ -90,11 +90,11 @@
     </div>
     <div class="section">
         <ul class="pagination">
-            <li id="page-back-switcher" class="disabled"><a href="/departments?page=${page - 1}"><i class="material-icons">chevron_left</i></a></li>
+            <li id="page-back-switcher" class="disabled"><a href="/departments?command=get_all&page=${page - 1}"><i class="material-icons">chevron_left</i></a></li>
             <c:forEach var="page" begin="1" end="${pages}">
-                <li id="page-indicator-${page}" class="waves-effect"><a href="/departments?page=${page}">${page}</a></li>
+                <li id="page-indicator-${page}" class="waves-effect"><a href="/departments?command=get_all&page=${page}">${page}</a></li>
             </c:forEach>
-            <li id="page-forward-switcher" class="waves-effect"><a href="/departments?page=${page + 1}"><i class="material-icons">chevron_right</i></a></li>
+            <li id="page-forward-switcher" class="waves-effect"><a href="/departments?command=get_all&page=${page + 1}"><i class="material-icons">chevron_right</i></a></li>
         </ul>
     </div>
 </div>
@@ -178,7 +178,14 @@
             <form id="delete-confirmation-modal-form" method="post" class="col s12">
                 <div class="row">
                     <div class="input-field col s12">
-                        <input type="hidden" name="delete_department" id="delete-confirmation-modal-input"
+                        <input name="department_id"
+                               type="hidden"
+                               id="delete-confirmation-modal-input"
+                               class="validate">
+                        <input name="command"
+                               value="delete"
+                               type="hidden"
+                               id="delete-confirmation-modal-command-input"
                                class="validate">
                     </div>
                 </div>

@@ -2,10 +2,6 @@
     document.addEventListener('DOMContentLoaded', function () {
         var elems = document.querySelectorAll('.modal');
         var instances = M.Modal.init(elems);
-
-        // set pointer of pagination to actual page
-        // set disabled for page-switcher if first or last
-        //
     });
 })();
 
@@ -32,7 +28,7 @@ function setDeleteModalValues(id, title) {
     modalTitle.innerText = title + " Department";
 
     var form = byId("delete-confirmation-modal-form");
-    form.action = "departments/delete/" + id;
+    form.action = "departments";
 
     var input = byId("delete-confirmation-modal-input");
     input.value = id;
@@ -48,7 +44,13 @@ function setEditModalValues(id, title) {
     modalTitle.innerText = "Edit Department";
 
     var form = byId("add-edit-modal-form");
-    form.action = "departments/update/" + id;
+    form.action = "departments";
+
+    var command = byId("add-edit-modal-command-input");
+    command.value = "update";
+
+    var idInput = byId("add-edit-modal-id-input");
+    idInput.value = id;
 
     var input = byId("add-edit-modal-input");
     input.click = true;
@@ -67,6 +69,9 @@ function setSaveModalValues() {
 
     var form = byId("add-edit-modal-form");
     form.action = "departments";
+
+    var command = byId("add-edit-modal-command-input");
+    command.value = "save";
 }
 
 function notification(text) {

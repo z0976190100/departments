@@ -7,15 +7,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class ErrorHandlerController extends HttpServlet {
+public class ErrorHandlerServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        resp.sendError(500, "Smth Happend. its errorhandler report.");
 
-//        RequestDispatcher requestDispatcher = req.getRequestDispatcher("error.jsp");
-//        requestDispatcher.forward(req, resp);
+        //RequestDispatcher requestDispatcher = req.getRequestDispatcher("error.jsp");
+        resp.sendRedirect("error.jsp");
     }
 
     @Override

@@ -27,20 +27,12 @@ public class DepartmentService {
 
     public List<Department> getDepartmentsList(int offset, int limit) {
 
-        String query = "SELECT * FROM " + table + " " +
-                "ORDER BY id " +
-                "LIMIT " + limit + " OFFSET " + offset + ";";
-        List<Department> departmentList = departmentDao.getEntitiesList(query);
-
-        return departmentList;
+        return departmentDao.getEntitiesList(offset, limit);
     }
 
     public List<Department> getDepartmentsList() {
 
-        String query = "SELECT * FROM " + table + " ORDER BY id ;";
-        List<Department> departmentList = departmentDao.getEntitiesList(query);
-
-        return departmentList;
+        return departmentDao.getEntitiesList();
     }
 
     public Department getDepartmentById(int id) throws ResourceNotFoundException {
@@ -57,34 +49,34 @@ public class DepartmentService {
     public void saveDepartment(String title) throws RequestParameterValidationException {
 
         // check if department is unique by title
-        List<Department> departmentList = departmentDao.getAllEntitiesWhere(title);
-
-        if(departmentList != null) throw new RequestParameterValidationException(DEPARTMENT_TITLE_NOT_UNIQUE_MESSAGE);
+        isExistByTitle(title);
 
         departmentDao.saveEntity(title);
 
     }
 
-    public void deleteDepartment(int id) throws ResourceNotFoundException{
+    public void deleteDepartment(int id) throws ResourceNotFoundException {
 
         //TODO: delete all EMPLOYEES
 
-            departmentDao.deleteEntity(id);
+        departmentDao.deleteEntity(id);
 
     }
 
-    public  void updateDepartment(int id, String newTitle) throws ResourceNotFoundException, RequestParameterValidationException{
+    public void updateDepartment(int id, String newTitle) throws ResourceNotFoundException, RequestParameterValidationException {
 
-        // TODO check if newTitle already exists
+        isExistByTitle(newTitle);
 
-        List<Department> departmentList = departmentDao.getAllEntitiesWhere(newTitle);
-
-        if(departmentList.size() != 0) throw new RequestParameterValidationException(DEPARTMENT_TITLE_NOT_UNIQUE_MESSAGE);
-
-        Department department = new Department(id, newTitle);
-
-        departmentDao.updateEntity(department);
+        departmentDao.updateEntity(new Department(id, newTitle));
 
     }
+
+    private void isExistByTitle(String title) throws RequestParameterValidationException {
+
+        List<Department> departmentList = departmentDao.getAllEntitiesWhere(title);
+        if (departmentList.size() != 0)
+            throw new RequestParameterValidationException(DEPARTMENT_TITLE_NOT_UNIQUE_MESSAGE);
+    }
+
 
 }
