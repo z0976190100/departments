@@ -7,9 +7,9 @@ import com.z0976190100.departments.persistense.entity.Employee;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface Dao<T> {
+interface DaoAlt<T> {
 
-    public void saveEntity(String title);
+    public T saveEntity(String title);
 
     public void deleteEntity(int id) throws ResourceNotFoundException;
 
@@ -24,6 +24,5 @@ public interface Dao<T> {
     public List<T> getEntitiesList(int offset, int limit);
 
     public int getRowCount(String query) throws SQLException;
-
 
 }

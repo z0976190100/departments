@@ -81,7 +81,7 @@
             <div class="col s6 offset-s3 right-align">
                 <button class="btn-floating btn-large waves-effect waves-light blue-grey modal-trigger"
                         title="Add Department"
-                        onclick="setSaveModalValues()"
+                        onclick="setSaveModalValues('departments', 'Department')"
                         data-target="add-edit-modal">
                     <i class="material-icons">add</i>
                 </button>

@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <title>D${department.getTitle()}</title>
+    <title>${department.getTitle()}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -30,12 +30,12 @@
                 <thead class="blue-grey-text">
                 <tr>
                     <th>ID</th>
-                    <th>Title</th>
+                    <th>Email</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                <c:if test="${empty departments_list}">
+                <c:if test="${empty employees_list}">
                     <tr>
                         <td colspan="5">
                             No Employees yet... Sad...
@@ -43,21 +43,21 @@
                     </tr>
                 </c:if>
 
-                <c:forEach var="department" items="${departments_list}">
+                <c:forEach var="employee" items="${employees_list}">
                     <tr>
-                        <td><c:out value="${department.getId()}"/></td>
-                        <td><c:out value="${department.getTitle()}"/></td>
+                        <td><c:out value="${employee.getId()}"/></td>
+                        <td><c:out value="${employee.getTitle()}"/></td>
                         <td class="right">
                             <button class="waves-effect waves-light blue-grey btn modal-trigger s12"
                                     title="Smack to edit this Department."
-                                    onclick="setEditModalValues('${department.getId()}', '${department.getTitle()}')"
+                                    onclick="setEditModalValues('${employee.getId()}', '${employee.getEmail()}')"
                                     data-target="add-edit-modal"
                             >
                                 Edit
                             </button>
                             <button class="waves-effect waves-light red btn modal-trigger s12"
                                     title="Delete this Department."
-                                    onclick="setDeleteModalValues('${department.getId()}', '${department.getTitle()}')"
+                                    onclick="setDeleteModalValues('${employee.getId()}', '${employee.getEmail()}')"
                                     data-target="delete-confirmation-modal"
                             >
                                 Delete
@@ -73,8 +73,8 @@
         <div class="row">
             <div class="col s6 offset-s3 right-align">
                 <button class="btn-floating btn-large waves-effect waves-light blue-grey modal-trigger"
-                        title="Add Department"
-                        onclick="setSaveModalValues()"
+                        title="Add Employee"
+                        onclick="setSaveModalValues('<%= GeneralConstants.EMPLOYEES_URI%>', 'Employee')"
                         data-target="add-edit-modal">
                     <i class="material-icons">add</i>
                 </button>
@@ -83,11 +83,11 @@
     </div>
     <div class="section">
         <ul class="pagination">
-            <li id="page-back-switcher" class="disabled"><a href="/departments?page=${page - 1}"><i class="material-icons">chevron_left</i></a></li>
+            <li id="page-back-switcher" class="disabled"><a href="/department_employees?page=${page - 1}"><i class="material-icons">chevron_left</i></a></li>
             <c:forEach var="page" begin="1" end="${pages}">
-                <li id="page-indicator-${page}" class="waves-effect"><a href="/departments?page=${page}">${page}</a></li>
+                <li id="page-indicator-${page}" class="waves-effect"><a href="/department_employees?page=${page}">${page}</a></li>
             </c:forEach>
-            <li id="page-forward-switcher" class="waves-effect"><a href="/departments?page=${page + 1}"><i class="material-icons">chevron_right</i></a></li>
+            <li id="page-forward-switcher" class="waves-effect"><a href="/department_employees?page=${page + 1}"><i class="material-icons">chevron_right</i></a></li>
         </ul>
     </div>
 </div>
@@ -120,6 +120,46 @@
         notification("${errors}");
     </script>
 </c:if>
+</div>
+<!-- Modal Add Edit Department Form -->
+<div id="add-edit-modal" class="modal">
+    <div class="modal-content">
+        <h4 class="blue-grey-text" id="add-edit-modal-title">Add Department</h4>
+        <div class="row">
+            <form id="add-edit-modal-form" method="post" class="col s12">
+                <div class="row">
+                    <div  class="input-field col s12">
+                        <input name=<%= GeneralConstants.EMAIL_PARAM %> id="add-edit-modal-input"
+                               type="email"
+                               class="validate"
+                               value="${email}" required
+                               placeholder="Email"
+                        />
+                        <input id="add-edit-modal-command-input"
+                               name="command"
+                               type="hidden"
+                        />
+                        <input id="add-edit-modal-id-input"
+                               name="department_id"
+                               type="hidden"
+                        />
+                        <span class="helper-text"
+                              data-error="Feel free to type LETTERS and NUMBERS, even do hyphens.
+                            No other symbols are permitted!"
+                              data-success="Well done!"
+                        >
+                            Feel free to type letters and numbers, even do hyphens.
+                            And that's all. No other symbols are permitted! 22 characters, not more.
+                        </span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="modal-close waves-effect waves-green btn-flat ">Cancel</a>
+                    <button type="submit" class="waves-effect waves-green btn-flat green-text">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 </body>
 </html>

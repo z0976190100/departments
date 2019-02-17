@@ -1,7 +1,6 @@
 package com.z0976190100.departments.controller;
 
 import com.z0976190100.departments.app_constants.GeneralConstants;
-import com.z0976190100.departments.app_constants.URLsConstants;
 import com.z0976190100.departments.exceptions.RequestParameterValidationException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
 import com.z0976190100.departments.persistense.entity.Department;
@@ -17,10 +16,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.z0976190100.departments.app_constants.MessagesConstants.DB_CONNECTION_FAILURE_MESSAGE;
-import static com.z0976190100.departments.app_constants.ParameterNamesConstants.*;
-
-public class DepartmentServlet extends HttpServlet implements GeneralConstants, URLsConstants {
+public class DepartmentServlet extends HttpServlet implements GeneralConstants {
 
     private DepartmentService departmentService = new DepartmentService();
     private Validator validator = new Validator();

@@ -1,18 +1,18 @@
 package com.z0976190100.departments.persistense.dao;
 
 import com.z0976190100.departments.app_constants.GeneralConstants;
-import com.z0976190100.departments.app_constants.MessagesConstants;
 import com.z0976190100.departments.exceptions.AppRuntimeException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
 import com.z0976190100.departments.persistense.entity.Department;
 import com.z0976190100.departments.persistense.entity.DepartmentEntityDescription;
+import com.z0976190100.departments.persistense.entity.Employee;
 import com.z0976190100.departments.persistense.entity.EntityDescription;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DepartmentDaoImpl implements Dao<Department>, GeneralConstants, MessagesConstants {
+public class DepartmentDaoImpl implements Dao<Department>, GeneralConstants {
 
 
     private final EntityDescription description = new DepartmentEntityDescription();
@@ -117,7 +117,7 @@ public class DepartmentDaoImpl implements Dao<Department>, GeneralConstants, Mes
             for (Throwable t : e) {
                 System.out.println(t.getMessage());
             }
-            //TODO execute fails
+            //TODO init fails
         }
     }
 
@@ -139,7 +139,7 @@ public class DepartmentDaoImpl implements Dao<Department>, GeneralConstants, Mes
                     for (Throwable t : e) {
                         System.out.println(t.getMessage());
                     }
-                    //TODO execute fails
+                    //TODO init fails
                 }
 
             } catch (SQLException e) {
@@ -176,7 +176,7 @@ public class DepartmentDaoImpl implements Dao<Department>, GeneralConstants, Mes
                     for (Throwable t : e) {
                         System.out.println(t.getMessage());
                     }
-                    //TODO execute fails
+                    //TODO init fails
                 }
 
             } catch (SQLException e) {
@@ -214,7 +214,7 @@ public class DepartmentDaoImpl implements Dao<Department>, GeneralConstants, Mes
                     for (Throwable t : e) {
                         System.out.println(t.getMessage());
                     }
-                    //TODO execute fails
+                    //TODO init fails
                 }
 
             } catch (SQLException e) {
@@ -250,7 +250,7 @@ public class DepartmentDaoImpl implements Dao<Department>, GeneralConstants, Mes
                     for (Throwable t : e) {
                         System.out.println(t.getMessage());
                     }
-                    //TODO execute fails
+                    //TODO init fails
                 }
 
             } catch (SQLException e) {
@@ -291,7 +291,7 @@ public class DepartmentDaoImpl implements Dao<Department>, GeneralConstants, Mes
                     for (Throwable t : e) {
                         System.out.println(t.getMessage());
                     }
-                    //TODO execute fails
+                    //TODO init fails
                 }
 
             } catch (SQLException e) {

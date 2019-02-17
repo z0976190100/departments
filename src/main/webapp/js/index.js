@@ -58,17 +58,17 @@ function setEditModalValues(id, title) {
     input.value = title;
 }
 
-function setSaveModalValues() {
+function setSaveModalValues(uri, entity) {
 
     function byId(id) {
         return document.getElementById(id);
     }
 
     var modalTitle = byId("add-edit-modal-title");
-    modalTitle.innerText = "Add Department";
+    modalTitle.innerText = "Add " + entity;
 
     var form = byId("add-edit-modal-form");
-    form.action = "departments";
+    form.action = uri;
 
     var command = byId("add-edit-modal-command-input");
     command.value = "save";
