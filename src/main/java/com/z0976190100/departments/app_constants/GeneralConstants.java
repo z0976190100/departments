@@ -31,12 +31,17 @@ public interface GeneralConstants {
     String DEPARTMENT_NOT_FOUND_MESSSAGE = "Department not found. ";
     String DEPARTMENT_TITLE_NOT_UNIQUE_MESSAGE = "Department already exists. Try another title. ";
 
+    // EMPLOYEE
+    String EMPLOYEE_EMAIL_NOT_VALID_MESSAGE = "Email is not valid";
+    String EMPLOYEE_EMAIL_NOT_UNIQUE_MESSAGE = "Email you provided already exist. Try another one. ";
+
     //
     // HTTP REQUEST-RESPONSE PARAMETERS NAMES
     //
 
     // GENERAL
     String ACTUAL_PAGE_PARAM = "page";
+    String PAGES_PARAM = "pages";
     String COMMAND_PARAM = "command";
 
     // DEPARTMENT
@@ -47,6 +52,7 @@ public interface GeneralConstants {
 
     // EMPLOYEE
     String EMAIL_PARAM = "email";
+    String EMPLOYEES_LIST_PARAMETER = "employees_list";
 
     // EVENTS
     String ERRORS_ATTRIBUTE_NAME = "errors";

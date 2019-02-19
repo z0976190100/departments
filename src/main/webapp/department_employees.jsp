@@ -46,18 +46,18 @@
                 <c:forEach var="employee" items="${employees_list}">
                     <tr>
                         <td><c:out value="${employee.getId()}"/></td>
-                        <td><c:out value="${employee.getTitle()}"/></td>
+                        <td><c:out value="${employee.getEmail()}"/></td>
                         <td class="right">
                             <button class="waves-effect waves-light blue-grey btn modal-trigger s12"
-                                    title="Smack to edit this Department."
+                                    title="Smack to edit this Employee."
                                     onclick="setEditModalValues('${employee.getId()}', '${employee.getEmail()}')"
                                     data-target="add-edit-modal"
                             >
                                 Edit
                             </button>
                             <button class="waves-effect waves-light red btn modal-trigger s12"
-                                    title="Delete this Department."
-                                    onclick="setDeleteModalValues('${employee.getId()}', '${employee.getEmail()}')"
+                                    title="Delete this Employee."
+                                    onclick="setDeleteModalValues('<%= GeneralConstants.EMPLOYEES_URI%>', 'Employee', '${employee.getId()}', '${employee.getEmail()}')"
                                     data-target="delete-confirmation-modal"
                             >
                                 Delete
@@ -83,11 +83,11 @@
     </div>
     <div class="section">
         <ul class="pagination">
-            <li id="page-back-switcher" class="disabled"><a href="/department_employees?page=${page - 1}"><i class="material-icons">chevron_left</i></a></li>
+            <li id="page-back-switcher" class="disabled"><a href="/departments?command=get&id=${department.getId()}&page=${page - 1}"><i class="material-icons">chevron_left</i></a></li>
             <c:forEach var="page" begin="1" end="${pages}">
-                <li id="page-indicator-${page}" class="waves-effect"><a href="/department_employees?page=${page}">${page}</a></li>
+                <li id="page-indicator-${page}" class="waves-effect"><a href="/departments?command=get&id=${department.getId()}&page=${page}">${page}</a></li>
             </c:forEach>
-            <li id="page-forward-switcher" class="waves-effect"><a href="/department_employees?page=${page + 1}"><i class="material-icons">chevron_right</i></a></li>
+            <li id="page-forward-switcher" class="waves-effect"><a href="/departments?command=get&id=${department.getId()}&page=${page + 1}"><i class="material-icons">chevron_right</i></a></li>
         </ul>
     </div>
 </div>
@@ -121,7 +121,7 @@
     </script>
 </c:if>
 </div>
-<!-- Modal Add Edit Department Form -->
+<!-- Modal Add Edit Employee Form -->
 <div id="add-edit-modal" class="modal">
     <div class="modal-content">
         <h4 class="blue-grey-text" id="add-edit-modal-title">Add Department</h4>
@@ -142,6 +142,7 @@
                         <input id="add-edit-modal-id-input"
                                name="department_id"
                                type="hidden"
+                               value="${department.getId()}"
                         />
                         <span class="helper-text"
                               data-error="Feel free to type LETTERS and NUMBERS, even do hyphens.
@@ -156,6 +157,38 @@
                 <div class="modal-footer">
                     <a href="#" class="modal-close waves-effect waves-green btn-flat ">Cancel</a>
                     <button type="submit" class="waves-effect waves-green btn-flat green-text">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal Delete Employee Confirmation Form -->
+<div id="delete-confirmation-modal" class="modal">
+    <div class="modal-content">
+        <h4 class="blue-grey-text" id="delete-confirmation-modal-title">Delete Modal</h4>
+        <h6 class="red-text">You now completely deleting us.</h6>
+        <div class="row">
+            <form id="delete-confirmation-modal-form" method="post" class="col s12">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input name="department_id"
+                               type="hidden"
+                               value="${department.getId()}"
+                        >
+                        <input name="id"
+                               type="hidden"
+                               id="delete-confirmation-modal-input"
+                        >
+                        <input name="command"
+                               value="delete"
+                               type="hidden"
+                               id="delete-confirmation-modal-command-input"
+                        >
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="modal-close waves-effect waves-green btn-flat ">Nope</a>
+                    <button type="submit" class="waves-effect waves-green btn-flat green-text">Sure</button>
                 </div>
             </form>
         </div>

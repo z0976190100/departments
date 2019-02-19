@@ -64,7 +64,7 @@
                             </button>
                             <button class="waves-effect waves-light red btn modal-trigger s12"
                                     title="Delete this Department."
-                                    onclick="setDeleteModalValues('${department.getId()}', '${department.getTitle()}')"
+                                    onclick="setDeleteModalValues('departments', 'Department', '${department.getId()}', '${department.getTitle()}')"
                                     data-target="delete-confirmation-modal"
                             >
                                 Delete

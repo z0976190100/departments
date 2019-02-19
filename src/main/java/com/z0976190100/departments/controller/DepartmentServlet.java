@@ -34,9 +34,8 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
                 try {
                     Department department = departmentService.getDepartmentById(Integer.parseInt(req.getParameter(ID)));
                     req.setAttribute(DEPARTMENT_RESOURCE_KEY, department);
-                    // TODO get employees by department id
-                    // TODO put them to attr
-                    requestDispatch(req, resp, DEPARTMENT_EMPLOYEES_JSP);
+                    String depWithEmployeesURI = EMPLOYEES_URI + "?command=get_all&" + DEPARTMENT_ID_PARAM + "=" + department.getId();
+                   req.getRequestDispatcher(depWithEmployeesURI).forward(req, resp);
                 } catch (NumberFormatException e) {
                     forwardWithError(req, resp, e, 400, e.getMessage());
                 } catch (ResourceNotFoundException e) {
@@ -184,7 +183,7 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
 
     private void setListToAttributes(HttpServletRequest req, int offset, int limit) throws SQLException {
         int pages = paginationHelper(limit);
-        req.setAttribute("pages", pages);
+        req.setAttribute(PAGES_PARAM, pages);
         List<Department> departmentsList = departmentService.getDepartmentsList(offset, limit);
         req.setAttribute(DEPARTMENTS_LIST_PARAM, departmentsList);
     }
@@ -198,6 +197,7 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
     private int paginationHelper(int rl) throws SQLException {
 
         int rc = departmentService.getRowCount();
+        if(rc == 0) return 1;
         int p = rc / rl;
         if (rc % rl != 0) p++;
         return p;

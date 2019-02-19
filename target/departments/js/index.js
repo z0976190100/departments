@@ -22,13 +22,14 @@ function setPaginationPointer(actualPage, pages) {
     actualPage == pages ?  byId("page-forward-switcher").className = "disabled" : byId("page-forward-switcher").className = "waves-effect";
 }
 
-function setDeleteModalValues(id, title) {
+function setDeleteModalValues(uri, entity, id, title) {
 
+    console.log(uri, entity, id, title);
     var modalTitle = byId("delete-confirmation-modal-title");
-    modalTitle.innerText = title + " Department";
+    modalTitle.innerText = title + " " + entity;
 
     var form = byId("delete-confirmation-modal-form");
-    form.action = "departments";
+    form.action = uri;
 
     var input = byId("delete-confirmation-modal-input");
     input.value = id;
@@ -58,17 +59,17 @@ function setEditModalValues(id, title) {
     input.value = title;
 }
 
-function setSaveModalValues() {
+function setSaveModalValues(uri, entity) {
 
     function byId(id) {
         return document.getElementById(id);
     }
 
     var modalTitle = byId("add-edit-modal-title");
-    modalTitle.innerText = "Add Department";
+    modalTitle.innerText = "Add " + entity;
 
     var form = byId("add-edit-modal-form");
-    form.action = "departments";
+    form.action = uri;
 
     var command = byId("add-edit-modal-command-input");
     command.value = "save";

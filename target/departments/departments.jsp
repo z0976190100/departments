@@ -64,7 +64,7 @@
                             </button>
                             <button class="waves-effect waves-light red btn modal-trigger s12"
                                     title="Delete this Department."
-                                    onclick="setDeleteModalValues('${department.getId()}', '${department.getTitle()}')"
+                                    onclick="setDeleteModalValues('departments', 'Department', '${department.getId()}', '${department.getTitle()}')"
                                     data-target="delete-confirmation-modal"
                             >
                                 Delete
@@ -81,7 +81,7 @@
             <div class="col s6 offset-s3 right-align">
                 <button class="btn-floating btn-large waves-effect waves-light blue-grey modal-trigger"
                         title="Add Department"
-                        onclick="setSaveModalValues()"
+                        onclick="setSaveModalValues('departments', 'Department')"
                         data-target="add-edit-modal">
                     <i class="material-icons">add</i>
                 </button>

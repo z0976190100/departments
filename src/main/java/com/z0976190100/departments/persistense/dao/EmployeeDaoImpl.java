@@ -3,48 +3,31 @@ package com.z0976190100.departments.persistense.dao;
 import com.z0976190100.departments.app_constants.GeneralConstants;
 import com.z0976190100.departments.exceptions.AppRuntimeException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
-import com.z0976190100.departments.persistense.entity.Department;
 import com.z0976190100.departments.persistense.entity.Employee;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
-public class EmployeeDaoImpl implements DaoAlt<Employee>, GeneralConstants {
-
-    private Connection getNullsafeConnection() {
-
-        try {
-            DriverManager.registerDriver(new org.postgresql.Driver());
-            Class.forName(DB_DRIVER_NAME);
-            Connection c = DriverManager.getConnection(DB_URL, DB_LOGIN, DB_PASS);
-
-            if (c == null) throw new NullPointerException(DB_CONNECTION_FAILURE_MESSAGE);
-
-            return c;
-
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            // FIXME do checked exception for DB_CONNECTION_FAILURE
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
-        }
-    }
+public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, GeneralConstants {
 
     @Override
-    public Employee saveEntity(String email) {
+    public Employee saveEntity(String email, int departmentID) {
 
         Employee newEmployee = null;
 
         try (Connection connection = getNullsafeConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("INSERT INTO employee2 (login , id) VALUES ( ? , DEFAULT) RETURNING *;")) {
+            try (PreparedStatement ps = connection.prepareStatement("INSERT INTO employee (email, department_id , id) VALUES ( ?, ?,  DEFAULT) RETURNING *;")) {
 
                 ps.setString(1, email);
+                ps.setInt(2, departmentID);
 
                 try {
                     ResultSet resultSet = ps.executeQuery();
                     System.out.println("saved");
                     resultSet.next();
-                    newEmployee = new Employee(resultSet.getInt(ID), resultSet.getString("login"));
+                    newEmployee = new Employee(resultSet.getInt(ID), resultSet.getString(EMAIL_PARAM), resultSet.getInt(DEPARTMENT_ID_PARAM));
                 } catch (SQLException e) {
                     e.printStackTrace();
 
@@ -69,6 +52,39 @@ public class EmployeeDaoImpl implements DaoAlt<Employee>, GeneralConstants {
     @Override
     public void deleteEntity(int id) throws ResourceNotFoundException {
 
+        //Employee employee = getEntityById(id);
+
+        //if (employee == null) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE);
+
+        try (Connection connection = getNullsafeConnection()) {
+
+            try (PreparedStatement ps = connection.prepareStatement("DELETE FROM employee WHERE id = ?;")) {
+
+                ps.setInt(1, id);
+
+                try {
+                    ps.executeUpdate();
+                    System.out.println("deleted employee");
+                } catch (SQLException e) {
+                    e.printStackTrace();
+
+                    for (Throwable t : e) {
+                        System.out.println(t.getMessage());
+                    }
+                    //TODO init fails
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // TODO prepared fails
+            }
+
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+        }
+
+
     }
 
     @Override
@@ -77,7 +93,7 @@ public class EmployeeDaoImpl implements DaoAlt<Employee>, GeneralConstants {
     }
 
     @Override
-    public Department getEntityById(int id) {
+    public Employee getEntityById(int id) {
         return null;
     }
 
@@ -87,17 +103,117 @@ public class EmployeeDaoImpl implements DaoAlt<Employee>, GeneralConstants {
     }
 
     @Override
-    public List<Employee> getEntitiesList() {
-        return null;
+    public List<Employee> getEntitiesList(int departmentID) {
+
+
+        List<Employee> employeeList = new ArrayList<>();
+
+
+        try (Connection connection = getNullsafeConnection()) {
+
+            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE department_id = ?;")) {
+
+                ps.setInt(1, departmentID);
+
+                try {
+                    ResultSet resultSet = ps.executeQuery();
+                    System.out.println("fetched all");
+                    while (resultSet.next())
+                        employeeList.add(new Employee(resultSet.getInt(ID),
+                                resultSet.getString(EMAIL_PARAM),
+                                resultSet.getInt(DEPARTMENT_ID_PARAM)));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+
+                    for (Throwable t : e) {
+                        System.out.println(t.getMessage());
+                    }
+                    //TODO init fails
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // TODO prepared fails
+            }
+
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+        }
+        return employeeList;
     }
 
     @Override
-    public List<Employee> getEntitiesList(int offset, int limit) {
-        return null;
+    public List<Employee> getEntitiesList(int departmentID, int offset, int limit) {
+        List<Employee> employeeList = new ArrayList<>();
+
+
+        try (Connection connection = getNullsafeConnection()) {
+
+            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE department_id = ?" +
+                    " ORDER BY id" +
+                    " LIMIT ? OFFSET ?;")) {
+
+                ps.setInt(1, departmentID);
+                ps.setInt(2, limit);
+                ps.setInt(3, offset);
+
+                try {
+                    ResultSet resultSet = ps.executeQuery();
+                    System.out.println("fetched all with limit");
+                    while (resultSet.next())
+                        employeeList.add(new Employee(resultSet.getInt(ID),
+                                resultSet.getString(EMAIL_PARAM),
+                                resultSet.getInt(DEPARTMENT_ID_PARAM)));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+
+                    for (Throwable t : e) {
+                        System.out.println(t.getMessage());
+                    }
+                    //TODO init fails
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // TODO prepared fails
+            }
+
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+        }
+        return employeeList;
     }
 
     @Override
-    public int getRowCount(String query) throws SQLException {
-        return 0;
+    public int getRowCount(int departmentID) {
+
+        int rowCount = 0;
+
+        try (Connection connection = getNullsafeConnection()) {
+            try (PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) FROM employee WHERE department_id = ?;")) {
+                ps.setInt(1, departmentID);
+
+                try {
+                    ResultSet rs = ps.executeQuery();
+                    rs.next();
+                    rowCount = rs.getInt(1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+
+                for (Throwable t : e) {
+                    System.out.println(t.getMessage());
+                }
+                //TODO init fails
+            }
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+        }
+        return rowCount;
     }
 }

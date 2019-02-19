@@ -5,37 +5,18 @@ import com.z0976190100.departments.exceptions.AppRuntimeException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
 import com.z0976190100.departments.persistense.entity.Department;
 import com.z0976190100.departments.persistense.entity.DepartmentEntityDescription;
-import com.z0976190100.departments.persistense.entity.Employee;
 import com.z0976190100.departments.persistense.entity.EntityDescription;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DepartmentDaoImpl implements Dao<Department>, GeneralConstants {
+public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, GeneralConstants {
 
 
     private final EntityDescription description = new DepartmentEntityDescription();
     private final String table = description.getTableName();
     private final String unique = description.getUniqueField();
-
-    private Connection getNullsafeConnection() {
-
-        try {
-            DriverManager.registerDriver(new org.postgresql.Driver());
-            Class.forName(DB_DRIVER_NAME);
-            Connection c = DriverManager.getConnection(DB_URL, DB_LOGIN, DB_PASS);
-
-            if (c == null) throw new NullPointerException(DB_CONNECTION_FAILURE_MESSAGE);
-
-            return c;
-
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            // FIXME do checked exception for DB_CONNECTION_FAILURE
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
-        }
-    }
 
     private ResultSet getResultSet(String query) {
 

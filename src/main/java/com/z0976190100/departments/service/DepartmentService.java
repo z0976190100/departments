@@ -70,12 +70,11 @@ public class DepartmentService implements GeneralConstants {
 
     }
 
-    private void isExistByTitle(String title) throws RequestParameterValidationException {
+       private void isExistByTitle(String title) throws RequestParameterValidationException {
 
         List<Department> departmentList = departmentDao.getAllEntitiesWhere(title);
         if (departmentList.size() != 0)
             throw new RequestParameterValidationException(DEPARTMENT_TITLE_NOT_UNIQUE_MESSAGE);
     }
-
 
 }
