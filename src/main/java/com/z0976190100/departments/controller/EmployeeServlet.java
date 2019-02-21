@@ -2,19 +2,25 @@ package com.z0976190100.departments.controller;
 
 import com.z0976190100.departments.app_constants.GeneralConstants;
 import com.z0976190100.departments.controller.command.EmployeeCommandsEnum;
+import com.z0976190100.departments.exceptions.NotUniqueEntityException;
+import com.z0976190100.departments.exceptions.RequestParameterValidationException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
-import com.z0976190100.departments.persistense.entity.Employee;
 import com.z0976190100.departments.service.EmployeeService;
+import com.z0976190100.departments.service.util.AppError;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EmployeeServlet extends HttpServlet implements GeneralConstants {
 
     EmployeeService employeeService = new EmployeeService();
+    List<AppError> errors = new ArrayList<>();
+    List<String> success = new ArrayList<>();
 
     // KUNG-FUSION: and what about doOptions() ?
 
@@ -22,17 +28,44 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         EmployeeCommandsEnum command = getCommand(req);
-        try {
-            command.execute(req);
-        } catch (ResourceNotFoundException e) {
-           e.printStackTrace();}
-        req.getRequestDispatcher(DEPARTMENT_EMPLOYEES_JSP).forward(req, resp);
+        initErrorSuccessAttr(req);
+
+        switch (command){
+
+            case GET:
+                try {
+                    command.execute(req);
+                } catch (ResourceNotFoundException e) {
+                    e.printStackTrace();
+                } catch (NotUniqueEntityException e) {
+                    e.printStackTrace();
+                } catch (RequestParameterValidationException e) {
+                    e.printStackTrace();
+                }
+                req.getRequestDispatcher(EMPLOYEE_ADD_EDIT_JSP).forward(req, resp);
+                break;
+            case GET_ALL:
+                try {
+                    command.execute(req);
+                } catch (ResourceNotFoundException e) {
+                    e.printStackTrace();
+                } catch (NotUniqueEntityException e) {
+                    e.printStackTrace();
+                } catch (RequestParameterValidationException e) {
+                    e.printStackTrace();
+                }
+                req.getRequestDispatcher(DEPARTMENT_EMPLOYEES_JSP).forward(req, resp);
+        }
+
+
     }
+
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         EmployeeCommandsEnum command = getCommand(req);
+        initErrorSuccessAttr(req);
 
         switch (command) {
             case SAVE:
@@ -40,9 +73,15 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                     command.execute(req);
                 } catch (ResourceNotFoundException e) {
 
+                } catch (NotUniqueEntityException e) {
+                    e.printStackTrace();
+                } catch (RequestParameterValidationException e) {
+                    e.printStackTrace();
+                    int departmentID = Integer.parseInt(req.getParameter(DEPARTMENT_ID_PARAM));
+                    req.getRequestDispatcher("departments?command=get&id=" + departmentID).forward(req,resp);
                 }
-                int departmentID = Integer.parseInt(req.getParameter(DEPARTMENT_ID_PARAM));
-                resp.sendRedirect("departments?command=get&id=" + departmentID);
+                //int departmentID = Integer.parseInt(req.getParameter(DEPARTMENT_ID_PARAM));
+                //resp.sendRedirect("departments?command=get&id=" + departmentID);
                 break;
             case UPDATE:
                 this.doPut(req, resp);
@@ -50,6 +89,8 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
             case DELETE:
                 this.doDelete(req, resp);
                 break;
+            case GET_ALL:
+                this.doGet(req, resp);
             default:
                 break;
 
@@ -70,12 +111,19 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
             resp.sendRedirect("departments?command=get&id=" + departmentID);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-        } catch (ResourceNotFoundException e){
+        } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
     }
 
     private EmployeeCommandsEnum getCommand(HttpServletRequest req) {
         return EmployeeCommandsEnum.valueOf(req.getParameter(COMMAND_PARAM).toUpperCase());
+    }
+
+    private void initErrorSuccessAttr(HttpServletRequest req) {
+        if (req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME) == null)
+            req.setAttribute(ERRORS_LIST_ATTRIBUTE_NAME, errors);
+        if (req.getAttribute(SUCCESS_ATTRIBUTE_NAME) == null)
+            req.setAttribute(SUCCESS_ATTRIBUTE_NAME, success);
     }
 }

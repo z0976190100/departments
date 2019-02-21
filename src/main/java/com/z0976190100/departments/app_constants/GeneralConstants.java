@@ -56,6 +56,8 @@ public interface GeneralConstants {
 
     // EVENTS
     String ERRORS_ATTRIBUTE_NAME = "errors";
+    String ERRORS_LIST_ATTRIBUTE_NAME = "errorsList";
+    String SUCCESS_ATTRIBUTE_NAME = "success";
 
     //
     // URLs
@@ -67,6 +69,7 @@ public interface GeneralConstants {
     // JSPs
     String DEPARTMENTS_JSP = "departments.jsp?command=get_all";
     String DEPARTMENT_EMPLOYEES_JSP = "department_employees.jsp";
+    String EMPLOYEE_ADD_EDIT_JSP = "employee_add_edit.jsp";
     String WELCOME_PAGE_JSP = "index.jsp";
 
     // URIs

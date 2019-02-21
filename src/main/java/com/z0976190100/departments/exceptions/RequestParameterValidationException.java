@@ -4,6 +4,9 @@ import javax.servlet.ServletException;
 
 public class RequestParameterValidationException extends Exception {
 
+    public RequestParameterValidationException() {
+    }
+
     public RequestParameterValidationException(String message) {
         super(message);
     }

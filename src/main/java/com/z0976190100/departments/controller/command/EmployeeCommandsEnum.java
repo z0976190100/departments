@@ -1,6 +1,8 @@
 package com.z0976190100.departments.controller.command;
 
 import com.z0976190100.departments.app_constants.GeneralConstants;
+import com.z0976190100.departments.exceptions.NotUniqueEntityException;
+import com.z0976190100.departments.exceptions.RequestParameterValidationException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
 import com.z0976190100.departments.service.DepartmentService;
 import com.z0976190100.departments.service.EmployeeService;
@@ -8,30 +10,31 @@ import com.z0976190100.departments.service.util.AppError;
 import com.z0976190100.departments.service.util.ValidatorAlt;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
+import java.util.List;
 
 public enum EmployeeCommandsEnum implements GeneralConstants {
 
     SAVE() {
         @Override
-        public void execute(HttpServletRequest req) throws NumberFormatException {
+        public void execute(HttpServletRequest req) throws NotUniqueEntityException, RequestParameterValidationException {
             String email = req.getParameter(EMAIL_PARAM);
             int departmentID = Integer.parseInt(req.getParameter(DEPARTMENT_ID_PARAM));
-            req.setAttribute(ERRORS_ATTRIBUTE_NAME, new ValidatorAlt(new ArrayList<AppError>())
+            System.out.println((List<AppError>)req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME));
+            if(new ValidatorAlt((List<AppError>) req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME))
                     .isValidEmail(email)
-                    .getErrors());
+                    .hasErrors()) throw new RequestParameterValidationException();
             req.setAttribute(EMPLOYEE_RESOURCE_KEY, new EmployeeService().saveEmployee(email, departmentID));
 
         }
     },
     GET {
-        public void execute(HttpServletRequest req) {
+        public void execute(HttpServletRequest req) throws ResourceNotFoundException, NotUniqueEntityException, RequestParameterValidationException {
 
         }
     },
     GET_ALL {
         @Override
-        public void execute(HttpServletRequest req) throws ResourceNotFoundException {
+        public void execute(HttpServletRequest req) throws ResourceNotFoundException, NotUniqueEntityException, RequestParameterValidationException {
 
             int actualPage = 1;
             int limit = 3;
@@ -61,17 +64,17 @@ public enum EmployeeCommandsEnum implements GeneralConstants {
     },
     UPDATE {
         @Override
-        public void execute(HttpServletRequest req) {
+        public void execute(HttpServletRequest req) throws ResourceNotFoundException, NotUniqueEntityException, RequestParameterValidationException {
 
         }
     },
     DELETE {
         @Override
-        public void execute(HttpServletRequest req) {
+        public void execute(HttpServletRequest req) throws ResourceNotFoundException, NotUniqueEntityException, RequestParameterValidationException {
 
         }
     };
 
-    public abstract void  execute(HttpServletRequest req) throws ResourceNotFoundException;
+    public abstract void  execute(HttpServletRequest req) throws ResourceNotFoundException, NotUniqueEntityException, RequestParameterValidationException;
 
 }

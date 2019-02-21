@@ -1,11 +1,11 @@
+<%@ page import="com.z0976190100.departments.app_constants.GeneralConstants" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="com.z0976190100.departments.app_constants.GeneralConstants" %>
 <html>
 <head>
+    <title>Employee</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-    <title>Departments</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="materialize/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
@@ -14,87 +14,64 @@
     <div class="nav-wrapper container">
         <a id="logo-container" href="#" class="brand-logo">gh</a>
         <ul class="right">
-            <li><a class="waves-effect waves-light light-green btn" href=<%= GeneralConstants.WELCOME_PAGE_JSP%>>< Welcome
-                Page </a>
+            <li><a class="waves-effect waves-light light-green btn" href="departments?command=get_all">< ${department.getTitle()} Department </a>
             </li>
         </ul>
     </div>
 </nav>
-<div class="container center">
+<div class="container">
     <div class="section"></div>
-    <h4 class="blue-grey-text"><strong>DEPARTMENTS</strong></h4>
+    <h4 class="blue-grey-text center"><strong>EMPLOYEE</strong></h4>
     <div class="section"></div>
     <div class="row">
         <div class="col s6 offset-s3">
-            <table class="highlight centered">
-                <thead class="blue-grey-text">
-                <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:if test="${empty departments_list}">
-                    <tr>
-                        <td colspan="5">
-                            No Departments yet... Sad...
-                        </td>
-                    </tr>
-                </c:if>
-
-                <c:forEach var="department" items="${departments_list}">
-                    <tr>
-                        <td><c:out value="${department.getId()}"/></td>
-                        <td><c:out value="${department.getTitle()}"/></td>
-                        <td class="right">
-                            <a class="waves-effect waves-light blue-grey btn s12"
-                               title="To list of Employees of this Department."
-                               href="departments?command=get&id=${department.getId()}"
-                            >
-                                Employees
-                            </a>
-                            <button class="waves-effect waves-light blue-grey btn modal-trigger s12"
-                                    title="Smack to edit this Department."
-                                    onclick="setEditModalValues('${department.getId()}', '${department.getTitle()}')"
-                                    data-target="add-edit-modal"
-                            >
-                                Edit
-                            </button>
-                            <button class="waves-effect waves-light red btn modal-trigger s12"
-                                    title="Delete this Department."
-                                    onclick="setDeleteModalValues('departments', 'Department', '${department.getId()}', '${department.getTitle()}')"
-                                    data-target="delete-confirmation-modal"
-                            >
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-                </c:forEach>
-                </tbody>
-            </table>
+            <form>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input required placeholder="First Name" id="first_name" type="text" class="validate">
+                        <span class="helper-text"
+                              data-error="Field can contain letters, hyphen and '. Cannot be empty."
+                              data-success="Well done!"
+                        >
+                            Field can contain letters, hyphen and '. Cannot be empty.
+                        </span>
+                    </div>
+                    <div class="input-field col s12">
+                        <input required placeholder="Last Name" id="last_name" type="text" class="validate">
+                        <span class="helper-text"
+                              data-error="Field can contain letters, hyphen and '. Cannot be empty."
+                              data-success="Well done!"
+                        >
+                            Field can contain letters, hyphen and '. Cannot be empty.
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input required placeholder="Salary" name="salary" id="salary" type="text" class="validate">
+                        <span class="helper-text"
+                              data-error="Field can contain numbers only. Cannot be empty."
+                              data-success="Well done!"
+                        >
+                           Field can contain numbers only. Cannot be empty.
+                        </span>
+                    </div>
+                    <div class="input-field col s6">
+                        <input required placeholder="Date of Birth" name="birthdate" id="birthdate" type="text" class="datepicker">
+                        <span class="helper-text"
+                              data-error="Pick a date."
+                              data-success="Well done!"
+                        >
+                            Pick a date.
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <button type="submit" class="waves-effect waves-green btn-flat green-text right">Save</button>
+                    <button type="reset" class="waves-effect waves-green btn-flat red-text right">Reset</button>
+                </div>
+            </form>
         </div>
-    </div>
-    <div class="section">
-        <div class="row">
-            <div class="col s6 offset-s3 right-align">
-                <button class="btn-floating btn-large waves-effect waves-light blue-grey modal-trigger"
-                        title="Add Department"
-                        onclick="setSaveModalValues('departments', 'Department')"
-                        data-target="add-edit-modal">
-                    <i class="material-icons">add</i>
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="section">
-        <ul class="pagination">
-            <li id="page-back-switcher" class="disabled"><a href="/departments?command=get_all&page=${page - 1}"><i class="material-icons">chevron_left</i></a></li>
-            <c:forEach var="page" begin="1" end="${pages}">
-                <li id="page-indicator-${page}" class="waves-effect"><a href="/departments?command=get_all&page=${page}">${page}</a></li>
-            </c:forEach>
-            <li id="page-forward-switcher" class="waves-effect"><a href="/departments?command=get_all&page=${page + 1}"><i class="material-icons">chevron_right</i></a></li>
-        </ul>
     </div>
 </div>
 <div class="section"></div>
@@ -121,12 +98,15 @@
     setPaginationPointer(${page}, ${pages});
 </script>
 <!-- Notification pop-up -->
-<c:if test="${not empty errors}">
-    <script>
-        notification("${errors}");
-    </script>
+<c:if test="${not empty errorsList}">
+    <c:forEach var="error" items="${errorsList}" >
+        <script>
+            notification("${error.getMessage()}");
+        </script>
+    </c:forEach>
 </c:if>
-<!-- Modal Add Edit Department Form -->
+</div>
+<!-- Modal Add Edit Employee Form -->
 <div id="add-edit-modal" class="modal">
     <div class="modal-content">
         <h4 class="blue-grey-text" id="add-edit-modal-title">Add Department</h4>
@@ -134,13 +114,11 @@
             <form id="add-edit-modal-form" method="post" class="col s12">
                 <div class="row">
                     <div  class="input-field col s12">
-                        <input name=<%= GeneralConstants.DEPARTMENT_NEW_TITLE_PARAM %> id="add-edit-modal-input"
+                        <input name=<%= GeneralConstants.EMAIL_PARAM %> id="add-edit-modal-input"
                                type="text"
                                class="validate"
-                               value="${department_new_title}" required
-                               placeholder="Title"
-                               pattern="^[A-Za-z0-9-\s]+$"
-                               maxlength="22"
+                               value="${email}" required
+                               placeholder="Email"
                         />
                         <input id="add-edit-modal-command-input"
                                name="command"
@@ -149,6 +127,7 @@
                         <input id="add-edit-modal-id-input"
                                name="department_id"
                                type="hidden"
+                               value="${department.getId()}"
                         />
                         <span class="helper-text"
                               data-error="Feel free to type LETTERS and NUMBERS, even do hyphens.
@@ -168,7 +147,7 @@
         </div>
     </div>
 </div>
-<!-- Modal Delete Department Confirmation Form -->
+<!-- Modal Delete Employee Confirmation Form -->
 <div id="delete-confirmation-modal" class="modal">
     <div class="modal-content">
         <h4 class="blue-grey-text" id="delete-confirmation-modal-title">Delete Modal</h4>
@@ -179,13 +158,17 @@
                     <div class="input-field col s12">
                         <input name="department_id"
                                type="hidden"
+                               value="${department.getId()}"
+                        >
+                        <input name="id"
+                               type="hidden"
                                id="delete-confirmation-modal-input"
-                               class="validate">
+                        >
                         <input name="command"
                                value="delete"
                                type="hidden"
                                id="delete-confirmation-modal-command-input"
-                               class="validate">
+                        >
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -196,8 +179,5 @@
         </div>
     </div>
 </div>
-</div>
-
 </body>
-
 </html>

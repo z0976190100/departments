@@ -72,22 +72,21 @@
     <div class="section">
         <div class="row">
             <div class="col s6 offset-s3 right-align">
-                <button class="btn-floating btn-large waves-effect waves-light blue-grey modal-trigger"
+                <a href="employees?command=get&department_id=${department.getId()}" class="btn-floating btn-large waves-effect waves-light blue-grey modal-trigger"
                         title="Add Employee"
-                        onclick="setSaveModalValues('<%= GeneralConstants.EMPLOYEES_URI%>', 'Employee')"
-                        data-target="add-edit-modal">
+                >
                     <i class="material-icons">add</i>
-                </button>
+                </a>
             </div>
         </div>
     </div>
     <div class="section">
         <ul class="pagination">
-            <li id="page-back-switcher" class="disabled"><a href="/departments?command=get&id=${department.getId()}&page=${page - 1}"><i class="material-icons">chevron_left</i></a></li>
+            <li id="page-back-switcher" class="disabled"><a href="departments?command=get&id=${department.getId()}&page=${page - 1}"><i class="material-icons">chevron_left</i></a></li>
             <c:forEach var="page" begin="1" end="${pages}">
-                <li id="page-indicator-${page}" class="waves-effect"><a href="/departments?command=get&id=${department.getId()}&page=${page}">${page}</a></li>
+                <li id="page-indicator-${page}" class="waves-effect"><a href="departments?command=get&id=${department.getId()}&page=${page}">${page}</a></li>
             </c:forEach>
-            <li id="page-forward-switcher" class="waves-effect"><a href="/departments?command=get&id=${department.getId()}&page=${page + 1}"><i class="material-icons">chevron_right</i></a></li>
+            <li id="page-forward-switcher" class="waves-effect"><a href="departments?command=get&id=${department.getId()}& page=${page + 1}"><i class="material-icons">chevron_right</i></a></li>
         </ul>
     </div>
 </div>
@@ -115,10 +114,12 @@
     setPaginationPointer(${page}, ${pages});
 </script>
 <!-- Notification pop-up -->
-<c:if test="${not empty errors}">
+<c:if test="${not empty errorsList}">
+    <c:forEach var="error" items="${errorsList}" >
     <script>
-        notification("${errors}");
+        notification("${error.getMessage()}");
     </script>
+    </c:forEach>
 </c:if>
 </div>
 <!-- Modal Add Edit Employee Form -->
@@ -130,7 +131,7 @@
                 <div class="row">
                     <div  class="input-field col s12">
                         <input name=<%= GeneralConstants.EMAIL_PARAM %> id="add-edit-modal-input"
-                               type="email"
+                               type="text"
                                class="validate"
                                value="${email}" required
                                placeholder="Email"

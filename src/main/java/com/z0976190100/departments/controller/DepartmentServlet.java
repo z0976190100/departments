@@ -106,6 +106,10 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
                 this.doDelete(req, resp);
                 break;
 
+            case "get":
+                this.doGet(req, resp);
+                break;
+
             default:
                 resp.sendRedirect(DEPARTMENTS_URL);
         }

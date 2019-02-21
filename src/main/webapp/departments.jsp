@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.z0976190100.departments.app_constants.GeneralConstants" %>
-<%@ page import="com.z0976190100.departments.app_constants.ParameterNamesConstants" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -135,7 +134,7 @@
             <form id="add-edit-modal-form" method="post" class="col s12">
                 <div class="row">
                     <div  class="input-field col s12">
-                        <input name=<%= ParameterNamesConstants.DEPARTMENT_NEW_TITLE_PARAM %> id="add-edit-modal-input"
+                        <input name=<%= GeneralConstants.DEPARTMENT_NEW_TITLE_PARAM %> id="add-edit-modal-input"
                                type="text"
                                class="validate"
                                value="${department_new_title}" required

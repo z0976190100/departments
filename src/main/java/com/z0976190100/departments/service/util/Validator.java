@@ -1,15 +1,14 @@
 package com.z0976190100.departments.service.util;
 
 
+import com.z0976190100.departments.app_constants.GeneralConstants;
 import com.z0976190100.departments.exceptions.RequestParameterValidationException;
 
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.z0976190100.departments.app_constants.MessagesConstants.DEPARTMENT_TITLE_NOT_VALID_MESSAGE;
-
-public class Validator {
+public class Validator implements GeneralConstants {
 
     public boolean isValidDepartmentTitle(String title) throws RequestParameterValidationException {
 
