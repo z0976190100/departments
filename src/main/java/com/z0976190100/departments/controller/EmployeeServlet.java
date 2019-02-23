@@ -14,12 +14,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class EmployeeServlet extends HttpServlet implements GeneralConstants {
 
     EmployeeService employeeService = new EmployeeService();
-    List<AppError> errors = new ArrayList<>();
     List<String> success = new ArrayList<>();
 
     // KUNG-FUSION: and what about doOptions() ?
@@ -37,9 +38,9 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                     command.execute(req);
                 } catch (ResourceNotFoundException e) {
                     e.printStackTrace();
-                } catch (NotUniqueEntityException e) {
-                    e.printStackTrace();
                 } catch (RequestParameterValidationException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 req.getRequestDispatcher(EMPLOYEE_ADD_EDIT_JSP).forward(req, resp);
@@ -49,12 +50,12 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                     command.execute(req);
                 } catch (ResourceNotFoundException e) {
                     e.printStackTrace();
-                } catch (NotUniqueEntityException e) {
-                    e.printStackTrace();
                 } catch (RequestParameterValidationException e) {
                     e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                req.getRequestDispatcher(DEPARTMENT_EMPLOYEES_JSP).forward(req, resp);
+                //req.getRequestDispatcher(DEPARTMENT_EMPLOYEES_JSP).forward(req, resp);
         }
 
 
@@ -71,17 +72,23 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
             case SAVE:
                 try {
                     command.execute(req);
-                } catch (ResourceNotFoundException e) {
+                }catch (NumberFormatException e){
+                    e.printStackTrace();
 
                 } catch (NotUniqueEntityException e) {
                     e.printStackTrace();
+                    ((List<AppError>) req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME)).add(new AppError(EMAIL_PARAM, e.getMessage()));
+                    int departmentID = Integer.parseInt(req.getParameter(DEPARTMENT_ID_PARAM));
+                    req.getRequestDispatcher("employees?command=get&department_id=" + departmentID).forward(req, resp);
                 } catch (RequestParameterValidationException e) {
                     e.printStackTrace();
                     int departmentID = Integer.parseInt(req.getParameter(DEPARTMENT_ID_PARAM));
-                    req.getRequestDispatcher("departments?command=get&id=" + departmentID).forward(req,resp);
+                    req.getRequestDispatcher("employees?command=get&department_id=" + departmentID).forward(req, resp);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                //int departmentID = Integer.parseInt(req.getParameter(DEPARTMENT_ID_PARAM));
-                //resp.sendRedirect("departments?command=get&id=" + departmentID);
+                int departmentID = Integer.parseInt(req.getParameter(DEPARTMENT_ID_PARAM));
+                resp.sendRedirect("departments?command=get&id=" + departmentID);
                 break;
             case UPDATE:
                 this.doPut(req, resp);
@@ -90,6 +97,9 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                 this.doDelete(req, resp);
                 break;
             case GET_ALL:
+                this.doGet(req, resp);
+                break;
+            case GET:
                 this.doGet(req, resp);
             default:
                 break;
@@ -121,8 +131,10 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
     }
 
     private void initErrorSuccessAttr(HttpServletRequest req) {
-        if (req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME) == null)
+        if (req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME) == null){
+            List<AppError> errors = new ArrayList<>();
             req.setAttribute(ERRORS_LIST_ATTRIBUTE_NAME, errors);
+        }
         if (req.getAttribute(SUCCESS_ATTRIBUTE_NAME) == null)
             req.setAttribute(SUCCESS_ATTRIBUTE_NAME, success);
     }

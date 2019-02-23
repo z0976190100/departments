@@ -43,6 +43,8 @@ public interface GeneralConstants {
     String ACTUAL_PAGE_PARAM = "page";
     String PAGES_PARAM = "pages";
     String COMMAND_PARAM = "command";
+    String MIN_DATE_ATTR = "min_date";
+    String MAX_DATE_ATTR = "max_date";
 
     // DEPARTMENT
     String DEPARTMENT_TITLE_PARAM = "department_title";
@@ -52,6 +54,9 @@ public interface GeneralConstants {
 
     // EMPLOYEE
     String EMAIL_PARAM = "email";
+    String AGE_PARAM = "age";
+    String NAME_PARAM = "name";
+    String BIRTH_DATE_PARAM = "birth_date";
     String EMPLOYEES_LIST_PARAMETER = "employees_list";
 
     // EVENTS

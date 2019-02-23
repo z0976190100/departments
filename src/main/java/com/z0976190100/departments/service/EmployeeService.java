@@ -10,29 +10,45 @@ import java.util.List;
 
 public class EmployeeService implements GeneralConstants {
 
+    EmployeeDaoImpl employeeDao = new EmployeeDaoImpl();
+
     public Employee saveEmployee(String email, int departmentID) throws NotUniqueEntityException{
 
         // TODO: check if email is unique
-        if(new EmployeeDaoImpl().getAllEntitiesWhere(email).size() !=0 )
+        if(employeeDao.getAllEntitiesWhere(email).size() !=0 )
             throw new NotUniqueEntityException(EMPLOYEE_EMAIL_NOT_UNIQUE_MESSAGE);
-        return new EmployeeDaoImpl().saveEntity(email, departmentID);
+        return employeeDao.saveEntity(email, departmentID);
+    }
+
+    public Employee getEmployee(int id) throws ResourceNotFoundException{
+
+        Employee employee = employeeDao.getEntityById(id);
+
+        if ( employee == null) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE);
+
+        return employee;
     }
 
     public List<Employee> getAllEmployees(int departmentID){
 
-        return new EmployeeDaoImpl().getEntitiesList(departmentID);
+        return employeeDao.getEntitiesList(departmentID);
     }
 
     public List<Employee> getAllEmployees(int departmentID, int offset, int limit){
 
-        return new EmployeeDaoImpl().getEntitiesList(departmentID, offset, limit);
+        return employeeDao.getEntitiesList(departmentID, offset, limit);
     }
 
     public void deleteEmployee(int id) throws ResourceNotFoundException {
-        new EmployeeDaoImpl().deleteEntity(id);
+
+        Employee employee = new EmployeeDaoImpl().getEntityById(id);
+
+        if (employee == null) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE);
+
+        employeeDao.deleteEntity(id);
     }
 
     public int getRowCount(int departmentID){
-        return new EmployeeDaoImpl().getRowCount(departmentID);
+        return employeeDao.getRowCount(departmentID);
     }
 }

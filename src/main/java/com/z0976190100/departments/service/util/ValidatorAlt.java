@@ -33,9 +33,7 @@ public class ValidatorAlt implements GeneralConstants {
         String regex = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
 
         if (!checkWithRegexp(toValidate, regex))
-            System.out.println("email error");
             errors.add(new AppError(EMAIL_PARAM, EMPLOYEE_EMAIL_NOT_VALID_MESSAGE));
-        System.out.println(this);
 
         return this;
 

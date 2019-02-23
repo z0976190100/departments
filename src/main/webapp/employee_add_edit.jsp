@@ -14,7 +14,8 @@
     <div class="nav-wrapper container">
         <a id="logo-container" href="#" class="brand-logo">gh</a>
         <ul class="right">
-            <li><a class="waves-effect waves-light light-green btn" href="departments?command=get_all">< ${department.getTitle()} Department </a>
+            <li><a class="waves-effect waves-light light-green btn"
+                   href="departments?command=get&id=${param.department_id}">< ${param.department_id} Department </a>
             </li>
         </ul>
     </div>
@@ -25,10 +26,15 @@
     <div class="section"></div>
     <div class="row">
         <div class="col s6 offset-s3">
-            <form>
+            <form method="post" action="/employees?command=save">
                 <div class="row">
                     <div class="input-field col s12">
-                        <input required placeholder="First Name" id="first_name" type="text" class="validate">
+                        <input name="department_id"
+                               type="hidden"
+                               value="${param.department_id}"
+                        >
+                        <input placeholder="Name" name="name" id="name" type="text" class="validate"
+                               value="${param.name}">
                         <span class="helper-text"
                               data-error="Field can contain letters, hyphen and '. Cannot be empty."
                               data-success="Well done!"
@@ -37,18 +43,23 @@
                         </span>
                     </div>
                     <div class="input-field col s12">
-                        <input required placeholder="Last Name" id="last_name" type="text" class="validate">
+                        <c:if test="${not empty errorsList}">
+                            <i class="material-icons prefix red-text">error</i>
+                        </c:if>
+                        <input required placeholder="Email" name="email" id="email" type="email" class="validate"
+                               value="${param.email}"
+                        >
                         <span class="helper-text"
-                              data-error="Field can contain letters, hyphen and '. Cannot be empty."
+                              data-error="Provide valid email, please."
                               data-success="Well done!"
                         >
-                            Field can contain letters, hyphen and '. Cannot be empty.
+                            Enter email address.
                         </span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input-field col s6">
-                        <input required placeholder="Salary" name="salary" id="salary" type="text" class="validate">
+                        <input placeholder="Age" name="age" id="age" type="text" class="validate" value="${param.age}">
                         <span class="helper-text"
                               data-error="Field can contain numbers only. Cannot be empty."
                               data-success="Well done!"
@@ -57,7 +68,12 @@
                         </span>
                     </div>
                     <div class="input-field col s6">
-                        <input required placeholder="Date of Birth" name="birthdate" id="birthdate" type="text" class="datepicker">
+                        <input placeholder="Date of Birth" name="birth_date" id="birthdate" type="text"
+                               class="datepicker"
+                               value="${param.birth_date}"
+                               min="${min_date}"
+                               max="${max_date}"
+                        >
                         <span class="helper-text"
                               data-error="Pick a date."
                               data-success="Well done!"
@@ -99,54 +115,27 @@
 </script>
 <!-- Notification pop-up -->
 <c:if test="${not empty errorsList}">
-    <c:forEach var="error" items="${errorsList}" >
+    <c:forEach var="error" items="${errorsList}">
         <script>
             notification("${error.getMessage()}");
         </script>
     </c:forEach>
 </c:if>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('.datepicker');
+        console.log(new Date('${max_date}'), new Date('${min_date}'));
+        var opt = {
+            yearRange: [new Date('${min_date}').getFullYear(), new Date('${max_date}').getFullYear()],
+            defaultDate: new Date('${max_date}'),
+            minDate: new Date('${min_date}'),
+            maxDate: new Date('${max_date}')
+        };
+        var instances = M.Datepicker.init(elems, opt);
+    });
+</script>
 </div>
-<!-- Modal Add Edit Employee Form -->
-<div id="add-edit-modal" class="modal">
-    <div class="modal-content">
-        <h4 class="blue-grey-text" id="add-edit-modal-title">Add Department</h4>
-        <div class="row">
-            <form id="add-edit-modal-form" method="post" class="col s12">
-                <div class="row">
-                    <div  class="input-field col s12">
-                        <input name=<%= GeneralConstants.EMAIL_PARAM %> id="add-edit-modal-input"
-                               type="text"
-                               class="validate"
-                               value="${email}" required
-                               placeholder="Email"
-                        />
-                        <input id="add-edit-modal-command-input"
-                               name="command"
-                               type="hidden"
-                        />
-                        <input id="add-edit-modal-id-input"
-                               name="department_id"
-                               type="hidden"
-                               value="${department.getId()}"
-                        />
-                        <span class="helper-text"
-                              data-error="Feel free to type LETTERS and NUMBERS, even do hyphens.
-                            No other symbols are permitted!"
-                              data-success="Well done!"
-                        >
-                            Feel free to type letters and numbers, even do hyphens.
-                            And that's all. No other symbols are permitted! 22 characters, not more.
-                        </span>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="modal-close waves-effect waves-green btn-flat ">Cancel</a>
-                    <button type="submit" class="waves-effect waves-green btn-flat green-text">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+
 <!-- Modal Delete Employee Confirmation Form -->
 <div id="delete-confirmation-modal" class="modal">
     <div class="modal-content">

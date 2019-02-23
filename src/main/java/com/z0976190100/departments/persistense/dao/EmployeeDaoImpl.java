@@ -50,11 +50,8 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
     }
 
     @Override
-    public void deleteEntity(int id) throws ResourceNotFoundException {
+    public void deleteEntity(int id) {
 
-        //Employee employee = getEntityById(id);
-
-        //if (employee == null) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE);
 
         try (Connection connection = getNullsafeConnection()) {
 
@@ -83,23 +80,89 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
             e.printStackTrace();
             throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
-
-
     }
 
     @Override
-    public void updateEntity(Employee entity) throws ResourceNotFoundException {
+    public void updateEntity(Employee entity) {
 
     }
 
     @Override
     public Employee getEntityById(int id) {
-        return null;
+
+        Employee employee = null;
+
+        try (Connection connection = getNullsafeConnection()) {
+
+            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE id = ?;")) {
+
+                ps.setInt(1, id);
+
+                try {
+                    ResultSet resultSet = ps.executeQuery();
+                    System.out.println("fetched one");
+                    if(resultSet.next())
+                        employee = new  Employee(resultSet.getInt(ID),
+                                resultSet.getString(EMAIL_PARAM),
+                                resultSet.getInt(DEPARTMENT_ID_PARAM));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+
+                    for (Throwable t : e) {
+                        System.out.println(t.getMessage());
+                    }
+                    //TODO init fails
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // TODO prepared fails
+            }
+
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+        }
+        return employee;
+
     }
 
     @Override
-    public List<Employee> getAllEntitiesWhere(String title) {
-        return null;
+    public List<Employee> getAllEntitiesWhere(String email) {
+       List<Employee>  employees = new ArrayList<>();
+
+        try (Connection connection = getNullsafeConnection()) {
+
+            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE email = ?;")) {
+
+                ps.setString(1, email);
+
+                try {
+                    ResultSet resultSet = ps.executeQuery();
+                    System.out.println("fetched one by email");
+                    while (resultSet.next())
+                        employees.add(new  Employee(resultSet.getInt(ID),
+                                resultSet.getString(EMAIL_PARAM),
+                                resultSet.getInt(DEPARTMENT_ID_PARAM)));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+
+                    for (Throwable t : e) {
+                        System.out.println(t.getMessage());
+                    }
+                    //TODO init fails
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // TODO prepared fails
+            }
+
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+        }
+        return employees;
     }
 
     @Override
@@ -184,6 +247,39 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
             throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
         return employeeList;
+    }
+
+    public void deleteAllEntitiesWhere(int departmentID){
+
+        try (Connection connection = getNullsafeConnection()) {
+
+            try (PreparedStatement ps = connection.prepareStatement("DELETE FROM employee WHERE department_id = ?;")) {
+
+                ps.setInt(1, departmentID);
+
+                try {
+                    ps.executeUpdate();
+                    System.out.println("deleted employees by department ID");
+                } catch (SQLException e) {
+                    e.printStackTrace();
+
+                    for (Throwable t : e) {
+                        System.out.println(t.getMessage());
+                    }
+                    //TODO init fails
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // TODO prepared fails
+            }
+
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+        }
+
+
     }
 
     @Override

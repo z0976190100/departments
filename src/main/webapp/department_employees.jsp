@@ -167,7 +167,7 @@
 <div id="delete-confirmation-modal" class="modal">
     <div class="modal-content">
         <h4 class="blue-grey-text" id="delete-confirmation-modal-title">Delete Modal</h4>
-        <h6 class="red-text">You now completely deleting us.</h6>
+        <h6 class="red-text">You now completely deleting this record.</h6>
         <div class="row">
             <form id="delete-confirmation-modal-form" method="post" class="col s12">
                 <div class="row">

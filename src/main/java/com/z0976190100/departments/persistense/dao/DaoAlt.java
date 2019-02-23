@@ -10,9 +10,9 @@ interface DaoAlt<T> {
 
     public T saveEntity(String title, int departmentID);
 
-    public void deleteEntity(int id) throws ResourceNotFoundException;
+    public void deleteEntity(int id);
 
-    public void updateEntity(T entity) throws ResourceNotFoundException;
+    public void updateEntity(T entity);
 
     public Employee getEntityById(int id);
 
