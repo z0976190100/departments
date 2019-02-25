@@ -25,15 +25,19 @@ public interface GeneralConstants {
     String BAD_REQUEST_MESSAGE = "Bad request or parameter. ";
     String DB_CONNECTION_FAILURE_MESSAGE = "Connection to DB is failed. ";
     String RESOURCE_NOT_FOUND_MESSAGE = "Resource Not Found. ";
+    String EMPTY_PARAM_VALUE_MESSAGE = "Parameter is empty. ";
 
     // DEPARTMENT
     String DEPARTMENT_TITLE_NOT_VALID_MESSAGE = "Title you provided not valid. Try another one. ";
-    String DEPARTMENT_NOT_FOUND_MESSSAGE = "Department not found. ";
+    String DEPARTMENT_NOT_FOUND_MESSAGE = "Department not found. ";
     String DEPARTMENT_TITLE_NOT_UNIQUE_MESSAGE = "Department already exists. Try another title. ";
 
     // EMPLOYEE
-    String EMPLOYEE_EMAIL_NOT_VALID_MESSAGE = "Email is not valid";
+    String EMPLOYEE_EMAIL_NOT_VALID_MESSAGE = "Email is not valid. ";
     String EMPLOYEE_EMAIL_NOT_UNIQUE_MESSAGE = "Email you provided already exist. Try another one. ";
+    String EMPLOYEE_NAME_NOT_VALID_MESSAGE = "Name contains not acceptable symbols.";
+    String EMPLOYEE_AGE_NOT_VALID_MESSAGE = "Check age value or format considering birth date. ";
+    String BIRTH_DATE_NOT_VALID_MESSAGE = "Date not valid. ";
 
     //
     // HTTP REQUEST-RESPONSE PARAMETERS NAMES

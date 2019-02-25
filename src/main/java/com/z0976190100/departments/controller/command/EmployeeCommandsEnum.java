@@ -9,8 +9,11 @@ import com.z0976190100.departments.service.util.AppError;
 import com.z0976190100.departments.service.util.ValidatorAlt;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public enum EmployeeCommandsEnum implements GeneralConstants {
 
@@ -23,6 +26,29 @@ public enum EmployeeCommandsEnum implements GeneralConstants {
 //            private String email;
 //            private int departmentID;
 
+            // TODO date string to date convert FILTER
+
+            String bdate = req.getParameter(BIRTH_DATE_PARAM);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+            try {
+                Date bDate = formatter.parse(bdate);
+                req.setAttribute(BIRTH_DATE_PARAM, bDate);
+            }catch (ParseException e){
+                e.printStackTrace();
+            }
+
+
+            if(new ValidatorAlt((Map<String, String>) req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME))
+                    .isEmpty(AGE_PARAM, req.getParameter(AGE_PARAM))
+                    .isEmpty(NAME_PARAM, req.getParameter(NAME_PARAM))
+                    .isEmpty(EMAIL_PARAM, req.getParameter(EMAIL_PARAM))
+                    .isEmpty(DEPARTMENT_ID_PARAM, req.getParameter(DEPARTMENT_ID_PARAM))
+                    .isValidEmail(req.getParameter(EMAIL_PARAM))
+                    .isValidEmployeeName(req.getParameter(NAME_PARAM))
+                    .isValidEmployeeAge(req.getParameter(AGE_PARAM), (Date)req.getAttribute(BIRTH_DATE_PARAM))
+                    .hasErrors()) throw new RequestParameterValidationException();
+
             int age = Integer.parseInt(req.getParameter(AGE_PARAM));
             String email = req.getParameter(EMAIL_PARAM);
             String name = req.getParameter(NAME_PARAM);
@@ -33,10 +59,7 @@ public enum EmployeeCommandsEnum implements GeneralConstants {
 
             req.setAttribute(EMPLOYEE_RESOURCE_KEY, employee);
 
-            if(new ValidatorAlt((List<AppError>) req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME))
-                    .isValidEmail(email)
-                    .hasErrors()) throw new RequestParameterValidationException();
-            req.setAttribute(EMPLOYEE_RESOURCE_KEY, new EmployeeService().saveEmployee(email, departmentID));
+            req.setAttribute(EMPLOYEE_RESOURCE_KEY, new EmployeeService().saveEmployee(employee));
 
         }
     },

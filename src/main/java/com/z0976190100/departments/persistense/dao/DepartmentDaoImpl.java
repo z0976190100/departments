@@ -140,7 +140,7 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
 
         Department d = getEntityById(id);
 
-        if (d == null) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE + DEPARTMENT_NOT_FOUND_MESSSAGE);
+        if (d == null) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE + DEPARTMENT_NOT_FOUND_MESSAGE);
 
         try (Connection connection = getNullsafeConnection()) {
 
@@ -177,7 +177,7 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
 
         Department d = getEntityById(department.getId());
 
-        if (d == null) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE + DEPARTMENT_NOT_FOUND_MESSSAGE);
+        if (d == null) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE + DEPARTMENT_NOT_FOUND_MESSAGE);
 
         try (Connection connection = getNullsafeConnection()) {
 

@@ -14,9 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EmployeeServlet extends HttpServlet implements GeneralConstants {
 
@@ -77,7 +77,7 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
 
                 } catch (NotUniqueEntityException e) {
                     e.printStackTrace();
-                    ((List<AppError>) req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME)).add(new AppError(EMAIL_PARAM, e.getMessage()));
+                    ((Map<String,String>) req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME)).put(EMAIL_PARAM, e.getMessage());
                     int departmentID = Integer.parseInt(req.getParameter(DEPARTMENT_ID_PARAM));
                     req.getRequestDispatcher("employees?command=get&department_id=" + departmentID).forward(req, resp);
                 } catch (RequestParameterValidationException e) {
@@ -132,7 +132,7 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
 
     private void initErrorSuccessAttr(HttpServletRequest req) {
         if (req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME) == null){
-            List<AppError> errors = new ArrayList<>();
+            Map<String, String> errors = new HashMap<>();
             req.setAttribute(ERRORS_LIST_ATTRIBUTE_NAME, errors);
         }
         if (req.getAttribute(SUCCESS_ATTRIBUTE_NAME) == null)

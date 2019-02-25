@@ -12,12 +12,12 @@ public class EmployeeService implements GeneralConstants {
 
     EmployeeDaoImpl employeeDao = new EmployeeDaoImpl();
 
-    public Employee saveEmployee(String email, int departmentID) throws NotUniqueEntityException{
+    public Employee saveEmployee(Employee employee) throws NotUniqueEntityException{
 
         // TODO: check if email is unique
-        if(employeeDao.getAllEntitiesWhere(email).size() !=0 )
+        if(employeeDao.getAllEntitiesWhere(employee.getEmail()).size() !=0 )
             throw new NotUniqueEntityException(EMPLOYEE_EMAIL_NOT_UNIQUE_MESSAGE);
-        return employeeDao.saveEntity(email, departmentID);
+        return employeeDao.saveEntity(employee);
     }
 
     public Employee getEmployee(int id) throws ResourceNotFoundException{

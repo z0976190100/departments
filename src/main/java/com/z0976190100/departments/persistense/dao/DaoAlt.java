@@ -1,6 +1,5 @@
 package com.z0976190100.departments.persistense.dao;
 
-import com.z0976190100.departments.exceptions.ResourceNotFoundException;
 import com.z0976190100.departments.persistense.entity.Employee;
 
 import java.sql.SQLException;
@@ -8,7 +7,7 @@ import java.util.List;
 
 interface DaoAlt<T> {
 
-    public T saveEntity(String title, int departmentID);
+    public T saveEntity(T entity);
 
     public void deleteEntity(int id);
 

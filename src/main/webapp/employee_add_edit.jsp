@@ -33,6 +33,11 @@
                                type="hidden"
                                value="${param.department_id}"
                         >
+                        <c:if test="${not empty errorsList}">
+                            <c:if test="${not empty errorsList.get(\"name\")}">
+                                <i class="material-icons prefix red-text">error</i>
+                            </c:if>
+                        </c:if>
                         <input placeholder="Name" name="name" id="name" type="text" class="validate"
                                value="${param.name}">
                         <span class="helper-text"
@@ -44,7 +49,9 @@
                     </div>
                     <div class="input-field col s12">
                         <c:if test="${not empty errorsList}">
+                            <c:if test="${not empty errorsList.get(\"email\")}">
                             <i class="material-icons prefix red-text">error</i>
+                        </c:if>
                         </c:if>
                         <input required placeholder="Email" name="email" id="email" type="email" class="validate"
                                value="${param.email}"
@@ -59,6 +66,11 @@
                 </div>
                 <div class="row">
                     <div class="input-field col s6">
+                        <c:if test="${not empty errorsList}">
+                            <c:if test="${not empty errorsList.get(\"age\")}">
+                                <i class="material-icons prefix red-text">error</i>
+                            </c:if>
+                        </c:if>
                         <input placeholder="Age" name="age" id="age" type="text" class="validate" value="${param.age}">
                         <span class="helper-text"
                               data-error="Field can contain numbers only. Cannot be empty."
@@ -68,6 +80,11 @@
                         </span>
                     </div>
                     <div class="input-field col s6">
+                        <c:if test="${not empty errorsList}">
+                            <c:if test="${not empty errorsList.get(\"birth_date\")}">
+                                <i class="material-icons prefix red-text">error</i>
+                            </c:if>
+                        </c:if>
                         <input placeholder="Date of Birth" name="birth_date" id="birthdate" type="text"
                                class="datepicker"
                                value="${param.birth_date}"
@@ -117,7 +134,7 @@
 <c:if test="${not empty errorsList}">
     <c:forEach var="error" items="${errorsList}">
         <script>
-            notification("${error.getMessage()}");
+            notification("${error}");
         </script>
     </c:forEach>
 </c:if>
@@ -126,6 +143,7 @@
         var elems = document.querySelectorAll('.datepicker');
         console.log(new Date('${max_date}'), new Date('${min_date}'));
         var opt = {
+            format: "yyyy-mm-dd",
             yearRange: [new Date('${min_date}').getFullYear(), new Date('${max_date}').getFullYear()],
             defaultDate: new Date('${max_date}'),
             minDate: new Date('${min_date}'),

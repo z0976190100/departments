@@ -25,19 +25,22 @@
     <h6 class="blue-grey-text">EMPLOYEES list</h6>
     <div class="section"></div>
     <div class="row">
-        <div class="col s6 offset-s3">
+        <div class="col s8 offset-s2">
             <table class="highlight centered">
                 <thead class="blue-grey-text">
                 <tr>
                     <th>ID</th>
+                    <th>Name</th>
                     <th>Email</th>
-                    <th>Actions</th>
+                    <th>Age</th>
+                    <th>Birth Date</th>
+                    <th colspan="2"> Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 <c:if test="${empty employees_list}">
                     <tr>
-                        <td colspan="5">
+                        <td colspan="6">
                             No Employees yet... Sad...
                         </td>
                     </tr>
@@ -46,7 +49,10 @@
                 <c:forEach var="employee" items="${employees_list}">
                     <tr>
                         <td><c:out value="${employee.getId()}"/></td>
+                        <td><c:out value="${employee.getName()}"/></td>
                         <td><c:out value="${employee.getEmail()}"/></td>
+                        <td><c:out value="${employee.getAge()}"/></td>
+                        <td><c:out value="${employee.getBirthDate()}"/></td>
                         <td class="right">
                             <button class="waves-effect waves-light blue-grey btn modal-trigger s12"
                                     title="Smack to edit this Employee."
@@ -71,7 +77,7 @@
     </div>
     <div class="section">
         <div class="row">
-            <div class="col s6 offset-s3 right-align">
+            <div class="col s8 offset-s2 right-align">
                 <a href="employees?command=get&department_id=${department.getId()}" class="btn-floating btn-large waves-effect waves-light blue-grey modal-trigger"
                         title="Add Employee"
                 >

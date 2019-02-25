@@ -2,7 +2,6 @@ package com.z0976190100.departments.persistense.dao;
 
 import com.z0976190100.departments.app_constants.GeneralConstants;
 import com.z0976190100.departments.exceptions.AppRuntimeException;
-import com.z0976190100.departments.exceptions.ResourceNotFoundException;
 import com.z0976190100.departments.persistense.entity.Employee;
 
 import java.sql.*;
@@ -12,16 +11,19 @@ import java.util.List;
 public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, GeneralConstants {
 
     @Override
-    public Employee saveEntity(String email, int departmentID) {
+    public Employee saveEntity(Employee entity) {
 
         Employee newEmployee = null;
 
         try (Connection connection = getNullsafeConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("INSERT INTO employee (email, department_id , id) VALUES ( ?, ?,  DEFAULT) RETURNING *;")) {
-
-                ps.setString(1, email);
-                ps.setInt(2, departmentID);
+            try (PreparedStatement ps = connection.prepareStatement(
+                    "INSERT INTO employee (name, email, department_id , birth_date, salary, id) VALUES ( ?, ?, ?, ?, ?,  DEFAULT) RETURNING *;")) {
+                ps.setString(1, entity.getName());
+                ps.setString(2, entity.getEmail());
+                ps.setInt(3, entity.getDepartmentID());
+                ps.setObject(4, (Date) entity.getBirthDate());
+                ps.setInt(5, entity.getAge());
 
                 try {
                     ResultSet resultSet = ps.executeQuery();
@@ -101,10 +103,8 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
                 try {
                     ResultSet resultSet = ps.executeQuery();
                     System.out.println("fetched one");
-                    if(resultSet.next())
-                        employee = new  Employee(resultSet.getInt(ID),
-                                resultSet.getString(EMAIL_PARAM),
-                                resultSet.getInt(DEPARTMENT_ID_PARAM));
+                    if (resultSet.next())
+                        employee = buildEmployee(resultSet);
                 } catch (SQLException e) {
                     e.printStackTrace();
 
@@ -129,7 +129,7 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
 
     @Override
     public List<Employee> getAllEntitiesWhere(String email) {
-       List<Employee>  employees = new ArrayList<>();
+        List<Employee> employees = new ArrayList<>();
 
         try (Connection connection = getNullsafeConnection()) {
 
@@ -141,9 +141,7 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
                     ResultSet resultSet = ps.executeQuery();
                     System.out.println("fetched one by email");
                     while (resultSet.next())
-                        employees.add(new  Employee(resultSet.getInt(ID),
-                                resultSet.getString(EMAIL_PARAM),
-                                resultSet.getInt(DEPARTMENT_ID_PARAM)));
+                        employees.add(buildEmployee(resultSet));
                 } catch (SQLException e) {
                     e.printStackTrace();
 
@@ -182,9 +180,7 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
                     ResultSet resultSet = ps.executeQuery();
                     System.out.println("fetched all");
                     while (resultSet.next())
-                        employeeList.add(new Employee(resultSet.getInt(ID),
-                                resultSet.getString(EMAIL_PARAM),
-                                resultSet.getInt(DEPARTMENT_ID_PARAM)));
+                        employeeList.add(buildEmployee(resultSet));
                 } catch (SQLException e) {
                     e.printStackTrace();
 
@@ -225,9 +221,7 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
                     ResultSet resultSet = ps.executeQuery();
                     System.out.println("fetched all with limit");
                     while (resultSet.next())
-                        employeeList.add(new Employee(resultSet.getInt(ID),
-                                resultSet.getString(EMAIL_PARAM),
-                                resultSet.getInt(DEPARTMENT_ID_PARAM)));
+                        employeeList.add(buildEmployee(resultSet));
                 } catch (SQLException e) {
                     e.printStackTrace();
 
@@ -249,7 +243,7 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
         return employeeList;
     }
 
-    public void deleteAllEntitiesWhere(int departmentID){
+    public void deleteAllEntitiesWhere(int departmentID) {
 
         try (Connection connection = getNullsafeConnection()) {
 
@@ -278,8 +272,15 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
             e.printStackTrace();
             throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
+    }
 
-
+    private Employee buildEmployee(ResultSet resultSet) throws SQLException {
+        return new Employee(resultSet.getInt(ID),
+                resultSet.getString(NAME_PARAM),
+                resultSet.getDate(BIRTH_DATE_PARAM),
+                resultSet.getString(EMAIL_PARAM),
+                resultSet.getInt("salary"),
+                resultSet.getInt(DEPARTMENT_ID_PARAM));
     }
 
     @Override

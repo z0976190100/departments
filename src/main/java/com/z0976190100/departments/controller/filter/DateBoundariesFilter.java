@@ -1,18 +1,14 @@
 package com.z0976190100.departments.controller.filter;
 
 import com.z0976190100.departments.app_constants.GeneralConstants;
-import com.z0976190100.departments.service.util.Validator;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
-public class DateFilter implements Filter, GeneralConstants {
+public class DateBoundariesFilter implements Filter, GeneralConstants {
 
 
         @Override
@@ -30,28 +26,13 @@ public class DateFilter implements Filter, GeneralConstants {
 
             HttpServletRequest req = (HttpServletRequest) request;
 
-            setDateBoundry(req);
+            setDateBoundaries(req);
 
-            if (request.getParameter(BIRTH_DATE_PARAM) != null) {
-                Validator validator = new Validator();
 
-                String bdate = req.getParameter(BIRTH_DATE_PARAM);
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
-                try {
-                    Date bDate = formatter.parse(bdate);
-                    if (validator.isValidDate(bDate)){
-                        java.sql.Date sqlDate = new java.sql.Date(bDate.getTime());
-                        req.setAttribute(BIRTH_DATE_PARAM, sqlDate);
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
             chain.doFilter(request, response);
         }
 
-        private void setDateBoundry(HttpServletRequest req){
+        private void setDateBoundaries(HttpServletRequest req){
 
             DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate date = LocalDate.now();

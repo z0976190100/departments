@@ -39,7 +39,7 @@ public class DepartmentService implements GeneralConstants {
         Department department = departmentDao.getEntityById(id);
 
         if (department == null)
-            throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE + DEPARTMENT_NOT_FOUND_MESSSAGE);
+            throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE + DEPARTMENT_NOT_FOUND_MESSAGE);
 
         return department;
 
