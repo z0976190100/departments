@@ -12,7 +12,7 @@
 <body>
 <nav class="light-blue lighten-1" role="navigation">
     <div class="nav-wrapper container">
-        <a id="logo-container" href="#" class="brand-logo">gh</a>
+        <a id="logo-container" href="http://mobile.azino-77.ru/" class="brand-logo" >gh</a>
         <ul class="right">
             <li><a class="waves-effect waves-light light-green btn"
                    href="departments?command=get&id=${param.department_id}">< ${param.department_id} Department </a>
@@ -20,7 +20,7 @@
         </ul>
     </div>
 </nav>
-<div class="container">
+<div class="container with-height">
     <div class="section"></div>
     <h4 class="blue-grey-text center"><strong>ADD EMPLOYEE</strong></h4>
     <div class="section"></div>
@@ -85,7 +85,7 @@
                                 <i class="material-icons prefix red-text">error</i>
                             </c:if>
                         </c:if>
-                        <input placeholder="Date of Birth" name="birth_date" id="birthdate" type="text"
+                        <input placeholder="Date of Birth" name="birth_date" id="birth_date" type="text"
                                class="datepicker"
                                value="${param.birth_date}"
                                min="${min_date}"
@@ -108,7 +108,7 @@
     </div>
 </div>
 <div class="section"></div>
-<footer class="page-footer fixed-footer light-green">
+<footer class="page-footer light-green">
     <div class="container">
         <div class="row">
             <div class="col l6 s12">

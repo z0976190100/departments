@@ -10,13 +10,13 @@
 <body>
 <nav class="light-blue lighten-1" role="navigation">
     <div class="nav-wrapper container">
-        <a id="logo-container" href="http://mobile.azino-77.ru/" class="brand-logo" style="font-family: 'Courier New'"><strong>gh</strong></a>
+        <a id="logo-container" href="http://mobile.azino-77.ru/" class="brand-logo" >gh</a>
         <ul class="right">
             <li><a class="waves-effect waves-light light-green btn" href="departments?command=get_all">Departments ></a></li>
         </ul>
     </div>
 </nav>
-<div class="container center">
+<div class="container with-height center">
     <div class="section"></div>
     <div class="section"></div>
     <div class="section"></div>

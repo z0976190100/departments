@@ -85,7 +85,47 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
     }
 
     @Override
-    public void updateEntity(Employee entity) {
+    public int updateEntity(Employee entity) {
+
+        int result = 0;
+
+        try (Connection connection = getNullsafeConnection()) {
+
+            try (PreparedStatement ps = connection.prepareStatement(
+                    "UPDATE employee SET name = ?, email = ?, department_id = ?, birth_date = ?, salary = ? WHERE id = ? ;"
+                    )) {
+                ps.setString(1, entity.getName());
+                ps.setString(2, entity.getEmail());
+                ps.setInt(3, entity.getDepartmentID());
+                ps.setObject(4, (Date) entity.getBirthDate());
+                ps.setInt(5, entity.getAge());
+                ps.setInt(6, entity.getId());
+
+                try {
+                    result = ps.executeUpdate();
+                    System.out.println("update result is " + result);
+                    if(result == 1)
+                    System.out.println("updated");
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+
+                    for (Throwable t : e) {
+                        System.out.println(t.getMessage());
+                    }
+                    //TODO init fails
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // TODO prepared fails
+            }
+
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+        }
+        return result;
 
     }
 

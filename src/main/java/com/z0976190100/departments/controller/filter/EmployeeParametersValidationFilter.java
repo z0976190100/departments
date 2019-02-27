@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class EmployeeParametersValidationFilter implements Filter, GeneralConstants {
 
-   private HttpServletRequest req;
+    private HttpServletRequest req;
 
 
     @Override
@@ -41,23 +41,36 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
 
         switch (command) {
             case SAVE:
-
-                if(!val
-                        .isValidDepartmentID(request.getParameter(DEPARTMENT_ID_PARAM))
-                        .isValidDate(request.getParameter(BIRTH_DATE_PARAM))
-                        .isValidEmail(request.getParameter(EMAIL_PARAM))
-                        .isValidEmployeeName(request.getParameter(NAME_PARAM))
-                        .isValidEmployeeAge(request.getParameter(AGE_PARAM))
-                        .hasErrors()){
-                    setBirthDateAttribute();
-                    setIntAttribute(DEPARTMENT_ID_PARAM);
-                    setIntAttribute(AGE_PARAM);
-                    chain.doFilter(request, response);
+                if (!saveUpdateChunk(val)) {
+                    withAttributes();
+                    chain.doFilter(req, response);
                     break;
                 }
-
-                req.getRequestDispatcher("employees?command=get&department_id=" + request.getParameter(DEPARTMENT_ID_PARAM)).forward(req, response);
+                req.getRequestDispatcher(EMPLOYEE_ADD_JSP).forward(req, response);
                 break;
+            case GET:
+                //TODO: check id
+                chain.doFilter(req, response);
+                break;
+            case GET_ALL:
+                //TODO: check department_id
+                chain.doFilter(req, response);
+                break;
+            case DELETE:
+                //TODO: check id
+                chain.doFilter(req, response);
+                break;
+            case UPDATE:
+                if (!val.isValidId(req.getParameter(ID)).hasErrors(ID) && !saveUpdateChunk(val)) {
+                    setIntAttribute(ID);
+                    withAttributes();
+                    chain.doFilter(req, response);
+                    break;
+                }
+                req.getRequestDispatcher(EMPLOYEE_EDIT_JSP).forward(req, response);
+                break;
+            case DELETE_ALL:
+                //TODO: check department_id
             default:
                 chain.doFilter(request, response);
                 break;
@@ -65,7 +78,23 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
 
     }
 
-    private void setDateBoundaries(HttpServletRequest req){
+    private void withAttributes() {
+        setBirthDateAttribute();
+        setIntAttribute(DEPARTMENT_ID_PARAM);
+        setIntAttribute(AGE_PARAM);
+    }
+
+    private boolean saveUpdateChunk(Val val) {
+        return val
+                .isValidId(req.getParameter(DEPARTMENT_ID_PARAM))
+                .isValidDate(req.getParameter(BIRTH_DATE_PARAM))
+                .isValidEmail(req.getParameter(EMAIL_PARAM))
+                .isValidEmployeeName(req.getParameter(NAME_PARAM))
+                .isValidEmployeeAge(req.getParameter(AGE_PARAM))
+                .hasErrors();
+    }
+
+    private void setDateBoundaries(HttpServletRequest req) {
 
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(BIRTH_DATE_PATTERN);
         LocalDate date = LocalDate.now();
@@ -79,9 +108,9 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
 
     }
 
-    private void setIntAttribute(String name){
+    private void setIntAttribute(String name) {
 
-        req.setAttribute(name,Integer.parseInt(req.getParameter(name)));
+        req.setAttribute(name, Integer.parseInt(req.getParameter(name)));
 
     }
 
@@ -97,15 +126,15 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
 
     private void setBirthDateAttribute() {
 
-            String bdate = req.getParameter(BIRTH_DATE_PARAM);
-            SimpleDateFormat formatter = new SimpleDateFormat(BIRTH_DATE_PATTERN);
-            try {
-                Date bDate = formatter.parse(bdate);
-                java.sql.Date sqlDate = new java.sql.Date(bDate.getTime());
-                req.setAttribute(BIRTH_DATE_PARAM, sqlDate);
-            } catch (ParseException e) {
-                e.printStackTrace();
-                //TODO
-            }
+        String bdate = req.getParameter(BIRTH_DATE_PARAM);
+        SimpleDateFormat formatter = new SimpleDateFormat(BIRTH_DATE_PATTERN);
+        try {
+            Date bDate = formatter.parse(bdate);
+            java.sql.Date sqlDate = new java.sql.Date(bDate.getTime());
+            req.setAttribute(BIRTH_DATE_PARAM, sqlDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            //TODO
+        }
     }
 }

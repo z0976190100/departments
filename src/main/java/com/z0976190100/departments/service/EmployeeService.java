@@ -19,6 +19,13 @@ public class EmployeeService implements GeneralConstants {
         return employeeDao.saveEntity(employee);
     }
 
+    public Employee updateEmployee (Employee employee) {
+
+        employeeDao.updateEntity(employee);
+        return   employeeDao.getEntityById(employee.getId());
+
+    }
+
     public Employee getEmployee(int id) throws ResourceNotFoundException{
 
         Employee employee = employeeDao.getEntityById(id);

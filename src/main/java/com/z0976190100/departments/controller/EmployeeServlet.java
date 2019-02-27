@@ -5,6 +5,7 @@ import com.z0976190100.departments.controller.command.EmployeeCommandsEnum;
 import com.z0976190100.departments.exceptions.NotUniqueEntityException;
 import com.z0976190100.departments.exceptions.RequestParameterValidationException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
+import com.z0976190100.departments.persistense.entity.Employee;
 import com.z0976190100.departments.service.EmployeeService;
 
 import javax.servlet.ServletException;
@@ -12,10 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EmployeeServlet extends HttpServlet implements GeneralConstants {
 
@@ -103,6 +101,21 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String email = req.getParameter(EMAIL_PARAM);
+        String name = req.getParameter(NAME_PARAM);
+        Date birthDate = (Date) req.getAttribute(BIRTH_DATE_PARAM);
+        int age = (Integer) req.getAttribute(AGE_PARAM);
+        int departmentID = (Integer) req.getAttribute(DEPARTMENT_ID_PARAM);
+        int id = (Integer) req.getAttribute(ID);
+
+        Employee employee = new Employee(id, name, birthDate, email, age, departmentID);
+
+
+            req.setAttribute(EMPLOYEE_RESOURCE_KEY, employee);
+            req.setAttribute(EMPLOYEE_RESOURCE_KEY, employeeService.updateEmployee(employee));
+
+
+        resp.sendRedirect("departments?command=get&id=" + req.getAttribute(DEPARTMENT_ID_PARAM));
     }
 
     @Override

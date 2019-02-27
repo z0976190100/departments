@@ -1,4 +1,3 @@
-<%@ page import="com.z0976190100.departments.app_constants.GeneralConstants" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -12,26 +11,37 @@
 <body>
 <nav class="light-blue lighten-1" role="navigation">
     <div class="nav-wrapper container">
-        <a id="logo-container" href="#" class="brand-logo">gh</a>
+        <a id="logo-container" href="http://mobile.azino-77.ru/" class="brand-logo" >gh</a>
         <ul class="right">
             <li><a class="waves-effect waves-light light-green btn"
-                   href="departments?command=get&id=${employee.getDepartmentID()}">< ${employee.getDepartmentID()} Department </a>
+                   href="departments?command=get&id=${employee == null ? param.department_id : employee.getDepartmentID()}">
+                < ${employee == null ? param.department_id : employee.getDepartmentID()} Department
+            </a>
             </li>
         </ul>
     </div>
 </nav>
-<div class="container">
+<div class="container with-height">
     <div class="section"></div>
     <h4 class="blue-grey-text center"><strong>EDIT EMPLOYEE</strong></h4>
+    <h6 class="blue-grey-text center">${employee == null ? param.email : employee.getEmail()}</h6>
     <div class="section"></div>
     <div class="row">
         <div class="col s6 offset-s3">
             <form method="post" action="/employees?command=update">
                 <div class="row">
                     <div class="input-field col s12">
+                        <input name="email"
+                               type="hidden"
+                               value="${employee == null ? param.email : employee.getEmail()}"
+                        >
+                        <input name="id"
+                               type="hidden"
+                               value="${employee == null ? param.id : employee.getId()}"
+                        >
                         <input name="department_id"
                                type="hidden"
-                               value="${param.department_id}"
+                               value="${employee == null ? param.department_id : employee.getDepartmentID()}"
                         >
                         <c:if test="${not empty errorsList}">
                             <c:if test="${not empty errorsList.get(\"name\")}">
@@ -39,28 +49,12 @@
                             </c:if>
                         </c:if>
                         <input placeholder="Name" name="name" id="name" type="text" class="validate"
-                               value="${employee.getName()}">
+                               value="${employee == null ? param.name : employee.getName()}">
                         <span class="helper-text"
                               data-error="Field can contain letters, hyphen and '. Cannot be empty."
                               data-success="Well done!"
                         >
                             Field can contain letters, hyphen and '. Cannot be empty.
-                        </span>
-                    </div>
-                    <div class="input-field col s12">
-                        <c:if test="${not empty errorsList}">
-                            <c:if test="${not empty errorsList.get(\"email\")}">
-                                <i class="material-icons prefix red-text">error</i>
-                            </c:if>
-                        </c:if>
-                        <input required placeholder="Email" name="email" id="email" type="email" class="validate"
-                               value="${employee.getEmail()}"
-                        >
-                        <span class="helper-text"
-                              data-error="Provide valid email, please."
-                              data-success="Well done!"
-                        >
-                            Enter email address.
                         </span>
                     </div>
                 </div>
@@ -71,7 +65,8 @@
                                 <i class="material-icons prefix red-text">error</i>
                             </c:if>
                         </c:if>
-                        <input placeholder="Age" name="age" id="age" type="text" class="validate" value="${employee.getAge()}">
+                        <input placeholder="Age" name="age" id="age" type="text" class="validate"
+                               value="${employee == null ? param.age : employee.getAge()}">
                         <span class="helper-text"
                               data-error="Field can contain numbers only. Cannot be empty."
                               data-success="Well done!"
@@ -85,9 +80,9 @@
                                 <i class="material-icons prefix red-text">error</i>
                             </c:if>
                         </c:if>
-                        <input placeholder="Date of Birth" name="birth_date" id="birthdate" type="text"
+                        <input placeholder="Date of Birth" name="birth_date" id="birth_date" type="text"
                                class="datepicker"
-                               value="${employee.getBirthDate()}"
+                               value="${employee == null ? param.birth_date : employee.getBirthDate()}"
                                min="${min_date}"
                                max="${max_date}"
                         >
@@ -108,7 +103,7 @@
     </div>
 </div>
 <div class="section"></div>
-<footer class="page-footer fixed-footer light-green">
+<footer class="page-footer light-green">
     <div class="container">
         <div class="row">
             <div class="col l6 s12">
@@ -152,39 +147,6 @@
         var instances = M.Datepicker.init(elems, opt);
     });
 </script>
-</div>
-
-<!-- Modal Delete Employee Confirmation Form -->
-<div id="delete-confirmation-modal" class="modal">
-    <div class="modal-content">
-        <h4 class="blue-grey-text" id="delete-confirmation-modal-title">Delete Modal</h4>
-        <h6 class="red-text">You now completely deleting us.</h6>
-        <div class="row">
-            <form id="delete-confirmation-modal-form" method="post" class="col s12">
-                <div class="row">
-                    <div class="input-field col s12">
-                        <input name="department_id"
-                               type="hidden"
-                               value="${department.getId()}"
-                        >
-                        <input name="id"
-                               type="hidden"
-                               id="delete-confirmation-modal-input"
-                        >
-                        <input name="command"
-                               value="delete"
-                               type="hidden"
-                               id="delete-confirmation-modal-command-input"
-                        >
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="modal-close waves-effect waves-green btn-flat ">Nope</a>
-                    <button type="submit" class="waves-effect waves-green btn-flat green-text">Sure</button>
-                </div>
-            </form>
-        </div>
-    </div>
 </div>
 </body>
 </html>

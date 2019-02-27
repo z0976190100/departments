@@ -12,20 +12,20 @@
 <body>
 <nav class="light-blue lighten-1" role="navigation">
     <div class="nav-wrapper container">
-        <a id="logo-container" href="#" class="brand-logo">gh</a>
+        <a id="logo-container" href="http://mobile.azino-77.ru/" class="brand-logo" >gh</a>
         <ul class="right">
             <li><a class="waves-effect waves-light light-green btn" href="departments?command=get_all">< Departments </a>
             </li>
         </ul>
     </div>
 </nav>
-<div class="container center">
+<div class="container with-height center">
     <div class="section"></div>
     <h4 class="blue-grey-text"><strong>DEPARTMENT of ${department.getTitle()}</strong></h4>
     <h6 class="blue-grey-text">EMPLOYEES list</h6>
     <div class="section"></div>
     <div class="row">
-        <div class="col s8 offset-s2">
+        <div class="col s10 offset-s1">
             <table class="highlight centered">
                 <thead class="blue-grey-text">
                 <tr>
@@ -76,8 +76,8 @@
     </div>
     <div class="section">
         <div class="row">
-            <div class="col s8 offset-s2 right-align">
-                <a href="employees?command=get&department_id=${department.getId()}" class="btn-floating btn-large waves-effect waves-light blue-grey modal-trigger"
+            <div class="col s10 offset-s1 right-align">
+                <a href="employee_add_edit.jsp?department_id=${department.getId()}" class="btn-floating btn-large waves-effect waves-light blue-grey modal-trigger"
                         title="Add Employee"
                 >
                     <i class="material-icons">add</i>
@@ -96,7 +96,7 @@
     </div>
 </div>
 <div class="section"></div>
-<footer class="page-footer fixed-footer light-green">
+<footer class="page-footer light-green">
     <div class="container">
         <div class="row">
             <div class="col l6 s12">

@@ -11,7 +11,7 @@ interface DaoAlt<T> {
 
     public void deleteEntity(int id);
 
-    public void updateEntity(T entity);
+    public int updateEntity(T entity);
 
     public Employee getEntityById(int id);
 

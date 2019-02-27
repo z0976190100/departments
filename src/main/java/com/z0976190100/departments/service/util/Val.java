@@ -24,7 +24,7 @@ public class Val implements GeneralConstants {
 
     private boolean isEmpty(String paramName, String paramValue) {
 
-        if (paramValue.equals("")) {
+        if (paramValue == null || paramValue.equals("")) {
             addError(paramName, EMPTY_PARAM_VALUE_MESSAGE);
             System.out.println("empty " + paramName);
             return true;
@@ -33,7 +33,7 @@ public class Val implements GeneralConstants {
         return false;
     }
 
-    public Val isValidDepartmentID(String id) {
+    public Val isValidId(String id) {
 
         if (isEmpty(DEPARTMENT_ID_PARAM, id)) return this;
 
