@@ -14,7 +14,6 @@ public class EmployeeService implements GeneralConstants {
 
     public Employee saveEmployee(Employee employee) throws NotUniqueEntityException{
 
-        // TODO: check if email is unique
         if(employeeDao.getAllEntitiesWhere(employee.getEmail()).size() !=0 )
             throw new NotUniqueEntityException(EMPLOYEE_EMAIL_NOT_UNIQUE_MESSAGE);
         return employeeDao.saveEntity(employee);

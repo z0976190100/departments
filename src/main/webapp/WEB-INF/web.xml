@@ -25,11 +25,11 @@
         <url-pattern>/employees</url-pattern>
     </servlet-mapping>
     <filter>
-        <filter-name>DateFilter</filter-name>
-        <filter-class>com.z0976190100.departments.controller.filter.DateBoundariesFilter</filter-class>
+        <filter-name>EmployeeFilter</filter-name>
+        <filter-class>com.z0976190100.departments.controller.filter.EmployeeParametersValidationFilter</filter-class>
     </filter>
     <filter-mapping>
-        <filter-name>DateFilter</filter-name>
+        <filter-name>EmployeeFilter</filter-name>
         <url-pattern>/employees/*</url-pattern>
     </filter-mapping>
 </web-app>

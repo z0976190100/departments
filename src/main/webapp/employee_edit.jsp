@@ -15,18 +15,18 @@
         <a id="logo-container" href="#" class="brand-logo">gh</a>
         <ul class="right">
             <li><a class="waves-effect waves-light light-green btn"
-                   href="departments?command=get&id=${param.department_id}">< ${param.department_id} Department </a>
+                   href="departments?command=get&id=${employee.getDepartmentID()}">< ${employee.getDepartmentID()} Department </a>
             </li>
         </ul>
     </div>
 </nav>
 <div class="container">
     <div class="section"></div>
-    <h4 class="blue-grey-text center"><strong>ADD EMPLOYEE</strong></h4>
+    <h4 class="blue-grey-text center"><strong>EDIT EMPLOYEE</strong></h4>
     <div class="section"></div>
     <div class="row">
         <div class="col s6 offset-s3">
-            <form method="post" action="/employees?command=save">
+            <form method="post" action="/employees?command=update">
                 <div class="row">
                     <div class="input-field col s12">
                         <input name="department_id"
@@ -39,7 +39,7 @@
                             </c:if>
                         </c:if>
                         <input placeholder="Name" name="name" id="name" type="text" class="validate"
-                               value="${param.name}">
+                               value="${employee.getName()}">
                         <span class="helper-text"
                               data-error="Field can contain letters, hyphen and '. Cannot be empty."
                               data-success="Well done!"
@@ -50,11 +50,11 @@
                     <div class="input-field col s12">
                         <c:if test="${not empty errorsList}">
                             <c:if test="${not empty errorsList.get(\"email\")}">
-                            <i class="material-icons prefix red-text">error</i>
-                        </c:if>
+                                <i class="material-icons prefix red-text">error</i>
+                            </c:if>
                         </c:if>
                         <input required placeholder="Email" name="email" id="email" type="email" class="validate"
-                               value="${param.email}"
+                               value="${employee.getEmail()}"
                         >
                         <span class="helper-text"
                               data-error="Provide valid email, please."
@@ -71,7 +71,7 @@
                                 <i class="material-icons prefix red-text">error</i>
                             </c:if>
                         </c:if>
-                        <input placeholder="Age" name="age" id="age" type="text" class="validate" value="${param.age}">
+                        <input placeholder="Age" name="age" id="age" type="text" class="validate" value="${employee.getAge()}">
                         <span class="helper-text"
                               data-error="Field can contain numbers only. Cannot be empty."
                               data-success="Well done!"
@@ -87,7 +87,7 @@
                         </c:if>
                         <input placeholder="Date of Birth" name="birth_date" id="birthdate" type="text"
                                class="datepicker"
-                               value="${param.birth_date}"
+                               value="${employee.getBirthDate()}"
                                min="${min_date}"
                                max="${max_date}"
                         >

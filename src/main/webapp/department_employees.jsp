@@ -54,13 +54,12 @@
                         <td><c:out value="${employee.getAge()}"/></td>
                         <td><c:out value="${employee.getBirthDate()}"/></td>
                         <td class="right">
-                            <button class="waves-effect waves-light blue-grey btn modal-trigger s12"
+                            <a href="/employees?command=get&id=${employee.getId()}"
+                                    class="waves-effect waves-light blue-grey btn modal-trigger s12"
                                     title="Smack to edit this Employee."
-                                    onclick="setEditModalValues('${employee.getId()}', '${employee.getEmail()}')"
-                                    data-target="add-edit-modal"
                             >
                                 Edit
-                            </button>
+                            </a>
                             <button class="waves-effect waves-light red btn modal-trigger s12"
                                     title="Delete this Employee."
                                     onclick="setDeleteModalValues('<%= GeneralConstants.EMPLOYEES_URI%>', 'Employee', '${employee.getId()}', '${employee.getEmail()}')"
@@ -97,7 +96,7 @@
     </div>
 </div>
 <div class="section"></div>
-<footer class="page-footer light-green">
+<footer class="page-footer fixed-footer light-green">
     <div class="container">
         <div class="row">
             <div class="col l6 s12">

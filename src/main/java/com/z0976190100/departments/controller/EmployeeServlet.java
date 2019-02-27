@@ -6,7 +6,6 @@ import com.z0976190100.departments.exceptions.NotUniqueEntityException;
 import com.z0976190100.departments.exceptions.RequestParameterValidationException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
 import com.z0976190100.departments.service.EmployeeService;
-import com.z0976190100.departments.service.util.AppError;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -31,7 +30,7 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
         EmployeeCommandsEnum command = getCommand(req);
         initErrorSuccessAttr(req);
 
-        switch (command){
+        switch (command) {
 
             case GET:
                 try {
@@ -43,7 +42,7 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                req.getRequestDispatcher(EMPLOYEE_ADD_EDIT_JSP).forward(req, resp);
+                req.getRequestDispatcher(EMPLOYEE_EDIT_JSP).forward(req, resp);
                 break;
             case GET_ALL:
                 try {
@@ -72,23 +71,18 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
             case SAVE:
                 try {
                     command.execute(req);
-                }catch (NumberFormatException e){
-                    e.printStackTrace();
-
                 } catch (NotUniqueEntityException e) {
                     e.printStackTrace();
-                    ((Map<String,String>) req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME)).put(EMAIL_PARAM, e.getMessage());
-                    int departmentID = Integer.parseInt(req.getParameter(DEPARTMENT_ID_PARAM));
-                    req.getRequestDispatcher("employees?command=get&department_id=" + departmentID).forward(req, resp);
-                } catch (RequestParameterValidationException e) {
-                    e.printStackTrace();
-                    int departmentID = Integer.parseInt(req.getParameter(DEPARTMENT_ID_PARAM));
-                    req.getRequestDispatcher("employees?command=get&department_id=" + departmentID).forward(req, resp);
+                    List<String> er = new ArrayList<>();
+                    er.add(e.getMessage());
+                    ((Map<String, List<String>>) req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME)).put(EMAIL_PARAM, er);
+
+                    req.getRequestDispatcher(EMPLOYEE_ADD_JSP)
+                            .forward(req, resp);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                int departmentID = Integer.parseInt(req.getParameter(DEPARTMENT_ID_PARAM));
-                resp.sendRedirect("departments?command=get&id=" + departmentID);
+                resp.sendRedirect("departments?command=get&id=" + req.getAttribute(DEPARTMENT_ID_PARAM));
                 break;
             case UPDATE:
                 this.doPut(req, resp);
@@ -131,7 +125,7 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
     }
 
     private void initErrorSuccessAttr(HttpServletRequest req) {
-        if (req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME) == null){
+        if (req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME) == null) {
             Map<String, String> errors = new HashMap<>();
             req.setAttribute(ERRORS_LIST_ATTRIBUTE_NAME, errors);
         }

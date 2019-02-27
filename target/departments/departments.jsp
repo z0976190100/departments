@@ -98,7 +98,7 @@
     </div>
 </div>
 <div class="section"></div>
-<footer class="page-footer light-green">
+<footer class="page-footer fixed-footer light-green">
     <div class="container">
         <div class="row">
             <div class="col l6 s12">

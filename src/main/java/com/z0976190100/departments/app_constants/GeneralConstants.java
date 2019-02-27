@@ -28,6 +28,7 @@ public interface GeneralConstants {
     String EMPTY_PARAM_VALUE_MESSAGE = "Parameter is empty. ";
 
     // DEPARTMENT
+    String DEPARTMENT_ID_NOT_VALID_MESSAGE = "Department ID you provided is invalid. ";
     String DEPARTMENT_TITLE_NOT_VALID_MESSAGE = "Title you provided not valid. Try another one. ";
     String DEPARTMENT_NOT_FOUND_MESSAGE = "Department not found. ";
     String DEPARTMENT_TITLE_NOT_UNIQUE_MESSAGE = "Department already exists. Try another title. ";
@@ -49,6 +50,7 @@ public interface GeneralConstants {
     String COMMAND_PARAM = "command";
     String MIN_DATE_ATTR = "min_date";
     String MAX_DATE_ATTR = "max_date";
+    String BIRTH_DATE_PATTERN = "yyyy-MM-dd";
 
     // DEPARTMENT
     String DEPARTMENT_TITLE_PARAM = "department_title";
@@ -78,7 +80,8 @@ public interface GeneralConstants {
     // JSPs
     String DEPARTMENTS_JSP = "departments.jsp?command=get_all";
     String DEPARTMENT_EMPLOYEES_JSP = "department_employees.jsp";
-    String EMPLOYEE_ADD_EDIT_JSP = "employee_add_edit.jsp";
+    String EMPLOYEE_ADD_JSP = "employee_add_edit.jsp";
+    String EMPLOYEE_EDIT_JSP = "employee_edit.jsp";
     String WELCOME_PAGE_JSP = "index.jsp";
 
     // URIs
