@@ -49,8 +49,8 @@ public enum EmployeeCommandsEnum implements GeneralConstants {
         @Override
         public void execute(HttpServletRequest req) throws Exception {
 
-            int actualPage = 1;
-            int limit = 3;
+            int actualPage = Integer.parseInt((String)  req.getAttribute(ACTUAL_PAGE_PARAM));
+            int limit = Integer.parseInt((String ) req.getAttribute(PAGE_SIZE_LIMIT_PARAM));
 
             int departmentID = Integer.parseInt(req.getParameter(DEPARTMENT_ID_PARAM));
             new DepartmentService().getDepartmentById(departmentID);

@@ -55,6 +55,8 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
                 break;
             case GET_ALL:
                 //TODO: check department_id
+                //TODO: set pagination attributes
+
                 chain.doFilter(req, response);
                 break;
             case DELETE:

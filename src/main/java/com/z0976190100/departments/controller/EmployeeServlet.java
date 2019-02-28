@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.*;
 import java.sql.Date;
 
-public class  EmployeeServlet extends HttpServlet implements GeneralConstants {
+public class EmployeeServlet extends HttpServlet implements GeneralConstants {
 
     EmployeeService employeeService = new EmployeeService();
     List<String> success = new ArrayList<>();
@@ -29,6 +29,7 @@ public class  EmployeeServlet extends HttpServlet implements GeneralConstants {
 
         EmployeeCommandsEnum command = getCommand(req);
         initErrorSuccessAttr(req);
+
 
         switch (command) {
 
@@ -46,6 +47,8 @@ public class  EmployeeServlet extends HttpServlet implements GeneralConstants {
                 break;
             case GET_ALL:
                 try {
+                    req.setAttribute(ACTUAL_PAGE_PARAM, getInitParameter(ACTUAL_PAGE_PARAM));
+                    req.setAttribute(PAGE_SIZE_LIMIT_PARAM, getInitParameter(PAGE_SIZE_LIMIT_PARAM));
                     command.execute(req);
                 } catch (ResourceNotFoundException e) {
                     e.printStackTrace();
@@ -81,7 +84,7 @@ public class  EmployeeServlet extends HttpServlet implements GeneralConstants {
 
                     req.getRequestDispatcher(EMPLOYEE_ADD_JSP)
                             .forward(req, resp);
-                }catch (AgeNotConsistentException e){
+                } catch (AgeNotConsistentException e) {
                     addError(req, AGE_PARAM, e.getMessage());
                     req.getRequestDispatcher(EMPLOYEE_ADD_JSP)
                             .forward(req, resp);
@@ -120,7 +123,7 @@ public class  EmployeeServlet extends HttpServlet implements GeneralConstants {
         Employee employee = new Employee(id, name, birthDate, email, age, departmentID);
 
 
-            req.setAttribute(EMPLOYEE_RESOURCE_KEY, employee);
+        req.setAttribute(EMPLOYEE_RESOURCE_KEY, employee);
         try {
             req.setAttribute(EMPLOYEE_RESOURCE_KEY, employeeService.updateEmployee(employee));
         } catch (AgeNotConsistentException e) {
@@ -163,7 +166,7 @@ public class  EmployeeServlet extends HttpServlet implements GeneralConstants {
     }
 
     private void addError(HttpServletRequest req, String paramName, String message) {
-        Map errors = (Map<String, List<String>>)req.getAttribute(ERRORS_ATTRIBUTE_NAME);
+        Map errors = (Map<String, List<String>>) req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME);
         if (errors.get(paramName) == null)
             errors.put(paramName, new ArrayList<String>());
         List<String> er = (List<String>) errors.get(paramName);

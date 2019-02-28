@@ -1,7 +1,5 @@
 package com.z0976190100.departments.persistense.dao;
 
-import com.z0976190100.departments.persistense.entity.Employee;
-
 import java.sql.SQLException;
 import java.util.List;
 
@@ -13,7 +11,7 @@ interface DaoAlt<T> {
 
     public int updateEntity(T entity);
 
-    public Employee getEntityById(int id);
+    public T getEntityById(int id);
 
     public List<T> getAllEntitiesWhere(String title);
 

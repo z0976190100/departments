@@ -15,6 +15,7 @@ public class DepartmentService implements GeneralConstants {
 
     private EntityDescription description = new DepartmentEntityDescription();
     private DepartmentDaoImpl departmentDao = new DepartmentDaoImpl();
+    private EmployeeService employeeService = new EmployeeService();
     private final String table = description.getTableName();
 
 
@@ -56,7 +57,7 @@ public class DepartmentService implements GeneralConstants {
 
     public void deleteDepartment(int id) throws ResourceNotFoundException {
 
-        //TODO: delete all EMPLOYEES
+        employeeService.deleteAllEmployees(id);
 
         departmentDao.deleteEntity(id);
 

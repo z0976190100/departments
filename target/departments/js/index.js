@@ -6,6 +6,20 @@
 
 })();
 
+function datePickerInit(minDate, maxDate) {
+    document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('.datepicker');
+        var opt = {
+            format: "yyyy-mm-dd",
+            yearRange: [new Date(minDate).getFullYear(), new Date(maxDate).getFullYear()],
+            defaultDate: new Date(maxDate),
+            minDate: new Date(minDate),
+            maxDate: new Date(maxDate)
+        };
+        var instances = M.Datepicker.init(elems, opt);
+    });
+}
+
 function byId(id) {
     return document.getElementById(id);
 }

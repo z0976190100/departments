@@ -59,6 +59,14 @@ public class EmployeeService implements GeneralConstants {
         employeeDao.deleteEntity(id);
     }
 
+    public void deleteAllEmployees(int departmentID) throws ResourceNotFoundException {
+
+        if(getRowCount(departmentID) == 0) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE);
+
+        employeeDao.deleteAllEntitiesWhere(departmentID);
+
+    }
+
     public int getRowCount(int departmentID){
         return employeeDao.getRowCount(departmentID);
     }

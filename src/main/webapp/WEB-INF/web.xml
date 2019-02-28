@@ -11,7 +11,16 @@
     <servlet>
         <servlet-name>DepartmentServlet</servlet-name>
         <servlet-class>com.z0976190100.departments.controller.DepartmentServlet</servlet-class>
+        <init-param>
+            <param-name>limit</param-name>
+            <param-value>3</param-value>
+        </init-param>
+        <init-param>
+            <param-name>page</param-name>
+            <param-value>1</param-value>
+        </init-param>
     </servlet>
+
     <servlet-mapping>
         <servlet-name>DepartmentServlet</servlet-name>
         <url-pattern>/departments</url-pattern>
@@ -19,6 +28,14 @@
     <servlet>
         <servlet-name>EmployeeServlet</servlet-name>
         <servlet-class>com.z0976190100.departments.controller.EmployeeServlet</servlet-class>
+        <init-param>
+            <param-name>limit</param-name>
+            <param-value>3</param-value>
+        </init-param>
+        <init-param>
+            <param-name>page</param-name>
+            <param-value>1</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>EmployeeServlet</servlet-name>

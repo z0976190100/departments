@@ -46,6 +46,7 @@ public interface GeneralConstants {
 
     // GENERAL
     String ACTUAL_PAGE_PARAM = "page";
+    String PAGE_SIZE_LIMIT_PARAM = "limit";
     String PAGES_PARAM = "pages";
     String COMMAND_PARAM = "command";
     String MIN_DATE_ATTR = "min_date";
