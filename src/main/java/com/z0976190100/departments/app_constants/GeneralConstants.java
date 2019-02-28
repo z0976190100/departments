@@ -80,8 +80,8 @@ public interface GeneralConstants {
     // JSPs
     String DEPARTMENTS_JSP = "departments.jsp?command=get_all";
     String DEPARTMENT_EMPLOYEES_JSP = "department_employees.jsp";
-    String EMPLOYEE_ADD_JSP = "employee_add_edit.jsp";
     String EMPLOYEE_EDIT_JSP = "employee_edit.jsp";
+    String EMPLOYEE_ADD_JSP = "employee_add.jsp";
     String WELCOME_PAGE_JSP = "index.jsp";
 
     // URIs

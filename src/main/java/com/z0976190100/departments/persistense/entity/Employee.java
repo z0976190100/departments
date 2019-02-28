@@ -1,6 +1,6 @@
 package com.z0976190100.departments.persistense.entity;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class Employee {
 

@@ -6,6 +6,20 @@
 
 })();
 
+function datePickerInit(minDate, maxDate) {
+    document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('.datepicker');
+        var opt = {
+            format: "yyyy-mm-dd",
+            yearRange: [new Date(minDate).getFullYear(), new Date(maxDate).getFullYear()],
+            defaultDate: new Date(maxDate),
+            minDate: new Date(minDate),
+            maxDate: new Date(maxDate)
+        };
+        var instances = M.Datepicker.init(elems, opt);
+    });
+}
+
 function byId(id) {
     return document.getElementById(id);
 }
@@ -13,8 +27,9 @@ function byId(id) {
 function setPaginationPointer(actualPage, pages) {
 
     for (var i = 1; i <= pages; i++) {
+
         var indicator = byId("page-indicator-" + i);
-        console.log(indicator);
+
         i == actualPage ? indicator.className = "active blue" : indicator.className = "waves-effect";
     }
 

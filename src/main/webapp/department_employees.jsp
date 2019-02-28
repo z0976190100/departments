@@ -77,7 +77,7 @@
     <div class="section">
         <div class="row">
             <div class="col s10 offset-s1 right-align">
-                <a href="employee_add_edit.jsp?department_id=${department.getId()}" class="btn-floating btn-large waves-effect waves-light blue-grey modal-trigger"
+                <a href="employees?command=get_save_page&department_id=${department.getId()}" class="btn-floating btn-large waves-effect waves-light blue-grey modal-trigger"
                         title="Add Employee"
                 >
                     <i class="material-icons">add</i>
@@ -127,47 +127,6 @@
     </c:forEach>
 </c:if>
 </div>
-<!-- Modal Add Edit Employee Form -->
-<div id="add-edit-modal" class="modal">
-    <div class="modal-content">
-        <h4 class="blue-grey-text" id="add-edit-modal-title">Add Department</h4>
-        <div class="row">
-            <form id="add-edit-modal-form" method="post" class="col s12">
-                <div class="row">
-                    <div  class="input-field col s12">
-                        <input name=<%= GeneralConstants.EMAIL_PARAM %> id="add-edit-modal-input"
-                               type="text"
-                               class="validate"
-                               value="${email}" required
-                               placeholder="Email"
-                        />
-                        <input id="add-edit-modal-command-input"
-                               name="command"
-                               type="hidden"
-                        />
-                        <input id="add-edit-modal-id-input"
-                               name="department_id"
-                               type="hidden"
-                               value="${department.getId()}"
-                        />
-                        <span class="helper-text"
-                              data-error="Feel free to type LETTERS and NUMBERS, even do hyphens.
-                            No other symbols are permitted!"
-                              data-success="Well done!"
-                        >
-                            Feel free to type letters and numbers, even do hyphens.
-                            And that's all. No other symbols are permitted! 22 characters, not more.
-                        </span>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="modal-close waves-effect waves-green btn-flat ">Cancel</a>
-                    <button type="submit" class="waves-effect waves-green btn-flat green-text">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 <!-- Modal Delete Employee Confirmation Form -->
 <div id="delete-confirmation-modal" class="modal">
     <div class="modal-content">
@@ -193,7 +152,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="modal-close waves-effect waves-green btn-flat ">Nope</a>
+                    <button type="button" class="modal-close waves-effect waves-green btn-flat ">Nope</button>
                     <button type="submit" class="waves-effect waves-green btn-flat green-text">Sure</button>
                 </div>
             </form>

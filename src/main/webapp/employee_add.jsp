@@ -138,53 +138,10 @@
         </script>
     </c:forEach>
 </c:if>
+<!--Date Picker init-->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var elems = document.querySelectorAll('.datepicker');
-        console.log(new Date('${max_date}'), new Date('${min_date}'));
-        var opt = {
-            format: "yyyy-mm-dd",
-            yearRange: [new Date('${min_date}').getFullYear(), new Date('${max_date}').getFullYear()],
-            defaultDate: new Date('${max_date}'),
-            minDate: new Date('${min_date}'),
-            maxDate: new Date('${max_date}')
-        };
-        var instances = M.Datepicker.init(elems, opt);
-    });
+    datePickerInit('${min_date}', '${max_date}');
 </script>
-</div>
-
-<!-- Modal Delete Employee Confirmation Form -->
-<div id="delete-confirmation-modal" class="modal">
-    <div class="modal-content">
-        <h4 class="blue-grey-text" id="delete-confirmation-modal-title">Delete Modal</h4>
-        <h6 class="red-text">You now completely deleting us.</h6>
-        <div class="row">
-            <form id="delete-confirmation-modal-form" method="post" class="col s12">
-                <div class="row">
-                    <div class="input-field col s12">
-                        <input name="department_id"
-                               type="hidden"
-                               value="${department.getId()}"
-                        >
-                        <input name="id"
-                               type="hidden"
-                               id="delete-confirmation-modal-input"
-                        >
-                        <input name="command"
-                               value="delete"
-                               type="hidden"
-                               id="delete-confirmation-modal-command-input"
-                        >
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="modal-close waves-effect waves-green btn-flat ">Nope</a>
-                    <button type="submit" class="waves-effect waves-green btn-flat green-text">Sure</button>
-                </div>
-            </form>
-        </div>
-    </div>
 </div>
 </body>
 </html>

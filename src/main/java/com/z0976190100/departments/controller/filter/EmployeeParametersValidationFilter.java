@@ -20,6 +20,7 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
 
     private HttpServletRequest req;
 
+// TODO success messages
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -41,8 +42,8 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
 
         switch (command) {
             case SAVE:
-                if (!saveUpdateChunk(val)) {
-                    withAttributes();
+                if (!saveUpdateValidationChunk(val)) {
+                    setAttributes();
                     chain.doFilter(req, response);
                     break;
                 }
@@ -61,9 +62,9 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
                 chain.doFilter(req, response);
                 break;
             case UPDATE:
-                if (!val.isValidId(req.getParameter(ID)).hasErrors(ID) && !saveUpdateChunk(val)) {
+                if (!val.isValidId(req.getParameter(ID)).hasErrors(ID) && !saveUpdateValidationChunk(val)) {
                     setIntAttribute(ID);
-                    withAttributes();
+                    setAttributes();
                     chain.doFilter(req, response);
                     break;
                 }
@@ -78,23 +79,25 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
 
     }
 
-    private void withAttributes() {
+    private void setAttributes() {
         setBirthDateAttribute();
         setIntAttribute(DEPARTMENT_ID_PARAM);
         setIntAttribute(AGE_PARAM);
     }
 
-    private boolean saveUpdateChunk(Val val) {
+    private boolean saveUpdateValidationChunk(Val val) {
         return val
                 .isValidId(req.getParameter(DEPARTMENT_ID_PARAM))
                 .isValidDate(req.getParameter(BIRTH_DATE_PARAM))
                 .isValidEmail(req.getParameter(EMAIL_PARAM))
                 .isValidEmployeeName(req.getParameter(NAME_PARAM))
-                .isValidEmployeeAge(req.getParameter(AGE_PARAM))
+                 .isValidEmployeeAge(req.getParameter(AGE_PARAM))
                 .hasErrors();
     }
 
     private void setDateBoundaries(HttpServletRequest req) {
+
+        System.out.println("setting date boundaries");
 
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(BIRTH_DATE_PATTERN);
         LocalDate date = LocalDate.now();
@@ -121,6 +124,8 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
     }
 
     private EmployeeCommandsEnum getCommand(HttpServletRequest req) {
+        if(req.getParameter(COMMAND_PARAM) == null || req.getParameter(COMMAND_PARAM).equals(""))
+            return EmployeeCommandsEnum.NO_COMMAND;
         return EmployeeCommandsEnum.valueOf(req.getParameter(COMMAND_PARAM).toUpperCase());
     }
 

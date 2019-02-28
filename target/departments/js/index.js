@@ -13,8 +13,9 @@ function byId(id) {
 function setPaginationPointer(actualPage, pages) {
 
     for (var i = 1; i <= pages; i++) {
+
         var indicator = byId("page-indicator-" + i);
-        console.log(indicator);
+
         i == actualPage ? indicator.className = "active blue" : indicator.className = "waves-effect";
     }
 

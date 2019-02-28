@@ -2,6 +2,7 @@ package com.z0976190100.departments.controller;
 
 import com.z0976190100.departments.app_constants.GeneralConstants;
 import com.z0976190100.departments.controller.command.EmployeeCommandsEnum;
+import com.z0976190100.departments.exceptions.AgeNotConsistentException;
 import com.z0976190100.departments.exceptions.NotUniqueEntityException;
 import com.z0976190100.departments.exceptions.RequestParameterValidationException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
@@ -14,8 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+import java.sql.Date;
 
-public class EmployeeServlet extends HttpServlet implements GeneralConstants {
+public class  EmployeeServlet extends HttpServlet implements GeneralConstants {
 
     EmployeeService employeeService = new EmployeeService();
     List<String> success = new ArrayList<>();
@@ -53,6 +55,10 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                     e.printStackTrace();
                 }
                 //req.getRequestDispatcher(DEPARTMENT_EMPLOYEES_JSP).forward(req, resp);
+                break;
+            case GET_SAVE_PAGE:
+                req.getRequestDispatcher(EMPLOYEE_ADD_JSP).forward(req, resp);
+                break;
         }
 
 
@@ -71,10 +77,12 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                     command.execute(req);
                 } catch (NotUniqueEntityException e) {
                     e.printStackTrace();
-                    List<String> er = new ArrayList<>();
-                    er.add(e.getMessage());
-                    ((Map<String, List<String>>) req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME)).put(EMAIL_PARAM, er);
+                    addError(req, EMAIL_PARAM, e.getMessage());
 
+                    req.getRequestDispatcher(EMPLOYEE_ADD_JSP)
+                            .forward(req, resp);
+                }catch (AgeNotConsistentException e){
+                    addError(req, AGE_PARAM, e.getMessage());
                     req.getRequestDispatcher(EMPLOYEE_ADD_JSP)
                             .forward(req, resp);
                 } catch (Exception e) {
@@ -99,6 +107,7 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
         }
     }
 
+
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String email = req.getParameter(EMAIL_PARAM);
@@ -112,7 +121,14 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
 
 
             req.setAttribute(EMPLOYEE_RESOURCE_KEY, employee);
+        try {
             req.setAttribute(EMPLOYEE_RESOURCE_KEY, employeeService.updateEmployee(employee));
+        } catch (AgeNotConsistentException e) {
+            e.printStackTrace();
+            addError(req, AGE_PARAM, e.getMessage());
+            req.getRequestDispatcher(EMPLOYEE_EDIT_JSP)
+                    .forward(req, resp);
+        }
 
 
         resp.sendRedirect("departments?command=get&id=" + req.getAttribute(DEPARTMENT_ID_PARAM));
@@ -144,5 +160,14 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
         }
         if (req.getAttribute(SUCCESS_ATTRIBUTE_NAME) == null)
             req.setAttribute(SUCCESS_ATTRIBUTE_NAME, success);
+    }
+
+    private void addError(HttpServletRequest req, String paramName, String message) {
+        Map errors = (Map<String, List<String>>)req.getAttribute(ERRORS_ATTRIBUTE_NAME);
+        if (errors.get(paramName) == null)
+            errors.put(paramName, new ArrayList<String>());
+        List<String> er = (List<String>) errors.get(paramName);
+        er.add(message);
+        errors.put(paramName, er);
     }
 }

@@ -1,21 +1,22 @@
 package com.z0976190100.departments.controller.command;
 
 import com.z0976190100.departments.app_constants.GeneralConstants;
-import com.z0976190100.departments.exceptions.RequestParameterValidationException;
 import com.z0976190100.departments.persistense.entity.Employee;
 import com.z0976190100.departments.service.DepartmentService;
 import com.z0976190100.departments.service.EmployeeService;
-import com.z0976190100.departments.service.util.ValidatorAlt;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
+import java.sql.Date;
 
 public enum EmployeeCommandsEnum implements GeneralConstants {
 
-    SAVE() {
+    NO_COMMAND {
+        @Override
+        public void execute(HttpServletRequest req) throws Exception {
+
+        }
+    },
+    SAVE {
         @Override
         public void execute(HttpServletRequest req) throws Exception {
 
@@ -37,6 +38,11 @@ public enum EmployeeCommandsEnum implements GeneralConstants {
                 int id = Integer.parseInt(req.getParameter(ID));
                 req.setAttribute(EMPLOYEE_RESOURCE_KEY, new EmployeeService().getEmployee(id));
             }
+        }
+    },
+    GET_SAVE_PAGE {
+        @Override
+        public void execute(HttpServletRequest req) throws Exception {
         }
     },
     GET_ALL {

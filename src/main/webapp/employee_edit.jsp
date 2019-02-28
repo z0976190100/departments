@@ -134,18 +134,7 @@
     </c:forEach>
 </c:if>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var elems = document.querySelectorAll('.datepicker');
-        console.log(new Date('${max_date}'), new Date('${min_date}'));
-        var opt = {
-            format: "yyyy-mm-dd",
-            yearRange: [new Date('${min_date}').getFullYear(), new Date('${max_date}').getFullYear()],
-            defaultDate: new Date('${max_date}'),
-            minDate: new Date('${min_date}'),
-            maxDate: new Date('${max_date}')
-        };
-        var instances = M.Datepicker.init(elems, opt);
-    });
+    datePickerInit('${min_date}', '${max_date}');
 </script>
 </div>
 </body>

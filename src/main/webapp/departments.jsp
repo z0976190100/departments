@@ -161,7 +161,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="modal-close waves-effect waves-green btn-flat ">Cancel</a>
+                    <button type="button" class="modal-close waves-effect waves-green btn-flat ">Cancel</button>
                     <button type="submit" class="waves-effect waves-green btn-flat green-text">Save</button>
                 </div>
             </form>
@@ -189,7 +189,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="modal-close waves-effect waves-green btn-flat ">Nope</a>
+                    <button type="button" class="modal-close waves-effect waves-green btn-flat ">Nope</button>
                     <button type="submit" class="waves-effect waves-green btn-flat green-text">Sure</button>
                 </div>
             </form>
