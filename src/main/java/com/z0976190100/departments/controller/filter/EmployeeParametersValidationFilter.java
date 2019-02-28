@@ -28,7 +28,7 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException, NumberFormatException {
 
         req = (HttpServletRequest) request;
 
@@ -49,20 +49,6 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
                 }
                 req.getRequestDispatcher(EMPLOYEE_ADD_JSP).forward(req, response);
                 break;
-            case GET:
-                //TODO: check id
-                chain.doFilter(req, response);
-                break;
-            case GET_ALL:
-                //TODO: check department_id
-                //TODO: set pagination attributes
-
-                chain.doFilter(req, response);
-                break;
-            case DELETE:
-                //TODO: check id
-                chain.doFilter(req, response);
-                break;
             case UPDATE:
                 if (!val.isValidId(req.getParameter(ID)).hasErrors(ID) && !saveUpdateValidationChunk(val)) {
                     setIntAttribute(ID);
@@ -72,8 +58,6 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
                 }
                 req.getRequestDispatcher(EMPLOYEE_EDIT_JSP).forward(req, response);
                 break;
-            case DELETE_ALL:
-                //TODO: check department_id
             default:
                 chain.doFilter(request, response);
                 break;
@@ -98,8 +82,6 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
     }
 
     private void setDateBoundaries(HttpServletRequest req) {
-
-        System.out.println("setting date boundaries");
 
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(BIRTH_DATE_PATTERN);
         LocalDate date = LocalDate.now();

@@ -30,6 +30,7 @@ public interface GeneralConstants {
     // DEPARTMENT
     String DEPARTMENT_ID_NOT_VALID_MESSAGE = "Department ID you provided is invalid. ";
     String DEPARTMENT_TITLE_NOT_VALID_MESSAGE = "Title you provided not valid. Try another one. ";
+    String DEPARTMENT_TITLE_TOO_LONG_MESSAGE = "Title you provided is longer than 22 characters. ";
     String DEPARTMENT_NOT_FOUND_MESSAGE = "Department not found. ";
     String DEPARTMENT_TITLE_NOT_UNIQUE_MESSAGE = "Department already exists. Try another title. ";
 
@@ -86,8 +87,10 @@ public interface GeneralConstants {
     String WELCOME_PAGE_JSP = "index.jsp";
 
     // URIs
+    String GET_DEPARTMENT_URI = "departments?command=get&id=";
     String DEPARTMENTS_URI = "departments";
     String EMPLOYEES_URI = "employees";
     String DEPARTMENT_RESOURCE_KEY = "department";
     String EMPLOYEE_RESOURCE_KEY = "employee";
+    String GET_ALL_EMPLOYEES_URI = "employees?command=get_all&department_id=";
 }

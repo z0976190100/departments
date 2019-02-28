@@ -18,6 +18,8 @@ public class Validator implements GeneralConstants {
         if(!checkWithRegexp(title, regex))
             throw new RequestParameterValidationException(DEPARTMENT_TITLE_NOT_VALID_MESSAGE);
 
+        if(title.length() > 22) throw new RequestParameterValidationException(DEPARTMENT_TITLE_TOO_LONG_MESSAGE);
+
         return true;
     }
 

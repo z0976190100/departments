@@ -34,11 +34,8 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
                 try {
                     Department department = departmentService.getDepartmentById(Integer.parseInt(req.getParameter(ID)));
                     req.setAttribute(DEPARTMENT_RESOURCE_KEY, department);
-                   // String depWithEmployeesURI = EMPLOYEES_URI + "?command=get_all&" + DEPARTMENT_ID_PARAM + "=" + department.getId();
-                   //req.getRequestDispatcher(depWithEmployeesURI).forward(req, resp);
 
-
-                    req.getRequestDispatcher(EMPLOYEES_URI + "?command=get_all&" + DEPARTMENT_ID_PARAM + "=" + department.getId()).include(req, resp);
+                    req.getRequestDispatcher(GET_ALL_EMPLOYEES_URI + department.getId()).include(req, resp);
                     req.getRequestDispatcher(DEPARTMENT_EMPLOYEES_JSP).forward(req, resp);
 
                 } catch (NumberFormatException e) {

@@ -54,10 +54,13 @@ public enum EmployeeCommandsEnum implements GeneralConstants {
 
             int departmentID = Integer.parseInt(req.getParameter(DEPARTMENT_ID_PARAM));
             new DepartmentService().getDepartmentById(departmentID);
+
             int pages = paginationHelper(limit, departmentID);
             req.setAttribute(PAGES_PARAM, pages);
+
             if (req.getParameter(ACTUAL_PAGE_PARAM) != null)
                 actualPage = Integer.parseInt(req.getParameter(ACTUAL_PAGE_PARAM));
+
             req.setAttribute(ACTUAL_PAGE_PARAM, actualPage);
             req.setAttribute(EMPLOYEES_LIST_PARAMETER, new EmployeeService().getAllEmployees(departmentID, limit * (actualPage - 1), limit));
 

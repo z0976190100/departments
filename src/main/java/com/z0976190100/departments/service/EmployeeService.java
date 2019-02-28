@@ -8,6 +8,7 @@ import com.z0976190100.departments.persistense.dao.EmployeeDaoImpl;
 import com.z0976190100.departments.persistense.entity.Employee;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public class EmployeeService implements GeneralConstants {
@@ -18,8 +19,10 @@ public class EmployeeService implements GeneralConstants {
 
         if(employeeDao.getAllEntitiesWhere(employee.getEmail()).size() !=0 )
             throw new NotUniqueEntityException(EMPLOYEE_EMAIL_NOT_UNIQUE_MESSAGE);
+
         if(!ageConsistent(employee.getAge(), employee.getBirthDate()))
             throw new AgeNotConsistentException(EMPLOYEE_AGE_NOT_VALID_MESSAGE);
+
         return employeeDao.saveEntity(employee);
     }
 
@@ -74,6 +77,15 @@ public class EmployeeService implements GeneralConstants {
     private boolean ageConsistent(int age, Date bd){
 
 
-        return true;
+        LocalDate birthD = bd.toLocalDate();
+        LocalDate today = LocalDate.now();
+
+        if(birthD.plusYears(age).isEqual(today)) return true;
+
+        if(birthD.getDayOfYear() > today.getDayOfYear() && today.getYear()-1 == birthD.plusYears(age).getYear()) return true;
+
+        if(birthD.getDayOfYear() < today.getDayOfYear() && today.getYear() == birthD.plusYears(age).getYear()) return true;
+
+        return false;
     }
 }

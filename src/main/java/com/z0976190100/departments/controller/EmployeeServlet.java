@@ -4,7 +4,6 @@ import com.z0976190100.departments.app_constants.GeneralConstants;
 import com.z0976190100.departments.controller.command.EmployeeCommandsEnum;
 import com.z0976190100.departments.exceptions.AgeNotConsistentException;
 import com.z0976190100.departments.exceptions.NotUniqueEntityException;
-import com.z0976190100.departments.exceptions.RequestParameterValidationException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
 import com.z0976190100.departments.persistense.entity.Employee;
 import com.z0976190100.departments.service.EmployeeService;
@@ -14,22 +13,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class EmployeeServlet extends HttpServlet implements GeneralConstants {
 
-    EmployeeService employeeService = new EmployeeService();
-    List<String> success = new ArrayList<>();
-
-    // KUNG-FUSION: and what about doOptions() ?
+    private EmployeeService employeeService = new EmployeeService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         EmployeeCommandsEnum command = getCommand(req);
-        initErrorSuccessAttr(req);
-
 
         switch (command) {
 
@@ -37,8 +33,6 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                 try {
                     command.execute(req);
                 } catch (ResourceNotFoundException e) {
-                    e.printStackTrace();
-                } catch (RequestParameterValidationException e) {
                     e.printStackTrace();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -52,19 +46,14 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                     command.execute(req);
                 } catch (ResourceNotFoundException e) {
                     e.printStackTrace();
-                } catch (RequestParameterValidationException e) {
-                    e.printStackTrace();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                //req.getRequestDispatcher(DEPARTMENT_EMPLOYEES_JSP).forward(req, resp);
                 break;
             case GET_SAVE_PAGE:
                 req.getRequestDispatcher(EMPLOYEE_ADD_JSP).forward(req, resp);
                 break;
         }
-
-
     }
 
 
@@ -72,7 +61,6 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         EmployeeCommandsEnum command = getCommand(req);
-        initErrorSuccessAttr(req);
 
         switch (command) {
             case SAVE:
@@ -81,7 +69,6 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                 } catch (NotUniqueEntityException e) {
                     e.printStackTrace();
                     addError(req, EMAIL_PARAM, e.getMessage());
-
                     req.getRequestDispatcher(EMPLOYEE_ADD_JSP)
                             .forward(req, resp);
                 } catch (AgeNotConsistentException e) {
@@ -91,7 +78,8 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                resp.sendRedirect("departments?command=get&id=" + req.getAttribute(DEPARTMENT_ID_PARAM));
+                resp.setStatus(201);
+                resp.sendRedirect(GET_DEPARTMENT_URI + req.getAttribute(DEPARTMENT_ID_PARAM));
                 break;
             case UPDATE:
                 this.doPut(req, resp);
@@ -110,9 +98,9 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
         }
     }
 
-
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
         String email = req.getParameter(EMAIL_PARAM);
         String name = req.getParameter(NAME_PARAM);
         Date birthDate = (Date) req.getAttribute(BIRTH_DATE_PARAM);
@@ -121,7 +109,6 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
         int id = (Integer) req.getAttribute(ID);
 
         Employee employee = new Employee(id, name, birthDate, email, age, departmentID);
-
 
         req.setAttribute(EMPLOYEE_RESOURCE_KEY, employee);
         try {
@@ -133,8 +120,7 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                     .forward(req, resp);
         }
 
-
-        resp.sendRedirect("departments?command=get&id=" + req.getAttribute(DEPARTMENT_ID_PARAM));
+        resp.sendRedirect(GET_DEPARTMENT_URI + req.getAttribute(DEPARTMENT_ID_PARAM));
     }
 
     @Override
@@ -144,7 +130,7 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
             int id = Integer.parseInt(req.getParameter(ID));
             employeeService.deleteEmployee(id);
             int departmentID = Integer.parseInt(req.getParameter(DEPARTMENT_ID_PARAM));
-            resp.sendRedirect("departments?command=get&id=" + departmentID);
+            resp.sendRedirect(GET_DEPARTMENT_URI + departmentID);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         } catch (ResourceNotFoundException e) {
@@ -156,16 +142,9 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
         return EmployeeCommandsEnum.valueOf(req.getParameter(COMMAND_PARAM).toUpperCase());
     }
 
-    private void initErrorSuccessAttr(HttpServletRequest req) {
-        if (req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME) == null) {
-            Map<String, String> errors = new HashMap<>();
-            req.setAttribute(ERRORS_LIST_ATTRIBUTE_NAME, errors);
-        }
-        if (req.getAttribute(SUCCESS_ATTRIBUTE_NAME) == null)
-            req.setAttribute(SUCCESS_ATTRIBUTE_NAME, success);
-    }
-
     private void addError(HttpServletRequest req, String paramName, String message) {
+
+        //TODO computeIfAbsent()
         Map errors = (Map<String, List<String>>) req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME);
         if (errors.get(paramName) == null)
             errors.put(paramName, new ArrayList<String>());
