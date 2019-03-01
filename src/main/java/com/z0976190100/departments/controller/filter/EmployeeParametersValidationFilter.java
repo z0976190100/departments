@@ -2,7 +2,7 @@ package com.z0976190100.departments.controller.filter;
 
 import com.z0976190100.departments.app_constants.GeneralConstants;
 import com.z0976190100.departments.controller.command.EmployeeCommandsEnum;
-import com.z0976190100.departments.service.util.Val;
+import com.z0976190100.departments.service.util.EmployeeValidator;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +15,19 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+/**
+ * Filter responsibilities:
+ *
+ * - validation of user provided parameters of request
+ *
+ * - converting request data for further safe usage
+ *
+ * - initialization of date value boundaries for age restriction purposes
+ * ( min and max allowed age of employee )
+ * computed on present date
+ *
+ */
 
 public class EmployeeParametersValidationFilter implements Filter, GeneralConstants {
 
@@ -35,7 +48,7 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
         EmployeeCommandsEnum command = getCommand(req);
 
         Map<String, List<String>> errors = new HashMap<>();
-        Val val = new Val(errors);
+        EmployeeValidator val = new EmployeeValidator(errors);
         req.setAttribute(ERRORS_LIST_ATTRIBUTE_NAME, errors);
 
         setDateBoundaries(req);
@@ -71,8 +84,8 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
         setIntAttribute(AGE_PARAM);
     }
 
-    private boolean saveUpdateValidationChunk(Val val) {
-        return val
+    private boolean saveUpdateValidationChunk(EmployeeValidator employeeValidator) {
+        return employeeValidator
                 .isValidId(req.getParameter(DEPARTMENT_ID_PARAM))
                 .isValidDate(req.getParameter(BIRTH_DATE_PARAM))
                 .isValidEmail(req.getParameter(EMAIL_PARAM))

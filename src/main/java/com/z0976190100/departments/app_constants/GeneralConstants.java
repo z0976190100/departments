@@ -85,6 +85,7 @@ public interface GeneralConstants {
     String EMPLOYEE_EDIT_JSP = "employee_edit.jsp";
     String EMPLOYEE_ADD_JSP = "employee_add.jsp";
     String WELCOME_PAGE_JSP = "index.jsp";
+    String ERROR_JSP = "error.jsp";
 
     // URIs
     String GET_DEPARTMENT_URI = "departments?command=get&id=";

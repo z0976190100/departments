@@ -5,18 +5,16 @@ import com.z0976190100.departments.app_constants.GeneralConstants;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Val implements GeneralConstants {
-
+public class EmployeeValidator implements GeneralConstants {
 
     private final Map<String, List<String>> errors;
 
-    public Val(Map<String, List<String>> errors) {
+    public EmployeeValidator(Map<String, List<String>> errors) {
         this.errors = errors;
     }
 
@@ -24,19 +22,17 @@ public class Val implements GeneralConstants {
 
         if (paramValue == null || paramValue.equals("")) {
             addError(paramName, EMPTY_PARAM_VALUE_MESSAGE);
-            System.out.println("empty " + paramName);
             return true;
         }
-
         return false;
     }
 
-    public Val isValidId(String id) {
+    public EmployeeValidator isValidId(String id) {
 
         if (isEmpty(DEPARTMENT_ID_PARAM, id)) return this;
 
         try {
-            int departmentID = Integer.parseInt(id);
+            Integer.parseInt(id);
         } catch (NumberFormatException e) {
             e.printStackTrace();
             addError(DEPARTMENT_ID_PARAM, DEPARTMENT_ID_NOT_VALID_MESSAGE);
@@ -46,78 +42,65 @@ public class Val implements GeneralConstants {
     }
 
 
-    public Val isValidEmployeeName(String name) {
+    public EmployeeValidator isValidEmployeeName(String name) {
 
         if (isEmpty(NAME_PARAM, name)) return this;
 
         // valid if name has letters but no numbers, symbols except "-"
         String regex = "^[A-Za-z-\\s]+$";
 
-        if (!checkWithRegexp(name, regex))
+        if (checkWithRegexp(name, regex))
             addError(NAME_PARAM, EMPLOYEE_NAME_NOT_VALID_MESSAGE);
 
         return this;
     }
 
-    public Val isValidEmployeeAge(String age) {
+    public EmployeeValidator isValidEmployeeAge(String age) {
 
         System.out.println("is valid age");
 
         if (isEmpty(AGE_PARAM, age)) return this;
 
         try {
-            int age1 = Integer.parseInt(age);
-
-//            Instant instant = birthDate.toInstant();
-//            System.out.println("------------------");
-//
-//            ZoneId defaultZoneId = ZoneId.systemDefault();
-//            LocalDate localBD = instant.atZone(defaultZoneId).toLocalDate();
-//            LocalDate now = LocalDate.now();
-//            LocalDate bDbyAge = now.minusYears(age1);
-//
-//            System.out.println("!!!!!!!!!!!!!!!!!");
-//
-//            System.out.println(bDbyAge + " " + localBD);
-//
-//            if (localBD.getYear() != bDbyAge.getYear())
-
+            Integer.parseInt(age);
         } catch (NumberFormatException e) {
             e.printStackTrace();
             addError(AGE_PARAM, EMPLOYEE_AGE_NOT_VALID_MESSAGE);
             return this;
         }
-            return this;
+        return this;
     }
 
 
-    public Val isValidEmail(String email) {
+    public EmployeeValidator isValidEmail(String email) {
 
         if (isEmpty(EMAIL_PARAM, email)) return this;
 
         String regex = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
 
-        if (!checkWithRegexp(email, regex))
+        if (checkWithRegexp(email, regex))
             addError(EMAIL_PARAM, EMPLOYEE_EMAIL_NOT_VALID_MESSAGE);
 
         return this;
 
     }
 
-    public Val isValidDate(String date) {
+    public EmployeeValidator isValidDate(String date) {
+
+        // TODO: add constraints validation
 
         if (isEmpty(BIRTH_DATE_PARAM, date)) return this;
 
         SimpleDateFormat formatter = new SimpleDateFormat(BIRTH_DATE_PATTERN);
 
         try {
-            Date bDate = formatter.parse(date);
+            formatter.parse(date);
         } catch (ParseException e) {
             e.printStackTrace();
             addError(BIRTH_DATE_PARAM, BIRTH_DATE_NOT_VALID_MESSAGE);
-        } finally {
             return this;
         }
+        return this;
     }
 
     public boolean hasErrors() {
@@ -131,12 +114,13 @@ public class Val implements GeneralConstants {
     private boolean checkWithRegexp(String toValidate, String regex) {
         Pattern emailRegexp = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
         Matcher matcher = emailRegexp.matcher(toValidate);
-        return matcher.find();
+        return !matcher.find();
     }
 
     private void addError(String paramName, String message) {
+        //TODO: computeIfAbsent
         if (errors.get(paramName) == null)
-            errors.put(paramName, new ArrayList<String>());
+            errors.put(paramName, new ArrayList<>());
         List<String> er = errors.get(paramName);
         er.add(message);
         errors.put(paramName, er);

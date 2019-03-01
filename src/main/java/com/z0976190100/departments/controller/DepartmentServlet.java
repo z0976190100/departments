@@ -5,7 +5,7 @@ import com.z0976190100.departments.exceptions.RequestParameterValidationExceptio
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
 import com.z0976190100.departments.persistense.entity.Department;
 import com.z0976190100.departments.service.DepartmentService;
-import com.z0976190100.departments.service.util.Validator;
+import com.z0976190100.departments.service.util.DepartmentValidator;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -19,7 +19,7 @@ import java.util.List;
 public class DepartmentServlet extends HttpServlet implements GeneralConstants {
 
     private DepartmentService departmentService = new DepartmentService();
-    private Validator validator = new Validator();
+    private DepartmentValidator departmentValidator = new DepartmentValidator();
     private int actualPage = 1;
     private int limit = 3;
 
@@ -80,7 +80,7 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
         switch (command) {
             case "save":
                 try {
-                    validator.isValidDepartmentTitle(departmentTitle);
+                    departmentValidator.isValidDepartmentTitle(departmentTitle);
                     departmentService.saveDepartment(departmentTitle);
                     resp.setStatus(201);
                     System.out.println("save");
@@ -124,7 +124,7 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
 
         try {
             int id = Integer.parseInt(req.getParameter(DEPARTMENT_ID_PARAM));
-            validator.isValidDepartmentTitle(departmentTitle);
+            departmentValidator.isValidDepartmentTitle(departmentTitle);
             departmentService.updateDepartment(id, departmentTitle);
             resp.setStatus(204);
             resp.sendRedirect(DEPARTMENTS_URL);
