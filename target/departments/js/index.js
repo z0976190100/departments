@@ -19,7 +19,8 @@ function datePickerInit(minDate, maxDate) {
         var instances = M.Datepicker.init(elems, opt);
     });
 }
-
+// TODO: form reseting click-handler
+ 
 function byId(id) {
     return document.getElementById(id);
 }

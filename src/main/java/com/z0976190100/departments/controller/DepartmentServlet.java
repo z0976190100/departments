@@ -83,7 +83,6 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
                     departmentValidator.isValidDepartmentTitle(departmentTitle);
                     departmentService.saveDepartment(departmentTitle);
                     resp.setStatus(201);
-                    System.out.println("save");
                     resp.sendRedirect(DEPARTMENTS_URL);
                 } catch (RequestParameterValidationException e) {
                     try {

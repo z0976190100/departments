@@ -4,6 +4,7 @@ import com.z0976190100.departments.app_constants.GeneralConstants;
 import com.z0976190100.departments.exceptions.AgeNotConsistentException;
 import com.z0976190100.departments.exceptions.NotUniqueEntityException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
+import com.z0976190100.departments.persistense.dao.DaoAlt;
 import com.z0976190100.departments.persistense.dao.EmployeeDaoImpl;
 import com.z0976190100.departments.persistense.entity.Employee;
 
@@ -13,30 +14,35 @@ import java.util.List;
 
 public class EmployeeService implements GeneralConstants {
 
-    EmployeeDaoImpl employeeDao = new EmployeeDaoImpl();
+    private DaoAlt<Employee> dao = new EmployeeDaoImpl();
 
     public Employee saveEmployee(Employee employee) throws NotUniqueEntityException, AgeNotConsistentException{
 
-        if(employeeDao.getAllEntitiesWhere(employee.getEmail()).size() !=0 )
+        if(dao.getAllWhere(employee.getEmail()).size() !=0 )
             throw new NotUniqueEntityException(EMPLOYEE_EMAIL_NOT_UNIQUE_MESSAGE);
 
         if(!ageConsistent(employee.getAge(), employee.getBirthDate()))
             throw new AgeNotConsistentException(EMPLOYEE_AGE_NOT_VALID_MESSAGE);
 
-        return employeeDao.saveEntity(employee);
+        return dao.saveEntity(employee);
     }
 
-    public Employee updateEmployee (Employee employee) throws AgeNotConsistentException{
-        if(!ageConsistent(employee.getAge(), employee.getBirthDate()))
+    public Employee updateEmployee (Employee employee) throws AgeNotConsistentException, ResourceNotFoundException{
+
+        Employee employee1 = dao.getEntityById(employee.getId());
+
+        if ( employee1 == null) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE);
+
+        if(!ageConsistent(employee1.getAge(), employee1.getBirthDate()))
             throw new AgeNotConsistentException(EMPLOYEE_AGE_NOT_VALID_MESSAGE);
-        employeeDao.updateEntity(employee);
-        return   employeeDao.getEntityById(employee.getId());
+        dao.updateEntity(employee1);
+        return   dao.getEntityById(employee1.getId());
 
     }
 
     public Employee getEmployee(int id) throws ResourceNotFoundException{
 
-        Employee employee = employeeDao.getEntityById(id);
+        Employee employee = dao.getEntityById(id);
 
         if ( employee == null) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE);
 
@@ -45,12 +51,12 @@ public class EmployeeService implements GeneralConstants {
 
     public List<Employee> getAllEmployees(int departmentID){
 
-        return employeeDao.getEntitiesList(departmentID);
+        return dao.getAllWhere(departmentID);
     }
 
     public List<Employee> getAllEmployees(int departmentID, int offset, int limit){
 
-        return employeeDao.getEntitiesList(departmentID, offset, limit);
+        return dao.getAllWhere(departmentID, offset, limit);
     }
 
     public void deleteEmployee(int id) throws ResourceNotFoundException {
@@ -59,19 +65,19 @@ public class EmployeeService implements GeneralConstants {
 
         if (employee == null) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE);
 
-        employeeDao.deleteEntity(id);
+        dao.deleteEntity(id);
     }
 
     public void deleteAllEmployees(int departmentID) throws ResourceNotFoundException {
 
         if(getRowCount(departmentID) == 0) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE);
 
-        employeeDao.deleteAllEntitiesWhere(departmentID);
+        ((EmployeeDaoImpl)dao).deleteAllEntitiesWhere(departmentID);
 
     }
 
     public int getRowCount(int departmentID){
-        return employeeDao.getRowCount(departmentID);
+        return ((EmployeeDaoImpl)dao).getAllWhereRowCount(departmentID);
     }
 
     private boolean ageConsistent(int age, Date bd){

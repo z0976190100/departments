@@ -18,7 +18,7 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
         try (Connection connection = getNullsafeConnection()) {
 
             try (PreparedStatement ps = connection.prepareStatement(
-                    "INSERT INTO employee (name, email, department_id , birth_date, salary, id) VALUES ( ?, ?, ?, ?, ?,  DEFAULT) RETURNING *;")) {
+                    "INSERT INTO employee (name, email, department_id , birth_date, age, id) VALUES ( ?, ?, ?, ?, ?,  DEFAULT) RETURNING *;")) {
                 ps.setString(1, entity.getName());
                 ps.setString(2, entity.getEmail());
                 ps.setInt(3, entity.getDepartmentID());
@@ -92,7 +92,7 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
         try (Connection connection = getNullsafeConnection()) {
 
             try (PreparedStatement ps = connection.prepareStatement(
-                    "UPDATE employee SET name = ?, email = ?, department_id = ?, birth_date = ?, salary = ? WHERE id = ? ;"
+                    "UPDATE employee SET name = ?, email = ?, department_id = ?, birth_date = ?, age = ? WHERE id = ? ;"
                     )) {
                 ps.setString(1, entity.getName());
                 ps.setString(2, entity.getEmail());
@@ -168,7 +168,7 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
     }
 
     @Override
-    public List<Employee> getAllEntitiesWhere(String email) {
+    public List<Employee> getAllWhere(String email) {
         List<Employee> employees = new ArrayList<>();
 
         try (Connection connection = getNullsafeConnection()) {
@@ -204,7 +204,7 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
     }
 
     @Override
-    public List<Employee> getEntitiesList(int departmentID) {
+    public List<Employee> getAllWhere(int departmentID) {
 
 
         List<Employee> employeeList = new ArrayList<>();
@@ -243,7 +243,7 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
     }
 
     @Override
-    public List<Employee> getEntitiesList(int departmentID, int offset, int limit) {
+    public List<Employee> getAllWhere(int departmentID, int offset, int limit) {
         List<Employee> employeeList = new ArrayList<>();
 
 
@@ -319,12 +319,11 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
                 resultSet.getString(NAME_PARAM),
                 resultSet.getDate(BIRTH_DATE_PARAM),
                 resultSet.getString(EMAIL_PARAM),
-                resultSet.getInt("salary"),
+                resultSet.getInt(AGE_PARAM),
                 resultSet.getInt(DEPARTMENT_ID_PARAM));
     }
 
-    @Override
-    public int getRowCount(int departmentID) {
+    public int getAllWhereRowCount(int departmentID) {
 
         int rowCount = 0;
 

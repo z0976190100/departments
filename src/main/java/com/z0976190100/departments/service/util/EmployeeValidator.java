@@ -1,24 +1,39 @@
 package com.z0976190100.departments.service.util;
 
-import com.z0976190100.departments.app_constants.GeneralConstants;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class EmployeeValidator implements GeneralConstants {
+public class EmployeeValidator extends AbstractValidator {
 
-    private final Map<String, List<String>> errors;
+    protected final Map<String, List<String>> errors;
 
     public EmployeeValidator(Map<String, List<String>> errors) {
         this.errors = errors;
     }
 
-    private boolean isEmpty(String paramName, String paramValue) {
+    public boolean hasErrors() {
+        return this.getErrors().size() != 0;
+    }
+
+    public boolean hasErrors(String param) {
+        return this.getErrors().get(param) != null;
+    }
+
+    protected void addError(String paramName, String message) {
+        errors.computeIfAbsent(paramName, e -> new ArrayList<>());
+        List<String> er = errors.get(paramName);
+        er.add(message);
+        errors.put(paramName, er);
+    }
+
+    private Map<String, List<String>> getErrors() {
+        return errors;
+    }
+
+    protected boolean isEmpty(String paramName, String paramValue) {
 
         if (paramValue == null || paramValue.equals("")) {
             addError(paramName, EMPTY_PARAM_VALUE_MESSAGE);
@@ -101,33 +116,6 @@ public class EmployeeValidator implements GeneralConstants {
             return this;
         }
         return this;
-    }
-
-    public boolean hasErrors() {
-        return this.getErrors().size() != 0;
-    }
-
-    public boolean hasErrors(String param) {
-        return this.getErrors().get(param) != null;
-    }
-
-    private boolean checkWithRegexp(String toValidate, String regex) {
-        Pattern emailRegexp = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = emailRegexp.matcher(toValidate);
-        return !matcher.find();
-    }
-
-    private void addError(String paramName, String message) {
-        //TODO: computeIfAbsent
-        if (errors.get(paramName) == null)
-            errors.put(paramName, new ArrayList<>());
-        List<String> er = errors.get(paramName);
-        er.add(message);
-        errors.put(paramName, er);
-    }
-
-    private Map<String, List<String>> getErrors() {
-        return errors;
     }
 }
 

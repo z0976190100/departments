@@ -87,12 +87,6 @@ public enum EmployeeCommandsEnum implements GeneralConstants {
         public void execute(HttpServletRequest req) throws Exception {
 
         }
-    },
-    DELETE_ALL {
-        @Override
-        public void execute(HttpServletRequest req) throws Exception {
-
-        }
     };
 
     public abstract void execute(HttpServletRequest req) throws Exception;

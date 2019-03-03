@@ -4,19 +4,12 @@ import com.z0976190100.departments.app_constants.GeneralConstants;
 import com.z0976190100.departments.exceptions.AppRuntimeException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
 import com.z0976190100.departments.persistense.entity.Department;
-import com.z0976190100.departments.persistense.entity.DepartmentEntityDescription;
-import com.z0976190100.departments.persistense.entity.EntityDescription;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, GeneralConstants {
-
-
-    private final EntityDescription description = new DepartmentEntityDescription();
-    private final String table = description.getTableName();
-    private final String unique = description.getUniqueField();
 
     private ResultSet getResultSet(String query) {
 
@@ -35,13 +28,13 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
     }
 
     @Override
-    public List<Department> getEntitiesList() {
+    public List<Department> getAll() {
 
         List<Department> departmentList = new ArrayList<>();
 
         try (Connection connection = getNullsafeConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + table + " ORDER BY id ;")) {
+            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM department ORDER BY id ;")) {
 
                 getEntityListHelper(departmentList, ps);
 
@@ -59,13 +52,13 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
     }
 
     @Override
-    public List<Department> getEntitiesList(int offset, int limit) {
+    public List<Department> getAll(int offset, int limit) {
 
         List<Department> departmentList = new ArrayList<>();
 
         try (Connection connection = getNullsafeConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + table +
+            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM department" +
                     " ORDER BY id" +
                     " LIMIT " + limit + " OFFSET " + offset + ";")) {
 
@@ -102,14 +95,13 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
         }
     }
 
-    @Override
-    public void saveEntity(String title) {
+    public Department saveEntity(Department department) {
 
         try (Connection connection = getNullsafeConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("INSERT INTO " + table + " (title , id) VALUES ( ? , DEFAULT);")) {
+            try (PreparedStatement ps = connection.prepareStatement("INSERT INTO department (title , id) VALUES ( ? , DEFAULT);")) {
 
-                ps.setString(1, title);
+                ps.setString(1, department.getTitle());
 
                 try {
                     ps.executeUpdate();
@@ -133,18 +125,16 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
             throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
+        return department;
+
     }
 
     @Override
-    public void deleteEntity(int id) throws ResourceNotFoundException {
-
-        Department d = getEntityById(id);
-
-        if (d == null) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE + DEPARTMENT_NOT_FOUND_MESSAGE);
+    public void deleteEntity(int id) {
 
         try (Connection connection = getNullsafeConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("DELETE FROM " + table + " WHERE id = ?;")) {
+            try (PreparedStatement ps = connection.prepareStatement("DELETE FROM department WHERE id = ?;")) {
 
                 ps.setInt(1, id);
 
@@ -173,15 +163,11 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
 
 
     @Override
-    public void updateEntity(Department department) throws ResourceNotFoundException{
-
-        Department d = getEntityById(department.getId());
-
-        if (d == null) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE + DEPARTMENT_NOT_FOUND_MESSAGE);
+    public void updateEntity(Department department) {
 
         try (Connection connection = getNullsafeConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("UPDATE " + table + " SET " + unique + " = ? WHERE id = ?;")) {
+            try (PreparedStatement ps = connection.prepareStatement("UPDATE department SET title = ? WHERE id = ?;")) {
 
                 ps.setString(1, department.getTitle());
                 ps.setInt(2, department.getId());
@@ -215,7 +201,7 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
 
         try (Connection connection = getNullsafeConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + table + " WHERE id = ?;")) {
+            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM department WHERE id = ?;")) {
 
                 ps.setInt(1, id);
 
@@ -248,13 +234,13 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
     }
 
     @Override
-    public List<Department> getAllEntitiesWhere(String title) {
+    public List<Department> getAllWhere(String title) {
 
         List<Department> departmentList = new ArrayList<>();
 
         try (Connection connection = getNullsafeConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + table + " WHERE title = ?;")) {
+            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM department WHERE title = ?;")) {
 
                 ps.setString(1, title);
 
@@ -288,13 +274,32 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
         return departmentList;
     }
 
-    @Override
-    public int getRowCount(String query) throws SQLException {
+    public int getAllRowCount() {
 
-        ResultSet resultSet = getResultSet(query);
-        resultSet.next();
-        int rowCount = resultSet.getInt(1);
-        resultSet.close();
+        int rowCount = 0;
+
+        try (Connection connection = getNullsafeConnection()) {
+            try (PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) FROM department ;")) {
+
+                try {
+                    ResultSet rs = ps.executeQuery();
+                    rs.next();
+                    rowCount = rs.getInt(1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+
+                for (Throwable t : e) {
+                    System.out.println(t.getMessage());
+                }
+                //TODO init fails
+            }
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+        }
         return rowCount;
     }
 }

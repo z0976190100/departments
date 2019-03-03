@@ -9,6 +9,8 @@ import java.sql.SQLException;
 
 public abstract class AbstractDao implements GeneralConstants {
 
+    // TODO: connection factory
+
     protected Connection getNullsafeConnection() {
 
         try {

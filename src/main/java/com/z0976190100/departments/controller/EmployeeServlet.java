@@ -113,6 +113,9 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
         req.setAttribute(EMPLOYEE_RESOURCE_KEY, employee);
         try {
             req.setAttribute(EMPLOYEE_RESOURCE_KEY, employeeService.updateEmployee(employee));
+        }catch (ResourceNotFoundException e){
+            e.printStackTrace();
+            // TODO:
         } catch (AgeNotConsistentException e) {
             e.printStackTrace();
             addError(req, AGE_PARAM, e.getMessage());
