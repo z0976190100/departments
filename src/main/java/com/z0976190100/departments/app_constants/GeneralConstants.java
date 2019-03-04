@@ -59,6 +59,7 @@ public interface GeneralConstants {
     String DEPARTMENT_ID_PARAM = "department_id";
     String DEPARTMENT_NEW_TITLE_PARAM = "department_new_title";
     String DEPARTMENTS_LIST_PARAM = "departments_list";
+    String SQL_NOT_UNIQUE_ERROR_PATTERN = "duplicate key value violates unique constraint";
 
     // EMPLOYEE
     String EMAIL_PARAM = "email";

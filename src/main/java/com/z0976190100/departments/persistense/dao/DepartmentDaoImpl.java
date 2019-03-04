@@ -2,7 +2,7 @@ package com.z0976190100.departments.persistense.dao;
 
 import com.z0976190100.departments.app_constants.GeneralConstants;
 import com.z0976190100.departments.exceptions.AppRuntimeException;
-import com.z0976190100.departments.exceptions.ResourceNotFoundException;
+import com.z0976190100.departments.exceptions.RequestParameterValidationException;
 import com.z0976190100.departments.persistense.entity.Department;
 
 import java.sql.*;
@@ -95,7 +95,7 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
         }
     }
 
-    public Department saveEntity(Department department) {
+    public Department saveEntity(Department department) throws RequestParameterValidationException {
 
         try (Connection connection = getNullsafeConnection()) {
 
@@ -110,7 +110,8 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
                     e.printStackTrace();
 
                     for (Throwable t : e) {
-                        System.out.println(t.getMessage());
+                        if (t.getMessage().contains(SQL_NOT_UNIQUE_ERROR_PATTERN))
+                            throw new RequestParameterValidationException(DEPARTMENT_TITLE_NOT_UNIQUE_MESSAGE);
                     }
                     //TODO init fails
                 }
@@ -118,6 +119,7 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
             } catch (SQLException e) {
                 e.printStackTrace();
                 // TODO prepared fails
+                //
             }
 
         } catch (SQLException | NullPointerException e) {
@@ -163,7 +165,7 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
 
 
     @Override
-    public void updateEntity(Department department) {
+    public void updateEntity(Department department) throws RequestParameterValidationException {
 
         try (Connection connection = getNullsafeConnection()) {
 
@@ -173,17 +175,16 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
                 ps.setInt(2, department.getId());
 
                 try {
+
                     ps.executeUpdate();
-                    System.out.println("updated");
+
                 } catch (SQLException e) {
                     e.printStackTrace();
-
                     for (Throwable t : e) {
-                        System.out.println(t.getMessage());
+                        if (t.getMessage().contains(SQL_NOT_UNIQUE_ERROR_PATTERN))
+                            throw new RequestParameterValidationException(DEPARTMENT_TITLE_NOT_UNIQUE_MESSAGE);
                     }
-                    //TODO init fails
                 }
-
             } catch (SQLException e) {
                 e.printStackTrace();
                 // TODO prepared fails
@@ -206,6 +207,7 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
                 ps.setInt(1, id);
 
                 try {
+
                     ResultSet rs = ps.executeQuery();
 
                     rs.next();
@@ -233,46 +235,45 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
         return null;
     }
 
-    @Override
-    public List<Department> getAllWhere(String title) {
-
-        List<Department> departmentList = new ArrayList<>();
-
-        try (Connection connection = getNullsafeConnection()) {
-
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM department WHERE title = ?;")) {
-
-                ps.setString(1, title);
-
-                try {
-                    ResultSet rs = ps.executeQuery();
-
-                    while (rs.next()) {
-                        Department department = new Department(rs.getInt(ID), rs.getString(TITLE));
-                        departmentList.add(department);
-                    }
-
-                } catch (SQLException e) {
-                    e.printStackTrace();
-
-                    for (Throwable t : e) {
-                        System.out.println(t.getMessage());
-                    }
-                    //TODO init fails
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // TODO prepared fails
-            }
-
-        } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
-        }
-
-        return departmentList;
-    }
+//    public List<Department> getAllWhere(String title) {
+//
+//        List<Department> departmentList = new ArrayList<>();
+//
+//        try (Connection connection = getNullsafeConnection()) {
+//
+//            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM department WHERE title = ?;")) {
+//
+//                ps.setString(1, title);
+//
+//                try {
+//                    ResultSet rs = ps.executeQuery();
+//
+//                    while (rs.next()) {
+//                        Department department = new Department(rs.getInt(ID), rs.getString(TITLE));
+//                        departmentList.add(department);
+//                    }
+//
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//
+//                    for (Throwable t : e) {
+//                        System.out.println(t.getMessage());
+//                    }
+//                    //TODO init fails
+//                }
+//
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//                // TODO prepared fails
+//            }
+//
+//        } catch (SQLException | NullPointerException e) {
+//            e.printStackTrace();
+//            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+//        }
+//
+//        return departmentList;
+//    }
 
     public int getAllRowCount() {
 

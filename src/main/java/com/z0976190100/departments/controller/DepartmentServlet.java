@@ -1,6 +1,7 @@
 package com.z0976190100.departments.controller;
 
 import com.z0976190100.departments.app_constants.GeneralConstants;
+import com.z0976190100.departments.controller.command.DepartmentCommandsEnum;
 import com.z0976190100.departments.exceptions.RequestParameterValidationException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
 import com.z0976190100.departments.persistense.entity.Department;
@@ -26,16 +27,16 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String command = req.getParameter("command");
+        String command1 = req.getParameter(COMMAND_PARAM);
+        DepartmentCommandsEnum command = getCommand(req);
 
         switch (command) {
                 // getting department by id
-            case "get":
+            case GET:
                 try {
-                    Department department = departmentService.getDepartmentById(Integer.parseInt(req.getParameter(ID)));
-                    req.setAttribute(DEPARTMENT_RESOURCE_KEY, department);
+                    command.execute(req);
 
-                    req.getRequestDispatcher(GET_ALL_EMPLOYEES_URI + department.getId()).include(req, resp);
+                    req.getRequestDispatcher(GET_ALL_EMPLOYEES_URI + req.getParameter(ID)).include(req, resp);
                     req.getRequestDispatcher(DEPARTMENT_EMPLOYEES_JSP).forward(req, resp);
 
                 } catch (NumberFormatException e) {
@@ -48,13 +49,13 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
                     resp.sendError(500);
                 }
                 break;
-            case "get_all":
+            case GET_ALL:
                 try {
-                    if (req.getParameter(ACTUAL_PAGE_PARAM) != null)
-                        actualPage = Integer.parseInt(req.getParameter(ACTUAL_PAGE_PARAM));
-                    req.setAttribute(ACTUAL_PAGE_PARAM, actualPage);
-                    setListToAttributes(req, limit * (actualPage - 1), limit);
-                    requestDispatch(req, resp, DEPARTMENTS_JSP);
+                    //TODO: set default if null
+                    req.setAttribute(ACTUAL_PAGE_PARAM, getInitParameter(ACTUAL_PAGE_PARAM));
+                    req.setAttribute(PAGE_SIZE_LIMIT_PARAM, getInitParameter(PAGE_SIZE_LIMIT_PARAM));
+                    command.execute(req);
+                    req.getRequestDispatcher(DEPARTMENTS_JSP).forward(req, resp);
                 } catch (NumberFormatException e) {
                     forwardWithError(req, resp, e, 400, e.getMessage());
                 } catch (SQLException e) {
@@ -67,6 +68,7 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
                 break;
                 default:
                     resp.sendRedirect(DEPARTMENTS_JSP);
+                    break;
 
         }
     }
@@ -113,6 +115,7 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
 
             default:
                 resp.sendRedirect(DEPARTMENTS_URL);
+                break;
         }
     }
 
@@ -167,13 +170,6 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
         }
     }
 
-
-    private void requestDispatch(HttpServletRequest req, HttpServletResponse resp, String path) throws ServletException, IOException {
-
-        RequestDispatcher requestDispatcher = req.getRequestDispatcher(path);
-        requestDispatcher.forward(req, resp);
-    }
-
     private void forwardWithError(HttpServletRequest req,
                                   HttpServletResponse resp,
                                   Exception e,
@@ -183,7 +179,7 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
         e.printStackTrace();
         resp.setStatus(sc);
         req.setAttribute(ERRORS_ATTRIBUTE_NAME, error_message);
-        requestDispatch(req, resp, DEPARTMENTS_JSP);
+        req.getRequestDispatcher(DEPARTMENTS_JSP).forward(req, resp);
     }
 
     private void setListToAttributes(HttpServletRequest req, int offset, int limit) throws SQLException {
@@ -199,13 +195,17 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
         req.setAttribute(DEPARTMENTS_LIST_PARAM, departmentsList);
     }
 
-    private int paginationHelper(int rl) throws SQLException {
+    private int paginationHelper(int rl) {
 
         int rc = departmentService.getRowCount();
         if(rc == 0) return 1;
         int p = rc / rl;
         if (rc % rl != 0) p++;
         return p;
+    }
+
+    private DepartmentCommandsEnum getCommand(HttpServletRequest req) {
+        return DepartmentCommandsEnum.valueOf(req.getParameter(COMMAND_PARAM).toUpperCase());
     }
 
 }

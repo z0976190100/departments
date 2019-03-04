@@ -40,12 +40,12 @@ public class DepartmentService implements GeneralConstants {
 
     }
 
-    public void saveDepartment(String title) throws RequestParameterValidationException {
+    public Department saveDepartment(String title) throws RequestParameterValidationException {
 
         // check if department is unique by title
         //isExistByTitle(title);
 
-        dao.saveEntity(new Department(0, title));
+        return dao.saveEntity(new Department(0, title));
 
     }
 

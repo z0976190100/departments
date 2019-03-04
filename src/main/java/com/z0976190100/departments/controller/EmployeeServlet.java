@@ -41,6 +41,7 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                 break;
             case GET_ALL:
                 try {
+                    //TODO: set default if null
                     req.setAttribute(ACTUAL_PAGE_PARAM, getInitParameter(ACTUAL_PAGE_PARAM));
                     req.setAttribute(PAGE_SIZE_LIMIT_PARAM, getInitParameter(PAGE_SIZE_LIMIT_PARAM));
                     command.execute(req);
@@ -87,11 +88,6 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
             case DELETE:
                 this.doDelete(req, resp);
                 break;
-            case GET_ALL:
-                this.doGet(req, resp);
-                break;
-            case GET:
-                this.doGet(req, resp);
             default:
                 break;
 
@@ -147,11 +143,9 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
 
     private void addError(HttpServletRequest req, String paramName, String message) {
 
-        //TODO computeIfAbsent()
-        Map errors = (Map<String, List<String>>) req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME);
-        if (errors.get(paramName) == null)
-            errors.put(paramName, new ArrayList<String>());
-        List<String> er = (List<String>) errors.get(paramName);
+        Map<String, List<String>> errors = (Map<String, List<String>>) req.getAttribute(ERRORS_LIST_ATTRIBUTE_NAME);
+        errors.computeIfAbsent(paramName, e -> new ArrayList<>());
+        List<String> er = errors.get(paramName);
         er.add(message);
         errors.put(paramName, er);
     }
