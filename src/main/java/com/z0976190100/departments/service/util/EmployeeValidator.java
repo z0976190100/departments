@@ -61,6 +61,9 @@ public class EmployeeValidator extends AbstractValidator {
 
         if (isEmpty(NAME_PARAM, name)) return this;
 
+        if(name.length() > 22)
+            addError(NAME_PARAM, EMPLOYEE_NAME_TOO_LONG_MESSAGE);
+
         // valid if name has letters but no numbers, symbols except "-"
         String regex = "^[A-Za-z-\\s]+$";
 
@@ -71,8 +74,6 @@ public class EmployeeValidator extends AbstractValidator {
     }
 
     public EmployeeValidator isValidEmployeeAge(String age) {
-
-        System.out.println("is valid age");
 
         if (isEmpty(AGE_PARAM, age)) return this;
 

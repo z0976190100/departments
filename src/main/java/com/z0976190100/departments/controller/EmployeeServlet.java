@@ -72,10 +72,12 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                     addError(req, EMAIL_PARAM, e.getMessage());
                     req.getRequestDispatcher(EMPLOYEE_ADD_JSP)
                             .forward(req, resp);
+                    break;
                 } catch (AgeNotConsistentException e) {
                     addError(req, AGE_PARAM, e.getMessage());
                     req.getRequestDispatcher(EMPLOYEE_ADD_JSP)
                             .forward(req, resp);
+                    break;
                 } catch (Exception e) {
                     e.printStackTrace();
                     throw new RuntimeException(SMTH_WRONG_MESSAGE);
@@ -117,7 +119,9 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
             req.setAttribute(EMPLOYEE_RESOURCE_KEY, employeeService.updateEmployee(employee));
         }catch (ResourceNotFoundException e){
             e.printStackTrace();
-            // TODO:
+            addError(req, RESOURCE_NOT_FOUND_MESSAGE, e.getMessage());
+            req.getRequestDispatcher(EMPLOYEE_EDIT_JSP)
+                    .forward(req, resp);
         } catch (AgeNotConsistentException e) {
             e.printStackTrace();
             addError(req, AGE_PARAM, e.getMessage());

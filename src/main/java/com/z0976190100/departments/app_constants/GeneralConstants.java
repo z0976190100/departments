@@ -41,6 +41,7 @@ public interface GeneralConstants {
     String EMPLOYEE_NAME_NOT_VALID_MESSAGE = "Name contains not acceptable symbols.";
     String EMPLOYEE_AGE_NOT_VALID_MESSAGE = "Check age value or format considering birth date. ";
     String BIRTH_DATE_NOT_VALID_MESSAGE = "Date not valid. ";
+    String EMPLOYEE_NAME_TOO_LONG_MESSAGE = "Name is too long. ";
 
     //
     // HTTP REQUEST-RESPONSE PARAMETERS NAMES
