@@ -29,14 +29,12 @@ public class EmployeeService implements GeneralConstants {
 
     public Employee updateEmployee (Employee employee) throws AgeNotConsistentException, ResourceNotFoundException{
 
-        Employee employee1 = dao.getEntityById(employee.getId());
+        if ( dao.getEntityById(employee.getId()) == null) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE);
 
-        if ( employee1 == null) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE);
-
-        if(!ageConsistent(employee1.getAge(), employee1.getBirthDate()))
+        if(!ageConsistent(employee.getAge(), employee.getBirthDate()))
             throw new AgeNotConsistentException(EMPLOYEE_AGE_NOT_VALID_MESSAGE);
-        dao.updateEntity(employee1);
-        return   dao.getEntityById(employee1.getId());
+        dao.updateEntity(employee);
+        return   dao.getEntityById(employee.getId());
 
     }
 

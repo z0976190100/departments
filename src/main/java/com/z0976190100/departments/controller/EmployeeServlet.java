@@ -36,6 +36,7 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                     e.printStackTrace();
                 } catch (Exception e) {
                     e.printStackTrace();
+                    throw new RuntimeException(SMTH_WRONG_MESSAGE);
                 }
                 req.getRequestDispatcher(EMPLOYEE_EDIT_JSP).forward(req, resp);
                 break;
@@ -47,6 +48,7 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                     e.printStackTrace();
                 } catch (Exception e) {
                     e.printStackTrace();
+                    throw new RuntimeException(SMTH_WRONG_MESSAGE);
                 }
                 break;
             case GET_SAVE_PAGE:
@@ -76,6 +78,7 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                             .forward(req, resp);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    throw new RuntimeException(SMTH_WRONG_MESSAGE);
                 }
                 resp.setStatus(201);
                 resp.sendRedirect(GET_DEPARTMENT_URI + req.getAttribute(DEPARTMENT_ID_PARAM));
@@ -101,6 +104,7 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
 
         String email = req.getParameter(EMAIL_PARAM);
         String name = req.getParameter(NAME_PARAM);
+        System.out.println(name);
         Date birthDate = (Date) req.getAttribute(BIRTH_DATE_PARAM);
         int age = (Integer) req.getAttribute(AGE_PARAM);
         int departmentID = (Integer) req.getAttribute(DEPARTMENT_ID_PARAM);

@@ -93,14 +93,13 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
                     resp.sendRedirect(DEPARTMENTS_URL);
                 } catch (RequestParameterValidationException e) {
 
-                    throw new SQLAppRuntimeException("fuck");
-
-                    //req.setAttribute(DEPARTMENT_NEW_TITLE_PARAM, req.getParameter(DEPARTMENT_NEW_TITLE_PARAM));
-                    //proceedWithError(req, resp, e, 400, e.getMessage());
+                    req.setAttribute(DEPARTMENT_NEW_TITLE_PARAM, req.getParameter(DEPARTMENT_NEW_TITLE_PARAM));
+                    proceedWithError(req, resp, e, 400, e.getMessage());
 
                 } catch (Exception e) {
+
                     e.printStackTrace();
-                    resp.sendError(500);
+                    throw new RuntimeException(SMTH_WRONG_MESSAGE);
                 }
                 break;
 
@@ -145,9 +144,9 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
             proceedWithError(req, resp, e, 404, e.getMessage());
 
         } catch (Exception e) {
-            // FIXME
+
             e.printStackTrace();
-            resp.sendError(500);
+            throw new RuntimeException(SMTH_WRONG_MESSAGE);
         }
 
     }
@@ -168,9 +167,9 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
             proceedWithError(req, resp, e, 404, e.getMessage());
 
         } catch (Exception e) {
-            // FIXME
+
             e.printStackTrace();
-            resp.sendError(500);
+            throw new RuntimeException(SMTH_WRONG_MESSAGE);
         }
     }
 

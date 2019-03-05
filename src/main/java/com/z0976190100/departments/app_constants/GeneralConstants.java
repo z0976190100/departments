@@ -26,6 +26,7 @@ public interface GeneralConstants {
     String DB_CONNECTION_FAILURE_MESSAGE = "Connection to DB is failed. ";
     String RESOURCE_NOT_FOUND_MESSAGE = "Resource Not Found. ";
     String EMPTY_PARAM_VALUE_MESSAGE = "Parameter is empty. ";
+    String SMTH_WRONG_MESSAGE = "Smth went wrong...";
 
     // DEPARTMENT
     String DEPARTMENT_ID_NOT_VALID_MESSAGE = "Department ID you provided is invalid. ";
