@@ -41,9 +41,7 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                 break;
             case GET_ALL:
                 try {
-                    //TODO: set default if null
-                    req.setAttribute(ACTUAL_PAGE_PARAM, getInitParameter(ACTUAL_PAGE_PARAM));
-                    req.setAttribute(PAGE_SIZE_LIMIT_PARAM, getInitParameter(PAGE_SIZE_LIMIT_PARAM));
+                    setPaginationAttr(req);
                     command.execute(req);
                 } catch (ResourceNotFoundException e) {
                     e.printStackTrace();
@@ -89,6 +87,7 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                 this.doDelete(req, resp);
                 break;
             default:
+                // TODO
                 break;
 
         }
@@ -128,8 +127,7 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
         try {
             int id = Integer.parseInt(req.getParameter(ID));
             employeeService.deleteEmployee(id);
-            int departmentID = Integer.parseInt(req.getParameter(DEPARTMENT_ID_PARAM));
-            resp.sendRedirect(GET_DEPARTMENT_URI + departmentID);
+            resp.sendRedirect(GET_DEPARTMENT_URI + req.getParameter(DEPARTMENT_ID_PARAM));
         } catch (NumberFormatException e) {
             e.printStackTrace();
         } catch (ResourceNotFoundException e) {
@@ -138,8 +136,19 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
     }
 
     private EmployeeCommandsEnum getCommand(HttpServletRequest req) {
+        if(req.getParameter(COMMAND_PARAM) == null || req.getParameter(COMMAND_PARAM).equals(""))
+            return EmployeeCommandsEnum.NO_COMMAND;
         return EmployeeCommandsEnum.valueOf(req.getParameter(COMMAND_PARAM).toUpperCase());
     }
+
+    private void setPaginationAttr(HttpServletRequest req) {
+
+        if(getInitParameter(ACTUAL_PAGE_PARAM) == null) req.setAttribute(ACTUAL_PAGE_PARAM, 1);
+        req.setAttribute(ACTUAL_PAGE_PARAM, getInitParameter(ACTUAL_PAGE_PARAM));
+        if(getInitParameter(PAGE_SIZE_LIMIT_PARAM) == null) req.setAttribute(PAGE_SIZE_LIMIT_PARAM, 3);
+        req.setAttribute(PAGE_SIZE_LIMIT_PARAM, getInitParameter(PAGE_SIZE_LIMIT_PARAM));
+    }
+
 
     private void addError(HttpServletRequest req, String paramName, String message) {
 

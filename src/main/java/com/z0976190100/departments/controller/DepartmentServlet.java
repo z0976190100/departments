@@ -4,34 +4,27 @@ import com.z0976190100.departments.app_constants.GeneralConstants;
 import com.z0976190100.departments.controller.command.DepartmentCommandsEnum;
 import com.z0976190100.departments.exceptions.RequestParameterValidationException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
-import com.z0976190100.departments.persistense.entity.Department;
 import com.z0976190100.departments.service.DepartmentService;
 import com.z0976190100.departments.service.util.DepartmentValidator;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 
 public class DepartmentServlet extends HttpServlet implements GeneralConstants {
 
     private DepartmentService departmentService = new DepartmentService();
     private DepartmentValidator departmentValidator = new DepartmentValidator();
-    private int actualPage = 1;
-    private int limit = 3;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String command1 = req.getParameter(COMMAND_PARAM);
         DepartmentCommandsEnum command = getCommand(req);
 
         switch (command) {
-                // getting department by id
             case GET:
                 try {
                     command.execute(req);
@@ -40,9 +33,13 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
                     req.getRequestDispatcher(DEPARTMENT_EMPLOYEES_JSP).forward(req, resp);
 
                 } catch (NumberFormatException e) {
-                    forwardWithError(req, resp, e, 400, e.getMessage());
+
+                    proceedWithError(req, resp, e, 400, e.getMessage());
+
                 } catch (ResourceNotFoundException e) {
-                    forwardWithError(req, resp, e, 404, e.getMessage());
+
+                    proceedWithError(req, resp, e, 404, e.getMessage());
+
                 } catch (Exception e) {
                     // FIXME
                     e.printStackTrace();
@@ -51,24 +48,33 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
                 break;
             case GET_ALL:
                 try {
-                    //TODO: set default if null
-                    req.setAttribute(ACTUAL_PAGE_PARAM, getInitParameter(ACTUAL_PAGE_PARAM));
-                    req.setAttribute(PAGE_SIZE_LIMIT_PARAM, getInitParameter(PAGE_SIZE_LIMIT_PARAM));
+                    setPaginationAttr(req);
                     command.execute(req);
                     req.getRequestDispatcher(DEPARTMENTS_JSP).forward(req, resp);
+
                 } catch (NumberFormatException e) {
-                    forwardWithError(req, resp, e, 400, e.getMessage());
+
+                    proceedWithError(req, resp, e, 400, e.getMessage());
+
                 } catch (SQLException e) {
-                    forwardWithError(req, resp, e, 500, DB_CONNECTION_FAILURE_MESSAGE);
+
+                    proceedWithError(req, resp, e, 500, DB_CONNECTION_FAILURE_MESSAGE);
+
                 } catch (Exception e) {
                     // FIXME
                     e.printStackTrace();
                     resp.sendError(500);
                 }
                 break;
-                default:
-                    resp.sendRedirect(DEPARTMENTS_JSP);
-                    break;
+            default:
+                try {
+                    setPaginationAttr(req);
+                    DepartmentCommandsEnum.GET_ALL.execute(req);
+                    req.getRequestDispatcher(DEPARTMENTS_JSP).forward(req, resp);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
 
         }
     }
@@ -76,24 +82,18 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String command = req.getParameter(COMMAND_PARAM);
-        String departmentTitle = req.getParameter(DEPARTMENT_NEW_TITLE_PARAM);
+        DepartmentCommandsEnum command = getCommand(req);
 
         switch (command) {
-            case "save":
+            case SAVE:
                 try {
-                    departmentValidator.isValidDepartmentTitle(departmentTitle);
-                    departmentService.saveDepartment(departmentTitle);
+                    command.execute(req);
                     resp.setStatus(201);
                     resp.sendRedirect(DEPARTMENTS_URL);
                 } catch (RequestParameterValidationException e) {
-                    try {
-                        setListToAttributes(req, limit * (actualPage - 1), limit);
-                        req.setAttribute(DEPARTMENT_NEW_TITLE_PARAM, req.getParameter(DEPARTMENT_NEW_TITLE_PARAM));
-                    } catch (SQLException e1) {
-                        forwardWithError(req, resp, e1, 500, DB_CONNECTION_FAILURE_MESSAGE);
-                    }
-                    forwardWithError(req, resp, e, 400, e.getMessage());
+
+                    req.setAttribute(DEPARTMENT_NEW_TITLE_PARAM, req.getParameter(DEPARTMENT_NEW_TITLE_PARAM));
+                    proceedWithError(req, resp, e, 400, e.getMessage());
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -101,20 +101,17 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
                 }
                 break;
 
-            case "update":
+            case UPDATE:
                 this.doPut(req, resp);
                 break;
 
-            case "delete":
+            case DELETE:
                 this.doDelete(req, resp);
                 break;
 
-            case "get":
-                this.doGet(req, resp);
-                break;
-
             default:
-                resp.sendRedirect(DEPARTMENTS_URL);
+                resp.setStatus(405);
+                this.doGet(req, resp);
                 break;
         }
     }
@@ -130,19 +127,20 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
             departmentService.updateDepartment(id, departmentTitle);
             resp.setStatus(204);
             resp.sendRedirect(DEPARTMENTS_URL);
+
         } catch (NumberFormatException e) {
-            e.printStackTrace();
-            forwardWithError(req, resp, e, 400, e.getMessage());
+
+            proceedWithError(req, resp, e, 400, e.getMessage());
+
         } catch (RequestParameterValidationException e) {
-            try {
-                setListToAttributes(req, limit * (actualPage - 1), limit);
-                req.setAttribute(DEPARTMENT_NEW_TITLE_PARAM, req.getParameter(DEPARTMENT_NEW_TITLE_PARAM));
-            } catch (SQLException e1) {
-                forwardWithError(req, resp, e1, 500, DB_CONNECTION_FAILURE_MESSAGE);
-            }
-            forwardWithError(req, resp, e, 400, e.getMessage());
+
+            req.setAttribute(DEPARTMENT_NEW_TITLE_PARAM, req.getParameter(DEPARTMENT_NEW_TITLE_PARAM));
+            proceedWithError(req, resp, e, 400, e.getMessage());
+
         } catch (ResourceNotFoundException e) {
-            forwardWithError(req, resp, e, 404, e.getMessage());
+
+            proceedWithError(req, resp, e, 404, e.getMessage());
+
         } catch (Exception e) {
             // FIXME
             e.printStackTrace();
@@ -159,10 +157,13 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
             departmentService.deleteDepartment(id);
             resp.setStatus(204);
             resp.sendRedirect(DEPARTMENTS_URL);
+
         } catch (NumberFormatException e) {
-            forwardWithError(req, resp, e, 400, e.getMessage());
+            proceedWithError(req, resp, e, 400, e.getMessage());
+
         } catch (ResourceNotFoundException e) {
-            forwardWithError(req, resp, e, 404, e.getMessage());
+            proceedWithError(req, resp, e, 404, e.getMessage());
+
         } catch (Exception e) {
             // FIXME
             e.printStackTrace();
@@ -170,7 +171,15 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
         }
     }
 
-    private void forwardWithError(HttpServletRequest req,
+    private void setPaginationAttr(HttpServletRequest req) {
+
+        if (getInitParameter(ACTUAL_PAGE_PARAM) == null) req.setAttribute(ACTUAL_PAGE_PARAM, 1);
+        req.setAttribute(ACTUAL_PAGE_PARAM, getInitParameter(ACTUAL_PAGE_PARAM));
+        if (getInitParameter(PAGE_SIZE_LIMIT_PARAM) == null) req.setAttribute(PAGE_SIZE_LIMIT_PARAM, 3);
+        req.setAttribute(PAGE_SIZE_LIMIT_PARAM, getInitParameter(PAGE_SIZE_LIMIT_PARAM));
+    }
+
+    private void proceedWithError(HttpServletRequest req,
                                   HttpServletResponse resp,
                                   Exception e,
                                   int sc,
@@ -179,33 +188,12 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
         e.printStackTrace();
         resp.setStatus(sc);
         req.setAttribute(ERRORS_ATTRIBUTE_NAME, error_message);
-        req.getRequestDispatcher(DEPARTMENTS_JSP).forward(req, resp);
-    }
-
-    private void setListToAttributes(HttpServletRequest req, int offset, int limit) throws SQLException {
-        int pages = paginationHelper(limit);
-        req.setAttribute(PAGES_PARAM, pages);
-        List<Department> departmentsList = departmentService.getDepartmentsList(offset, limit);
-        req.setAttribute(DEPARTMENTS_LIST_PARAM, departmentsList);
-    }
-
-    private void setListToAttributes(HttpServletRequest req) {
-
-        List<Department> departmentsList = departmentService.getDepartmentsList();
-        req.setAttribute(DEPARTMENTS_LIST_PARAM, departmentsList);
-    }
-
-    private int paginationHelper(int rl) {
-
-        int rc = departmentService.getRowCount();
-        if(rc == 0) return 1;
-        int p = rc / rl;
-        if (rc % rl != 0) p++;
-        return p;
+        this.doGet(req, resp);
     }
 
     private DepartmentCommandsEnum getCommand(HttpServletRequest req) {
+        if (req.getParameter(COMMAND_PARAM) == null || req.getParameter(COMMAND_PARAM).equals(""))
+            return DepartmentCommandsEnum.NO_COMMAND;
         return DepartmentCommandsEnum.valueOf(req.getParameter(COMMAND_PARAM).toUpperCase());
     }
-
 }

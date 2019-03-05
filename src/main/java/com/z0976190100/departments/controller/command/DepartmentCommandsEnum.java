@@ -18,9 +18,9 @@ public enum DepartmentCommandsEnum implements GeneralConstants {
         @Override
         public void execute(HttpServletRequest req) throws Exception {
 
-            new DepartmentValidator().isValidDepartmentTitle(req.getParameter(TITLE));
+            new DepartmentValidator().isValidDepartmentTitle(req.getParameter(DEPARTMENT_NEW_TITLE_PARAM));
 
-            req.setAttribute(DEPARTMENT_RESOURCE_KEY, new DepartmentService().saveDepartment(req.getParameter(TITLE)));
+            req.setAttribute(DEPARTMENT_RESOURCE_KEY, new DepartmentService().saveDepartment(req.getParameter(DEPARTMENT_NEW_TITLE_PARAM)));
 
         }
     },
