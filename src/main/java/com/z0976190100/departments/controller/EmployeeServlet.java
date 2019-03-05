@@ -88,6 +88,9 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                 break;
             default:
                 // TODO
+                resp.setStatus(405);
+                req.getRequestDispatcher(EMPLOYEE_ADD_JSP)
+                        .forward(req, resp);
                 break;
 
         }
