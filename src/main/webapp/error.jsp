@@ -9,12 +9,27 @@
     <link href="materialize/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 <body>
-
-<div class="container center">
-    <h2><%= response.getStatus()%></h2>
-    <h1>Error</h1>
-    <h3><%= exception.getMessage()%></h3>
+<nav class="light-blue lighten-1" role="navigation">
+    <div class="nav-wrapper container">
+        <a id="logo-container" href="http://mobile.azino-77.ru/" class="brand-logo">gh</a>
+    </div>
+</nav>
+<div class="section"></div>
+<div class="section"></div>
+<div class="section"></div>
+<div class="section"></div>
+<div class="container center grey-text">
+    <h3><%= response.getStatus()%>
+    </h3>
+    <h1><strong>Error</strong></h1>
+    <div class="section"></div>
+    <h3><%= exception.getMessage()%>
+    </h3>
 </div>
+<div class="section"></div>
+<div class="section"></div>
+<div class="section"></div>
+<div class="section"></div>
 <footer class="page-footer light-green">
     <div class="container">
         <div class="row">
@@ -26,6 +41,7 @@
     <div class="footer-copyright">
         <div class="container">
             © 2019 good habit. another one is us.
+            <a class="grey-text text-lighten-4 right" href="http://github.com/z0976190100">My Github</a>
         </div>
     </div>
 </footer>

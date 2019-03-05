@@ -4,7 +4,7 @@ import com.z0976190100.departments.exceptions.RequestParameterValidationExceptio
 
 import java.util.List;
 
-public interface Dao<T> {
+public interface DepartmentDao<T> {
 
     public T saveEntity(T entity) throws RequestParameterValidationException;
 

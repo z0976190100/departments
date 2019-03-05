@@ -14,7 +14,8 @@ public class ErrorHandlerServlet extends HttpServlet implements GeneralConstants
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 
-        resp.sendRedirect(ERROR_JSP);
+        resp.setStatus(500);
+        req.getRequestDispatcher(ERROR_JSP).forward(req, resp);
     }
 
     @Override

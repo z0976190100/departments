@@ -1,7 +1,7 @@
 package com.z0976190100.departments.persistense.dao;
 
 import com.z0976190100.departments.app_constants.GeneralConstants;
-import com.z0976190100.departments.exceptions.AppRuntimeException;
+import com.z0976190100.departments.exceptions.SQLAppRuntimeException;
 import com.z0976190100.departments.exceptions.RequestParameterValidationException;
 import com.z0976190100.departments.persistense.entity.Department;
 
@@ -9,23 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, GeneralConstants {
-
-    private ResultSet getResultSet(String query) {
-
-        try (Connection connection = getNullsafeConnection()) {
-
-            PreparedStatement ps = connection.prepareStatement(query);
-
-            ResultSet rs = ps.executeQuery();
-
-            return rs;
-
-        } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
-        }
-    }
+public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao<Department>, GeneralConstants {
 
     @Override
     public List<Department> getAll() {
@@ -40,12 +24,12 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
 
             } catch (SQLException e) {
                 e.printStackTrace();
-                // TODO prepared fails
+                throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+            throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
         return departmentList;
@@ -66,12 +50,12 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
 
             } catch (SQLException e) {
                 e.printStackTrace();
-                // TODO prepared fails
+                throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+            throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
         return departmentList;
@@ -115,16 +99,13 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
                     }
                     //TODO init fails
                 }
-
             } catch (SQLException e) {
                 e.printStackTrace();
-                // TODO prepared fails
-                //
+                throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
-
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+            throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
         return department;
@@ -154,12 +135,12 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
 
             } catch (SQLException e) {
                 e.printStackTrace();
-                // TODO prepared fails
+                throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+            throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
     }
 
@@ -187,12 +168,12 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                // TODO prepared fails
+                throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+            throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
     }
@@ -224,12 +205,12 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
 
             } catch (SQLException e) {
                 e.printStackTrace();
-                // TODO prepared fails
+                throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+            throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
         return null;
@@ -269,7 +250,7 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
 //
 //        } catch (SQLException | NullPointerException e) {
 //            e.printStackTrace();
-//            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+//            throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
 //        }
 //
 //        return departmentList;
@@ -295,11 +276,11 @@ public class DepartmentDaoImpl extends AbstractDao implements Dao<Department>, G
                 for (Throwable t : e) {
                     System.out.println(t.getMessage());
                 }
-                //TODO init fails
+                throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+            throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
         return rowCount;
     }

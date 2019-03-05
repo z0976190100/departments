@@ -4,7 +4,7 @@ import com.z0976190100.departments.app_constants.GeneralConstants;
 import com.z0976190100.departments.exceptions.AgeNotConsistentException;
 import com.z0976190100.departments.exceptions.NotUniqueEntityException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
-import com.z0976190100.departments.persistense.dao.DaoAlt;
+import com.z0976190100.departments.persistense.dao.EmployeeDao;
 import com.z0976190100.departments.persistense.dao.EmployeeDaoImpl;
 import com.z0976190100.departments.persistense.entity.Employee;
 
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class EmployeeService implements GeneralConstants {
 
-    private DaoAlt<Employee> dao = new EmployeeDaoImpl();
+    private EmployeeDao<Employee> dao = new EmployeeDaoImpl();
 
     public Employee saveEmployee(Employee employee) throws NotUniqueEntityException, AgeNotConsistentException{
 
@@ -79,7 +79,6 @@ public class EmployeeService implements GeneralConstants {
     }
 
     private boolean ageConsistent(int age, Date bd){
-
 
         LocalDate birthD = bd.toLocalDate();
         LocalDate today = LocalDate.now();

@@ -1,7 +1,7 @@
 package com.z0976190100.departments.persistense.dao;
 
 import com.z0976190100.departments.app_constants.GeneralConstants;
-import com.z0976190100.departments.exceptions.AppRuntimeException;
+import com.z0976190100.departments.exceptions.SQLAppRuntimeException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -25,7 +25,7 @@ public abstract class AbstractDao implements GeneralConstants {
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             // FIXME do checked exception for DB_CONNECTION_FAILURE
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+            throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
     }
 }

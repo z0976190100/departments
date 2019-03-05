@@ -3,7 +3,7 @@ package com.z0976190100.departments.service;
 import com.z0976190100.departments.app_constants.GeneralConstants;
 import com.z0976190100.departments.exceptions.RequestParameterValidationException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
-import com.z0976190100.departments.persistense.dao.Dao;
+import com.z0976190100.departments.persistense.dao.DepartmentDao;
 import com.z0976190100.departments.persistense.dao.DepartmentDaoImpl;
 import com.z0976190100.departments.persistense.entity.Department;
 
@@ -11,7 +11,7 @@ import java.util.List;
 
 public class DepartmentService implements GeneralConstants {
 
-    private Dao<Department> dao = new DepartmentDaoImpl();
+    private DepartmentDao<Department> dao = new DepartmentDaoImpl();
     private EmployeeService employeeService = new EmployeeService();
 
 

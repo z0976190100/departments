@@ -8,6 +8,19 @@
          version="3.0">
     <display-name>Departments</display-name>
 
+    <error-page>
+        <exception-type>java.lang.Exception</exception-type>
+        <location>/errorHandler</location>
+    </error-page>
+    <servlet>
+        <servlet-name>ErrorHandler</servlet-name>
+        <servlet-class>com.z0976190100.departments.controller.ErrorHandlerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ErrorHandler</servlet-name>
+        <url-pattern>/errorHandler</url-pattern>
+    </servlet-mapping>
+
     <servlet>
         <servlet-name>DepartmentServlet</servlet-name>
         <servlet-class>com.z0976190100.departments.controller.DepartmentServlet</servlet-class>

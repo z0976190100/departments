@@ -2,6 +2,7 @@ package com.z0976190100.departments.controller;
 
 import com.z0976190100.departments.app_constants.GeneralConstants;
 import com.z0976190100.departments.controller.command.DepartmentCommandsEnum;
+import com.z0976190100.departments.exceptions.SQLAppRuntimeException;
 import com.z0976190100.departments.exceptions.RequestParameterValidationException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
 import com.z0976190100.departments.service.DepartmentService;
@@ -92,8 +93,10 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
                     resp.sendRedirect(DEPARTMENTS_URL);
                 } catch (RequestParameterValidationException e) {
 
-                    req.setAttribute(DEPARTMENT_NEW_TITLE_PARAM, req.getParameter(DEPARTMENT_NEW_TITLE_PARAM));
-                    proceedWithError(req, resp, e, 400, e.getMessage());
+                    throw new SQLAppRuntimeException("fuck");
+
+                    //req.setAttribute(DEPARTMENT_NEW_TITLE_PARAM, req.getParameter(DEPARTMENT_NEW_TITLE_PARAM));
+                    //proceedWithError(req, resp, e, 400, e.getMessage());
 
                 } catch (Exception e) {
                     e.printStackTrace();

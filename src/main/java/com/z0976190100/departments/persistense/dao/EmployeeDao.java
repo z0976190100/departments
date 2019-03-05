@@ -2,7 +2,7 @@ package com.z0976190100.departments.persistense.dao;
 
 import java.util.List;
 
-public interface DaoAlt<T> {
+public interface EmployeeDao<T> {
 
     public T saveEntity(T entity);
 

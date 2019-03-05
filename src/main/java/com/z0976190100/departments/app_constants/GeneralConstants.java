@@ -55,7 +55,6 @@ public interface GeneralConstants {
     String BIRTH_DATE_PATTERN = "yyyy-MM-dd";
 
     // DEPARTMENT
-    String DEPARTMENT_TITLE_PARAM = "department_title";
     String DEPARTMENT_ID_PARAM = "department_id";
     String DEPARTMENT_NEW_TITLE_PARAM = "department_new_title";
     String DEPARTMENTS_LIST_PARAM = "departments_list";

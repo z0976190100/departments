@@ -1,14 +1,14 @@
 package com.z0976190100.departments.persistense.dao;
 
 import com.z0976190100.departments.app_constants.GeneralConstants;
-import com.z0976190100.departments.exceptions.AppRuntimeException;
+import com.z0976190100.departments.exceptions.SQLAppRuntimeException;
 import com.z0976190100.departments.persistense.entity.Employee;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, GeneralConstants {
+public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee>, GeneralConstants {
 
     @Override
     public Employee saveEntity(Employee entity) {
@@ -41,12 +41,12 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
 
             } catch (SQLException e) {
                 e.printStackTrace();
-                // TODO prepared fails
+                throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+            throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
         return newEmployee;
     }
@@ -75,12 +75,12 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
 
             } catch (SQLException e) {
                 e.printStackTrace();
-                // TODO prepared fails
+                throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+            throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
     }
 
@@ -118,12 +118,12 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
 
             } catch (SQLException e) {
                 e.printStackTrace();
-                // TODO prepared fails
+                throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+            throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
         return result;
 
@@ -156,12 +156,12 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
 
             } catch (SQLException e) {
                 e.printStackTrace();
-                // TODO prepared fails
+                throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+            throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
         return employee;
 
@@ -193,12 +193,12 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
 
             } catch (SQLException e) {
                 e.printStackTrace();
-                // TODO prepared fails
+                throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+            throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
         return employees;
     }
@@ -232,12 +232,12 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
 
             } catch (SQLException e) {
                 e.printStackTrace();
-                // TODO prepared fails
+                throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+            throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
         return employeeList;
     }
@@ -273,12 +273,12 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
 
             } catch (SQLException e) {
                 e.printStackTrace();
-                // TODO prepared fails
+                throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+            throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
         return employeeList;
     }
@@ -305,12 +305,12 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
 
             } catch (SQLException e) {
                 e.printStackTrace();
-                // TODO prepared fails
+                throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+            throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
     }
 
@@ -348,7 +348,7 @@ public class EmployeeDaoImpl extends AbstractDao implements DaoAlt<Employee>, Ge
             }
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
-            throw new AppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+            throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
         return rowCount;
     }
