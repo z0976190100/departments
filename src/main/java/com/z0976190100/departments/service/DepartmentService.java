@@ -67,17 +67,17 @@ public class DepartmentService implements GeneralConstants {
 
         if (d == null) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE + DEPARTMENT_NOT_FOUND_MESSAGE);
 
-        //isExistByTitle(newTitle);
+        isExistByTitle(newTitle);
 
         dao.updateEntity(new Department(id, newTitle));
 
     }
 
-//       private void isExistByTitle(String title) throws RequestParameterValidationException {
-//
-//        List<Department> departmentList = dao.getAllWhere(title);
-//        if (departmentList.size() != 0)
-//            throw new RequestParameterValidationException(DEPARTMENT_TITLE_NOT_UNIQUE_MESSAGE);
-//    }
+       private void isExistByTitle(String title) throws RequestParameterValidationException {
+
+        List<Department> departmentList = dao.getAllWhere(title);
+        if (departmentList.size() != 0)
+            throw new RequestParameterValidationException(DEPARTMENT_TITLE_NOT_UNIQUE_MESSAGE);
+    }
 
 }

@@ -24,7 +24,6 @@ public abstract class AbstractDao implements GeneralConstants {
 
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
-            // FIXME do checked exception for DB_CONNECTION_FAILURE
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
     }

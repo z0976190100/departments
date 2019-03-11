@@ -27,7 +27,6 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
 
                 try {
                     ResultSet resultSet = ps.executeQuery();
-                    System.out.println("saved");
                     resultSet.next();
                     newEmployee = new Employee(resultSet.getInt(ID), resultSet.getString(EMAIL_PARAM), resultSet.getInt(DEPARTMENT_ID_PARAM));
                 } catch (SQLException e) {
@@ -52,39 +51,6 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
     }
 
     @Override
-    public void deleteEntity(int id) {
-
-
-        try (Connection connection = getNullsafeConnection()) {
-
-            try (PreparedStatement ps = connection.prepareStatement("DELETE FROM employee WHERE id = ?;")) {
-
-                ps.setInt(1, id);
-
-                try {
-                    ps.executeUpdate();
-                    System.out.println("deleted employee");
-                } catch (SQLException e) {
-                    e.printStackTrace();
-
-                    for (Throwable t : e) {
-                        System.out.println(t.getMessage());
-                    }
-                    //TODO init fails
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-                throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
-            }
-
-        } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
-            throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
-        }
-    }
-
-    @Override
     public int updateEntity(Employee entity) {
 
         int result = 0;
@@ -93,7 +59,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
 
             try (PreparedStatement ps = connection.prepareStatement(
                     "UPDATE employee SET name = ?, email = ?, department_id = ?, birth_date = ?, age = ? WHERE id = ? ;"
-                    )) {
+            )) {
                 ps.setString(1, entity.getName());
                 ps.setString(2, entity.getEmail());
                 ps.setInt(3, entity.getDepartmentID());
@@ -103,9 +69,6 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
 
                 try {
                     result = ps.executeUpdate();
-                    System.out.println("update result is " + result);
-                    if(result == 1)
-                    System.out.println("updated");
 
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -130,6 +93,38 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
     }
 
     @Override
+    public void deleteEntity(int id) {
+
+
+        try (Connection connection = getNullsafeConnection()) {
+
+            try (PreparedStatement ps = connection.prepareStatement("DELETE FROM employee WHERE id = ?;")) {
+
+                ps.setInt(1, id);
+
+                try {
+                    ps.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+
+                    for (Throwable t : e) {
+                        System.out.println(t.getMessage());
+                    }
+                    //TODO init fails
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+            }
+
+        } catch (SQLException | NullPointerException e) {
+            e.printStackTrace();
+            throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
+        }
+    }
+
+    @Override
     public Employee getEntityById(int id) {
 
         Employee employee = null;
@@ -142,7 +137,6 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
 
                 try {
                     ResultSet resultSet = ps.executeQuery();
-                    System.out.println("fetched one");
                     if (resultSet.next())
                         employee = buildEmployee(resultSet);
                 } catch (SQLException e) {
@@ -179,7 +173,6 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
 
                 try {
                     ResultSet resultSet = ps.executeQuery();
-                    System.out.println("fetched one by email");
                     while (resultSet.next())
                         employees.add(buildEmployee(resultSet));
                 } catch (SQLException e) {
@@ -206,9 +199,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
     @Override
     public List<Employee> getAllWhere(int departmentID) {
 
-
         List<Employee> employeeList = new ArrayList<>();
-
 
         try (Connection connection = getNullsafeConnection()) {
 
@@ -218,7 +209,6 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
 
                 try {
                     ResultSet resultSet = ps.executeQuery();
-                    System.out.println("fetched all");
                     while (resultSet.next())
                         employeeList.add(buildEmployee(resultSet));
                 } catch (SQLException e) {
@@ -259,7 +249,6 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
 
                 try {
                     ResultSet resultSet = ps.executeQuery();
-                    System.out.println("fetched all with limit");
                     while (resultSet.next())
                         employeeList.add(buildEmployee(resultSet));
                 } catch (SQLException e) {
@@ -293,7 +282,6 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
 
                 try {
                     ps.executeUpdate();
-                    System.out.println("deleted employees by department ID");
                 } catch (SQLException e) {
                     e.printStackTrace();
 
@@ -312,15 +300,6 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
             e.printStackTrace();
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
-    }
-
-    private Employee buildEmployee(ResultSet resultSet) throws SQLException {
-        return new Employee(resultSet.getInt(ID),
-                resultSet.getString(NAME_PARAM),
-                resultSet.getDate(BIRTH_DATE_PARAM),
-                resultSet.getString(EMAIL_PARAM),
-                resultSet.getInt(AGE_PARAM),
-                resultSet.getInt(DEPARTMENT_ID_PARAM));
     }
 
     public int getAllWhereRowCount(int departmentID) {
@@ -351,5 +330,14 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
         return rowCount;
+    }
+
+    private Employee buildEmployee(ResultSet resultSet) throws SQLException {
+        return new Employee(resultSet.getInt(ID),
+                resultSet.getString(NAME_PARAM),
+                resultSet.getDate(BIRTH_DATE_PARAM),
+                resultSet.getString(EMAIL_PARAM),
+                resultSet.getInt(AGE_PARAM),
+                resultSet.getInt(DEPARTMENT_ID_PARAM));
     }
 }

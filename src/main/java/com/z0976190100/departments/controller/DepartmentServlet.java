@@ -1,8 +1,7 @@
 package com.z0976190100.departments.controller;
 
 import com.z0976190100.departments.app_constants.GeneralConstants;
-import com.z0976190100.departments.controller.command.DepartmentCommandsEnum;
-import com.z0976190100.departments.exceptions.SQLAppRuntimeException;
+import com.z0976190100.departments.controller.command.DepartmentCommandEnum;
 import com.z0976190100.departments.exceptions.RequestParameterValidationException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
 import com.z0976190100.departments.service.DepartmentService;
@@ -23,7 +22,7 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        DepartmentCommandsEnum command = getCommand(req);
+        DepartmentCommandEnum command = getCommand(req);
 
         switch (command) {
             case GET:
@@ -70,7 +69,7 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
             default:
                 try {
                     setPaginationAttr(req);
-                    DepartmentCommandsEnum.GET_ALL.execute(req);
+                    DepartmentCommandEnum.GET_ALL.execute(req);
                     req.getRequestDispatcher(DEPARTMENTS_JSP).forward(req, resp);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -83,7 +82,7 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        DepartmentCommandsEnum command = getCommand(req);
+        DepartmentCommandEnum command = getCommand(req);
 
         switch (command) {
             case SAVE:
@@ -193,9 +192,9 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
         this.doGet(req, resp);
     }
 
-    private DepartmentCommandsEnum getCommand(HttpServletRequest req) {
+    private DepartmentCommandEnum getCommand(HttpServletRequest req) {
         if (req.getParameter(COMMAND_PARAM) == null || req.getParameter(COMMAND_PARAM).equals(""))
-            return DepartmentCommandsEnum.NO_COMMAND;
-        return DepartmentCommandsEnum.valueOf(req.getParameter(COMMAND_PARAM).toUpperCase());
+            return DepartmentCommandEnum.NO_COMMAND;
+        return DepartmentCommandEnum.valueOf(req.getParameter(COMMAND_PARAM).toUpperCase());
     }
 }

@@ -8,7 +8,7 @@ import com.z0976190100.departments.service.EmployeeService;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 
-public enum EmployeeCommandsEnum implements GeneralConstants {
+public enum EmployeeCommandEnum implements GeneralConstants {
 
     NO_COMMAND {
         @Override
@@ -69,7 +69,6 @@ public enum EmployeeCommandsEnum implements GeneralConstants {
 
         private int paginationHelper(int rl, int dID) {
             int rc = new EmployeeService().getRowCount(dID);
-            System.out.println("count " + rc);
             if (rc == 0) return 1;
             int p = rc / rl;
             if (rc % rl != 0) p++;

@@ -56,7 +56,7 @@
     </servlet-mapping>
     <filter>
         <filter-name>EmployeeFilter</filter-name>
-        <filter-class>com.z0976190100.departments.controller.filter.EmployeeParametersValidationFilter</filter-class>
+        <filter-class>com.z0976190100.departments.controller.filter.EmployeeFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>EmployeeFilter</filter-name>

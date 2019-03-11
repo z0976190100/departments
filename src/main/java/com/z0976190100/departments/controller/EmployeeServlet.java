@@ -1,7 +1,7 @@
 package com.z0976190100.departments.controller;
 
 import com.z0976190100.departments.app_constants.GeneralConstants;
-import com.z0976190100.departments.controller.command.EmployeeCommandsEnum;
+import com.z0976190100.departments.controller.command.EmployeeCommandEnum;
 import com.z0976190100.departments.exceptions.AgeNotConsistentException;
 import com.z0976190100.departments.exceptions.NotUniqueEntityException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
@@ -25,7 +25,7 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        EmployeeCommandsEnum command = getCommand(req);
+        EmployeeCommandEnum command = getCommand(req);
 
         switch (command) {
 
@@ -61,7 +61,7 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        EmployeeCommandsEnum command = getCommand(req);
+        EmployeeCommandEnum command = getCommand(req);
 
         switch (command) {
             case SAVE:
@@ -106,7 +106,6 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
 
         String email = req.getParameter(EMAIL_PARAM);
         String name = req.getParameter(NAME_PARAM);
-        System.out.println(name);
         Date birthDate = (Date) req.getAttribute(BIRTH_DATE_PARAM);
         int age = (Integer) req.getAttribute(AGE_PARAM);
         int departmentID = (Integer) req.getAttribute(DEPARTMENT_ID_PARAM);
@@ -147,10 +146,10 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
         }
     }
 
-    private EmployeeCommandsEnum getCommand(HttpServletRequest req) {
+    private EmployeeCommandEnum getCommand(HttpServletRequest req) {
         if(req.getParameter(COMMAND_PARAM) == null || req.getParameter(COMMAND_PARAM).equals(""))
-            return EmployeeCommandsEnum.NO_COMMAND;
-        return EmployeeCommandsEnum.valueOf(req.getParameter(COMMAND_PARAM).toUpperCase());
+            return EmployeeCommandEnum.NO_COMMAND;
+        return EmployeeCommandEnum.valueOf(req.getParameter(COMMAND_PARAM).toUpperCase());
     }
 
     private void setPaginationAttr(HttpServletRequest req) {

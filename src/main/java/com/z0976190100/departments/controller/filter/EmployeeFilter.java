@@ -1,7 +1,7 @@
 package com.z0976190100.departments.controller.filter;
 
 import com.z0976190100.departments.app_constants.GeneralConstants;
-import com.z0976190100.departments.controller.command.EmployeeCommandsEnum;
+import com.z0976190100.departments.controller.command.EmployeeCommandEnum;
 import com.z0976190100.departments.service.util.EmployeeValidator;
 
 import javax.servlet.*;
@@ -29,11 +29,7 @@ import java.util.Map;
  *
  */
 
-public class EmployeeParametersValidationFilter implements Filter, GeneralConstants {
-
-    private HttpServletRequest req;
-
-// TODO success messages
+public class EmployeeFilter implements Filter, GeneralConstants {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -43,9 +39,9 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException, NumberFormatException {
 
-        req = (HttpServletRequest) request;
+       HttpServletRequest req = (HttpServletRequest) request;
 
-        EmployeeCommandsEnum command = getCommand(req);
+        EmployeeCommandEnum command = getCommand(req);
 
         Map<String, List<String>> errors = new HashMap<>();
         EmployeeValidator val = new EmployeeValidator(errors);
@@ -55,17 +51,17 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
 
         switch (command) {
             case SAVE:
-                if (!saveUpdateValidationChunk(val)) {
-                    setAttributes();
+                if (!saveUpdateValidationChunk(val, req)) {
+                    setAttributes(req);
                     chain.doFilter(req, response);
                     break;
                 }
                 req.getRequestDispatcher(EMPLOYEE_ADD_JSP).forward(req, response);
                 break;
             case UPDATE:
-                if (!val.isValidId(req.getParameter(ID)).hasErrors(ID) && !saveUpdateValidationChunk(val)) {
-                    setIntAttribute(ID);
-                    setAttributes();
+                if (!val.isValidId(req.getParameter(ID)).hasErrors(ID) && !saveUpdateValidationChunk(val, req)) {
+                    setIntAttribute(ID, req);
+                    setAttributes(req);
                     chain.doFilter(req, response);
                     break;
                 }
@@ -78,13 +74,13 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
 
     }
 
-    private void setAttributes() {
-        setBirthDateAttribute();
-        setIntAttribute(DEPARTMENT_ID_PARAM);
-        setIntAttribute(AGE_PARAM);
+    private void setAttributes(HttpServletRequest req) {
+        setBirthDateAttribute(req);
+        setIntAttribute(DEPARTMENT_ID_PARAM, req);
+        setIntAttribute(AGE_PARAM, req);
     }
 
-    private boolean saveUpdateValidationChunk(EmployeeValidator employeeValidator) {
+    private boolean saveUpdateValidationChunk(EmployeeValidator employeeValidator, HttpServletRequest req) {
         return employeeValidator
                 .isValidId(req.getParameter(DEPARTMENT_ID_PARAM))
                 .isValidDate(req.getParameter(BIRTH_DATE_PARAM))
@@ -108,7 +104,7 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
 
     }
 
-    private void setIntAttribute(String name) {
+    private void setIntAttribute(String name, HttpServletRequest req) {
 
         req.setAttribute(name, Integer.parseInt(req.getParameter(name)));
 
@@ -120,13 +116,13 @@ public class EmployeeParametersValidationFilter implements Filter, GeneralConsta
 
     }
 
-    private EmployeeCommandsEnum getCommand(HttpServletRequest req) {
+    private EmployeeCommandEnum getCommand(HttpServletRequest req) {
         if(req.getParameter(COMMAND_PARAM) == null || req.getParameter(COMMAND_PARAM).equals(""))
-            return EmployeeCommandsEnum.NO_COMMAND;
-        return EmployeeCommandsEnum.valueOf(req.getParameter(COMMAND_PARAM).toUpperCase());
+            return EmployeeCommandEnum.NO_COMMAND;
+        return EmployeeCommandEnum.valueOf(req.getParameter(COMMAND_PARAM).toUpperCase());
     }
 
-    private void setBirthDateAttribute() {
+    private void setBirthDateAttribute(HttpServletRequest req) {
 
         String bdate = req.getParameter(BIRTH_DATE_PARAM);
         SimpleDateFormat formatter = new SimpleDateFormat(BIRTH_DATE_PATTERN);

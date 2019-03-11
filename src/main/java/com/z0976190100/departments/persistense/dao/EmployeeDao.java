@@ -6,9 +6,9 @@ public interface EmployeeDao<T> {
 
     public T saveEntity(T entity);
 
-    public void deleteEntity(int id);
-
     public int updateEntity(T entity);
+
+    public void deleteEntity(int id);
 
     public T getEntityById(int id);
 

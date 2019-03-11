@@ -6,7 +6,7 @@ import com.z0976190100.departments.service.util.DepartmentValidator;
 
 import javax.servlet.http.HttpServletRequest;
 
-public enum DepartmentCommandsEnum implements GeneralConstants {
+public enum DepartmentCommandEnum implements GeneralConstants {
 
     NO_COMMAND {
         @Override
@@ -52,7 +52,6 @@ public enum DepartmentCommandsEnum implements GeneralConstants {
 
         private int paginationHelper(int rl) {
             int rc = new DepartmentService().getRowCount();
-            System.out.println("count " + rc);
             if (rc == 0) return 1;
             int p = rc / rl;
             if (rc % rl != 0) p++;
