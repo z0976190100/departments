@@ -11,7 +11,7 @@ import java.util.List;
 
 public class DepartmentService implements GeneralConstants {
 
-    private DepartmentDao<Department> dao = new DepartmentDaoImpl();
+    private DepartmentDao dao = new DepartmentDaoImpl();
     private EmployeeService employeeService = new EmployeeService();
 
     public Department saveDepartment(String title) throws RequestParameterValidationException {

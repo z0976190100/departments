@@ -14,7 +14,7 @@ import java.util.List;
 
 public class EmployeeService implements GeneralConstants {
 
-    private EmployeeDao<Employee> dao = new EmployeeDaoImpl();
+    private EmployeeDao dao = new EmployeeDaoImpl();
 
     public Employee saveEmployee(Employee employee) throws NotUniqueEntityException, AgeNotConsistentException{
 
