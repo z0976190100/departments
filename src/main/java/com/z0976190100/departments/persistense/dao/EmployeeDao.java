@@ -1,21 +1,15 @@
 package com.z0976190100.departments.persistense.dao;
 
+import com.z0976190100.departments.persistense.entity.Employee;
+
 import java.util.List;
 
-public interface EmployeeDao<T> {
+public interface EmployeeDao extends GenericDao<Employee> {
 
-    public T saveEntity(T entity);
+    public Employee saveEntity(Employee entity);
 
-    public int updateEntity(T entity);
+    public List<Employee> getAllWhere(int param);
 
-    public void deleteEntity(int id);
-
-    public T getEntityById(int id);
-
-    public List<T> getAllWhere(String param);
-
-    public List<T> getAllWhere(int param);
-
-    public List<T> getAllWhere(int param, int offset, int limit);
+    public List<Employee> getAllWhere(int param, int offset, int limit);
 
 }

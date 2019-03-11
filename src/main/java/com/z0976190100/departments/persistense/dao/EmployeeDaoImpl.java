@@ -8,14 +8,14 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee>, GeneralConstants {
+public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, GeneralConstants {
 
     @Override
     public Employee saveEntity(Employee entity) {
 
         Employee newEmployee = null;
 
-        try (Connection connection = getNullsafeConnection()) {
+        try (Connection connection = getConnection()) {
 
             try (PreparedStatement ps = connection.prepareStatement(
                     "INSERT INTO employee (name, email, department_id , birth_date, age, id) VALUES ( ?, ?, ?, ?, ?,  DEFAULT) RETURNING *;")) {
@@ -55,7 +55,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
 
         int result = 0;
 
-        try (Connection connection = getNullsafeConnection()) {
+        try (Connection connection = getConnection()) {
 
             try (PreparedStatement ps = connection.prepareStatement(
                     "UPDATE employee SET name = ?, email = ?, department_id = ?, birth_date = ?, age = ? WHERE id = ? ;"
@@ -96,7 +96,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
     public void deleteEntity(int id) {
 
 
-        try (Connection connection = getNullsafeConnection()) {
+        try (Connection connection = getConnection()) {
 
             try (PreparedStatement ps = connection.prepareStatement("DELETE FROM employee WHERE id = ?;")) {
 
@@ -129,7 +129,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
 
         Employee employee = null;
 
-        try (Connection connection = getNullsafeConnection()) {
+        try (Connection connection = getConnection()) {
 
             try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE id = ?;")) {
 
@@ -165,7 +165,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
     public List<Employee> getAllWhere(String email) {
         List<Employee> employees = new ArrayList<>();
 
-        try (Connection connection = getNullsafeConnection()) {
+        try (Connection connection = getConnection()) {
 
             try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE email = ?;")) {
 
@@ -201,7 +201,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
 
         List<Employee> employeeList = new ArrayList<>();
 
-        try (Connection connection = getNullsafeConnection()) {
+        try (Connection connection = getConnection()) {
 
             try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE department_id = ?;")) {
 
@@ -237,7 +237,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
         List<Employee> employeeList = new ArrayList<>();
 
 
-        try (Connection connection = getNullsafeConnection()) {
+        try (Connection connection = getConnection()) {
 
             try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE department_id = ?" +
                     " ORDER BY id" +
@@ -274,7 +274,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
 
     public void deleteAllEntitiesWhere(int departmentID) {
 
-        try (Connection connection = getNullsafeConnection()) {
+        try (Connection connection = getConnection()) {
 
             try (PreparedStatement ps = connection.prepareStatement("DELETE FROM employee WHERE department_id = ?;")) {
 
@@ -306,7 +306,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao<Employee
 
         int rowCount = 0;
 
-        try (Connection connection = getNullsafeConnection()) {
+        try (Connection connection = getConnection()) {
             try (PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) FROM employee WHERE department_id = ?;")) {
                 ps.setInt(1, departmentID);
 

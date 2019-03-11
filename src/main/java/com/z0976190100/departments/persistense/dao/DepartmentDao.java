@@ -1,22 +1,16 @@
 package com.z0976190100.departments.persistense.dao;
 
 import com.z0976190100.departments.exceptions.RequestParameterValidationException;
+import com.z0976190100.departments.persistense.entity.Department;
 
 import java.util.List;
 
-public interface DepartmentDao<T> {
+public interface DepartmentDao extends GenericDao<Department> {
 
-    public T saveEntity(T entity) throws RequestParameterValidationException;
+    public Department saveEntity(Department entity) throws RequestParameterValidationException;
 
-    public void updateEntity(T entity);
+    public List<Department> getAll();
 
-    public void deleteEntity(int id);
+    public List<Department> getAll(int offset, int limit);
 
-    public T getEntityById(int id);
-
-    public List<T> getAll();
-
-    public List<T> getAll(int offset, int limit);
-
-    public List<T> getAllWhere(String param);
 }

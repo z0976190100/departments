@@ -9,12 +9,12 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao<Department>, GeneralConstants {
+public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, GeneralConstants {
 
     @Override
     public Department saveEntity(Department department) throws RequestParameterValidationException {
 
-        try (Connection connection = getNullsafeConnection()) {
+        try (Connection connection = getConnection()) {
 
             try (PreparedStatement ps = connection.prepareStatement("INSERT INTO department (title , id) VALUES ( ? , DEFAULT);")) {
 
@@ -46,9 +46,11 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao<Depa
     }
 
     @Override
-    public void updateEntity(Department department) {
+    public int updateEntity(Department department) {
 
-        try (Connection connection = getNullsafeConnection()) {
+        int result = 0;
+
+        try (Connection connection = getConnection()) {
 
             try (PreparedStatement ps = connection.prepareStatement("UPDATE department SET title = ? WHERE id = ?;")) {
 
@@ -57,7 +59,7 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao<Depa
 
                 try {
 
-                    ps.executeUpdate();
+                    result = ps.executeUpdate();
 
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -74,13 +76,13 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao<Depa
             e.printStackTrace();
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
-
+        return result;
     }
 
     @Override
     public void deleteEntity(int id) {
 
-        try (Connection connection = getNullsafeConnection()) {
+        try (Connection connection = getConnection()) {
 
             try (PreparedStatement ps = connection.prepareStatement("DELETE FROM department WHERE id = ?;")) {
 
@@ -112,7 +114,7 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao<Depa
     @Override
     public Department getEntityById(int id) {
 
-        try (Connection connection = getNullsafeConnection()) {
+        try (Connection connection = getConnection()) {
 
             try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM department WHERE id = ?;")) {
 
@@ -152,7 +154,7 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao<Depa
 
         List<Department> departmentList = new ArrayList<>();
 
-        try (Connection connection = getNullsafeConnection()) {
+        try (Connection connection = getConnection()) {
 
             try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM department ORDER BY id ;")) {
 
@@ -176,7 +178,7 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao<Depa
 
         List<Department> departmentList = new ArrayList<>();
 
-        try (Connection connection = getNullsafeConnection()) {
+        try (Connection connection = getConnection()) {
 
             try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM department" +
                     " ORDER BY id" +
@@ -201,14 +203,14 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao<Depa
     public List<Department> getAllWhere(String title) {
         List<Department> departments = new ArrayList<>();
 
-        try (Connection connection = getNullsafeConnection()) {
+        try (Connection connection = getConnection()) {
 
             try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM department WHERE title = ?;")) {
 
                 ps.setString(1, title);
 
 
-                    getEntityListHelper(departments, ps);
+                getEntityListHelper(departments, ps);
 
 
             } catch (SQLException e) {
@@ -245,7 +247,7 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao<Depa
 
         int rowCount = 0;
 
-        try (Connection connection = getNullsafeConnection()) {
+        try (Connection connection = getConnection()) {
             try (PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) FROM department ;")) {
 
                 try {

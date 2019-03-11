@@ -9,9 +9,7 @@ import java.sql.SQLException;
 
 public abstract class AbstractDao implements GeneralConstants {
 
-    // TODO: connection factory
-
-    protected Connection getNullsafeConnection() {
+    protected Connection getConnection() {
 
         try {
             DriverManager.registerDriver(new org.postgresql.Driver());

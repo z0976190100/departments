@@ -14,50 +14,12 @@ public class DepartmentService implements GeneralConstants {
     private DepartmentDao<Department> dao = new DepartmentDaoImpl();
     private EmployeeService employeeService = new EmployeeService();
 
-
-    public int getRowCount() {
-        return ((DepartmentDaoImpl)dao).getAllRowCount();
-    }
-
-    public List<Department> getDepartmentsList(int offset, int limit) {
-
-        return dao.getAll(offset, limit);
-    }
-
-    public List<Department> getDepartmentsList() {
-
-        return dao.getAll();
-    }
-
-    public Department getDepartmentById(int id) throws ResourceNotFoundException {
-
-        Department department = dao.getEntityById(id);
-
-        if (department == null)
-            throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE + DEPARTMENT_NOT_FOUND_MESSAGE);
-
-        return department;
-
-    }
-
     public Department saveDepartment(String title) throws RequestParameterValidationException {
 
         // check if department is unique by title
         //isExistByTitle(title);
 
         return dao.saveEntity(new Department(0, title));
-
-    }
-
-    public void deleteDepartment(int id) throws ResourceNotFoundException {
-
-        Department d = dao.getEntityById(id);
-
-        if (d == null) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE + DEPARTMENT_NOT_FOUND_MESSAGE);
-
-        employeeService.deleteAllEmployees(id);
-
-        dao.deleteEntity(id);
 
     }
 
@@ -73,11 +35,48 @@ public class DepartmentService implements GeneralConstants {
 
     }
 
-       private void isExistByTitle(String title) throws RequestParameterValidationException {
+    public void deleteDepartment(int id) throws ResourceNotFoundException {
+
+        Department d = dao.getEntityById(id);
+
+        if (d == null) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE + DEPARTMENT_NOT_FOUND_MESSAGE);
+
+        employeeService.deleteAllEmployees(id);
+
+        dao.deleteEntity(id);
+
+    }
+
+    public Department getDepartmentById(int id) throws ResourceNotFoundException {
+
+        Department department = dao.getEntityById(id);
+
+        if (department == null)
+            throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE + DEPARTMENT_NOT_FOUND_MESSAGE);
+
+        return department;
+
+    }
+
+    public List<Department> getDepartmentsList(int offset, int limit) {
+
+        return dao.getAll(offset, limit);
+    }
+
+    public List<Department> getDepartmentsList() {
+
+        return dao.getAll();
+    }
+
+    private void isExistByTitle(String title) throws RequestParameterValidationException {
 
         List<Department> departmentList = dao.getAllWhere(title);
         if (departmentList.size() != 0)
             throw new RequestParameterValidationException(DEPARTMENT_TITLE_NOT_UNIQUE_MESSAGE);
+    }
+
+    public int getRowCount() {
+        return ((DepartmentDaoImpl)dao).getAllRowCount();
     }
 
 }

@@ -38,6 +38,21 @@ public class EmployeeService implements GeneralConstants {
 
     }
 
+    public void deleteEmployee(int id) throws ResourceNotFoundException {
+
+        Employee employee = new EmployeeDaoImpl().getEntityById(id);
+
+        if (employee == null) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE);
+
+        dao.deleteEntity(id);
+    }
+
+    public void deleteAllEmployees(int departmentID) {
+
+        ((EmployeeDaoImpl)dao).deleteAllEntitiesWhere(departmentID);
+
+    }
+
     public Employee getEmployee(int id) throws ResourceNotFoundException{
 
         Employee employee = dao.getEntityById(id);
@@ -55,21 +70,6 @@ public class EmployeeService implements GeneralConstants {
     public List<Employee> getAllEmployees(int departmentID, int offset, int limit){
 
         return dao.getAllWhere(departmentID, offset, limit);
-    }
-
-    public void deleteEmployee(int id) throws ResourceNotFoundException {
-
-        Employee employee = new EmployeeDaoImpl().getEntityById(id);
-
-        if (employee == null) throw new ResourceNotFoundException(RESOURCE_NOT_FOUND_MESSAGE);
-
-        dao.deleteEntity(id);
-    }
-
-    public void deleteAllEmployees(int departmentID) {
-
-        ((EmployeeDaoImpl)dao).deleteAllEntitiesWhere(departmentID);
-
     }
 
     public int getRowCount(int departmentID){
