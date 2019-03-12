@@ -19,7 +19,8 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
     private static final String UPDATE_DEPARTMENT_QUERY = "UPDATE department SET title = ? WHERE id = ?;";
     private static final String DELETE_DEPARTMENT_QUERY = "DELETE FROM department WHERE id = ?;";
     private static final String GET_DEPARTMENT_BY_ID_QUERY = "SELECT * FROM department WHERE id = ?;";
-    private static final String GET_DEPARTMENTS_LIST_QUERY = "SELECT * FROM department";
+    private static final String GET_DEPARTMENTS_LIST_QUERY = "SELECT * FROM department;";
+    private static final String GET_DEPARTMENTS_LIST_LIMITED_QUERY = "SELECT * FROM department ORDER BY id LIMIT ? OFFSET ? ;";
     private static final String GET_DEPARTMENTS_BY_TITLE_QUERY = "SELECT * FROM department WHERE title = ?;";
     private static final String ALL_ROW_COUNT_QUERY = "SELECT COUNT(*) FROM department ;";
 
@@ -142,11 +143,8 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
 
                     ResultSet rs = ps.executeQuery();
 
-                    rs.next();
-
-                    department = new Department(rs.getInt(ID), rs.getString(TITLE));
-
-                    logger.info("{} fetched.", department);
+                    if(rs.next())
+                        department = new Department(rs.getInt(ID), rs.getString(TITLE));
 
                 } catch (SQLException e) {
                     logger.error(e.getMessage(), e);
@@ -162,6 +160,7 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
+        logger.info("{} fetched.", department);
         return department;
     }
 
@@ -197,9 +196,10 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
 
         try (Connection connection = getConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement(GET_DEPARTMENTS_LIST_QUERY +
-                    " ORDER BY id" +
-                    " LIMIT " + limit + " OFFSET " + offset + ";")) {
+            try (PreparedStatement ps = connection.prepareStatement(GET_DEPARTMENTS_LIST_LIMITED_QUERY)) {
+
+                ps.setInt(1, limit);
+                ps.setInt(2, offset);
 
                 getEntityListHelper(departmentList, ps);
 

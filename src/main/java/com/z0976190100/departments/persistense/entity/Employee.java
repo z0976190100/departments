@@ -49,4 +49,31 @@ public class Employee {
     public int getDepartmentID() {
         return departmentID;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Employee)) return false;
+
+        Employee employee = (Employee) o;
+
+        return getEmail().equals(employee.getEmail());
+    }
+
+    @Override
+    public int hashCode() {
+        return getEmail().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", birthDate=" + birthDate +
+                ", email='" + email + '\'' +
+                ", age=" + age +
+                ", departmentID=" + departmentID +
+                '}';
+    }
 }

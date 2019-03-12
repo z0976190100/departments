@@ -3,12 +3,25 @@ package com.z0976190100.departments.persistense.dao;
 import com.z0976190100.departments.app_constants.GeneralConstants;
 import com.z0976190100.departments.exceptions.SQLAppRuntimeException;
 import com.z0976190100.departments.persistense.entity.Employee;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, GeneralConstants {
+
+    private static Logger logger = LoggerFactory.getLogger(EmployeeDaoImpl.class);
+    private static final String SAVE_EMPLOYEE_QUERY = "INSERT INTO employee (name, email, department_id , birth_date, age, id) VALUES ( ?, ?, ?, ?, ?,  DEFAULT) RETURNING *;";
+    private static final String UPDATE_EMPLOYEE_QUERY = "UPDATE employee SET name = ?, email = ?, department_id = ?, birth_date = ?, age = ? WHERE id = ? ;";
+    private static final String DELETE_EMPLOYEE_QUERY = "DELETE FROM employee WHERE id = ?;";
+    private static final String GET_EMPLOYEE_BY_ID_QUERY = "SELECT * FROM employee WHERE id = ?;";
+    private static final String GET_EMPLOYEE_BY_EMAIL_QUERY = "SELECT * FROM employee WHERE email = ?;";
+    private static final String GET_EMPLOYEE_BY_DEPARTMENTID_QUERY = "SELECT * FROM employee WHERE department_id = ?;";
+    private static final String GET_EMPLOYEE_BY_DEPARTMENTID_LIMITED_QUERY = "SELECT * FROM employee WHERE department_id = ? ORDER BY id LIMIT ? OFFSET ?;";
+    private static final String DELETE_EMPLOYEES_BY_DEPARTMENTID_QUERY = "DELETE FROM employee WHERE department_id = ?;";
+    private static final String ROW_COUNT_BY_DEPARTMENTID_QUERY = "SELECT COUNT(*) FROM employee WHERE department_id = ?;";
 
     @Override
     public Employee saveEntity(Employee entity) {
@@ -17,8 +30,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
 
         try (Connection connection = getConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement(
-                    "INSERT INTO employee (name, email, department_id , birth_date, age, id) VALUES ( ?, ?, ?, ?, ?,  DEFAULT) RETURNING *;")) {
+            try (PreparedStatement ps = connection.prepareStatement(SAVE_EMPLOYEE_QUERY)) {
                 ps.setString(1, entity.getName());
                 ps.setString(2, entity.getEmail());
                 ps.setInt(3, entity.getDepartmentID());
@@ -28,66 +40,58 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
                 try {
                     ResultSet resultSet = ps.executeQuery();
                     resultSet.next();
-                    newEmployee = new Employee(resultSet.getInt(ID), resultSet.getString(EMAIL_PARAM), resultSet.getInt(DEPARTMENT_ID_PARAM));
+                    newEmployee = buildEmployee(resultSet);
                 } catch (SQLException e) {
-                    e.printStackTrace();
-
-                    for (Throwable t : e) {
-                        System.out.println(t.getMessage());
-                    }
-                    //TODO init fails
+                    logger.error(e.getMessage(), e);
                 }
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
+
+        logger.info("{} is saved successfully. ", newEmployee);
         return newEmployee;
     }
 
     @Override
-    public int updateEntity(Employee entity) {
+    public int updateEntity(Employee employee) {
 
         int result = 0;
 
         try (Connection connection = getConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement(
-                    "UPDATE employee SET name = ?, email = ?, department_id = ?, birth_date = ?, age = ? WHERE id = ? ;"
-            )) {
-                ps.setString(1, entity.getName());
-                ps.setString(2, entity.getEmail());
-                ps.setInt(3, entity.getDepartmentID());
-                ps.setObject(4, (Date) entity.getBirthDate());
-                ps.setInt(5, entity.getAge());
-                ps.setInt(6, entity.getId());
+            try (PreparedStatement ps = connection.prepareStatement(UPDATE_EMPLOYEE_QUERY)) {
+                ps.setString(1, employee.getName());
+                ps.setString(2, employee.getEmail());
+                ps.setInt(3, employee.getDepartmentID());
+                ps.setObject(4, (Date) employee.getBirthDate());
+                ps.setInt(5, employee.getAge());
+                ps.setInt(6, employee.getId());
 
                 try {
                     result = ps.executeUpdate();
 
                 } catch (SQLException e) {
-                    e.printStackTrace();
-
-                    for (Throwable t : e) {
-                        System.out.println(t.getMessage());
-                    }
-                    //TODO init fails
+                    logger.error(e.getMessage(), e);
                 }
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
+
+        logger.info("{} update result is [{}].", employee, result);
         return result;
 
     }
@@ -95,33 +99,29 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
     @Override
     public void deleteEntity(int id) {
 
-
         try (Connection connection = getConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("DELETE FROM employee WHERE id = ?;")) {
+            try (PreparedStatement ps = connection.prepareStatement(DELETE_EMPLOYEE_QUERY)) {
 
                 ps.setInt(1, id);
 
                 try {
                     ps.executeUpdate();
                 } catch (SQLException e) {
-                    e.printStackTrace();
-
-                    for (Throwable t : e) {
-                        System.out.println(t.getMessage());
-                    }
-                    //TODO init fails
+                    logger.error(e.getMessage(), e);
                 }
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
+
+        logger.info("Employee{id={}} deleted successfully.", id);
     }
 
     @Override
@@ -131,32 +131,31 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
 
         try (Connection connection = getConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE id = ?;")) {
+            try (PreparedStatement ps = connection.prepareStatement(GET_EMPLOYEE_BY_ID_QUERY)) {
 
                 ps.setInt(1, id);
 
                 try {
                     ResultSet resultSet = ps.executeQuery();
+
                     if (resultSet.next())
                         employee = buildEmployee(resultSet);
-                } catch (SQLException e) {
-                    e.printStackTrace();
 
-                    for (Throwable t : e) {
-                        System.out.println(t.getMessage());
-                    }
-                    //TODO init fails
+                } catch (SQLException e) {
+                    logger.error(e.getMessage(), e);
                 }
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
+
+        logger.info("{} fetched.", employee);
         return employee;
 
     }
@@ -167,7 +166,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
 
         try (Connection connection = getConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE email = ?;")) {
+            try (PreparedStatement ps = connection.prepareStatement(GET_EMPLOYEE_BY_EMAIL_QUERY)) {
 
                 ps.setString(1, email);
 
@@ -175,24 +174,22 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
                     ResultSet resultSet = ps.executeQuery();
                     while (resultSet.next())
                         employees.add(buildEmployee(resultSet));
-                } catch (SQLException e) {
-                    e.printStackTrace();
 
-                    for (Throwable t : e) {
-                        System.out.println(t.getMessage());
-                    }
-                    //TODO init fails
+                } catch (SQLException e) {
+                    logger.error(e.getMessage(), e);
                 }
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
+
+        logger.info("[{}] Employees fetched where email{email={}}.", employees.size(), email);
         return employees;
     }
 
@@ -203,7 +200,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
 
         try (Connection connection = getConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE department_id = ?;")) {
+            try (PreparedStatement ps = connection.prepareStatement(GET_EMPLOYEE_BY_DEPARTMENTID_QUERY)) {
 
                 ps.setInt(1, departmentID);
 
@@ -211,24 +208,22 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
                     ResultSet resultSet = ps.executeQuery();
                     while (resultSet.next())
                         employeeList.add(buildEmployee(resultSet));
-                } catch (SQLException e) {
-                    e.printStackTrace();
 
-                    for (Throwable t : e) {
-                        System.out.println(t.getMessage());
-                    }
-                    //TODO init fails
+                } catch (SQLException e) {
+                    logger.error(e.getMessage(), e);
                 }
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
+
+        logger.info("[{}] Employees fetched where Department{id={}}.", employeeList.size(), departmentID);
         return employeeList;
     }
 
@@ -239,9 +234,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
 
         try (Connection connection = getConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE department_id = ?" +
-                    " ORDER BY id" +
-                    " LIMIT ? OFFSET ?;")) {
+            try (PreparedStatement ps = connection.prepareStatement(GET_EMPLOYEE_BY_DEPARTMENTID_LIMITED_QUERY)) {
 
                 ps.setInt(1, departmentID);
                 ps.setInt(2, limit);
@@ -251,24 +244,22 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
                     ResultSet resultSet = ps.executeQuery();
                     while (resultSet.next())
                         employeeList.add(buildEmployee(resultSet));
-                } catch (SQLException e) {
-                    e.printStackTrace();
 
-                    for (Throwable t : e) {
-                        System.out.println(t.getMessage());
-                    }
-                    //TODO init fails
+                } catch (SQLException e) {
+                    logger.error(e.getMessage(), e);
                 }
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
+
+        logger.info("[{}] Employees fetched where Department{id={}} with offset [{}].", employeeList.size(), departmentID, offset);
         return employeeList;
     }
 
@@ -276,30 +267,27 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
 
         try (Connection connection = getConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("DELETE FROM employee WHERE department_id = ?;")) {
+            try (PreparedStatement ps = connection.prepareStatement(DELETE_EMPLOYEES_BY_DEPARTMENTID_QUERY)) {
 
                 ps.setInt(1, departmentID);
 
                 try {
                     ps.executeUpdate();
                 } catch (SQLException e) {
-                    e.printStackTrace();
-
-                    for (Throwable t : e) {
-                        System.out.println(t.getMessage());
-                    }
-                    //TODO init fails
+                    logger.error(e.getMessage(), e);
                 }
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
+
+        logger.info("Employees with Department{id={}} deleted successfully.", departmentID);
     }
 
     public int getAllWhereRowCount(int departmentID) {
@@ -307,7 +295,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
         int rowCount = 0;
 
         try (Connection connection = getConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) FROM employee WHERE department_id = ?;")) {
+            try (PreparedStatement ps = connection.prepareStatement(ROW_COUNT_BY_DEPARTMENTID_QUERY)) {
                 ps.setInt(1, departmentID);
 
                 try {
@@ -315,20 +303,19 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
                     rs.next();
                     rowCount = rs.getInt(1);
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
 
-                for (Throwable t : e) {
-                    System.out.println(t.getMessage());
-                }
-                //TODO init fails
+            } catch (SQLException e) {
+                logger.error(e.getMessage(), e);
             }
+
         } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
+
+        logger.info("ROW COUNT for Employees of Department{id={}} result is [{}].", departmentID, rowCount);
         return rowCount;
     }
 
