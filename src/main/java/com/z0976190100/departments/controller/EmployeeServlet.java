@@ -7,6 +7,8 @@ import com.z0976190100.departments.exceptions.NotUniqueEntityException;
 import com.z0976190100.departments.exceptions.ResourceNotFoundException;
 import com.z0976190100.departments.persistense.entity.Employee;
 import com.z0976190100.departments.service.EmployeeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -20,6 +22,7 @@ import java.util.Map;
 
 public class EmployeeServlet extends HttpServlet implements GeneralConstants {
 
+    private static Logger logger = LoggerFactory.getLogger(DepartmentServlet.class);
     private EmployeeService employeeService = new EmployeeService();
 
     @Override
@@ -30,10 +33,11 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
         switch (command) {
 
             case GET:
+                logger.debug("{} launches.", command.toString());
                 try {
                     command.execute(req);
                 } catch (ResourceNotFoundException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 } catch (Exception e) {
                     e.printStackTrace();
                     throw new RuntimeException(SMTH_WRONG_MESSAGE);
@@ -41,17 +45,19 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
                 req.getRequestDispatcher(EMPLOYEE_EDIT_JSP).forward(req, resp);
                 break;
             case GET_ALL:
+                logger.debug("{} launches.", command.toString());
                 try {
                     setPaginationAttr(req);
                     command.execute(req);
                 } catch (ResourceNotFoundException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                     throw new RuntimeException(SMTH_WRONG_MESSAGE);
                 }
                 break;
             case GET_SAVE_PAGE:
+                logger.debug("{} launches.", command.toString());
                 req.getRequestDispatcher(EMPLOYEE_ADD_JSP).forward(req, resp);
                 break;
         }
@@ -65,34 +71,38 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
 
         switch (command) {
             case SAVE:
+                logger.debug("{} launches.", command.toString());
                 try {
                     command.execute(req);
                 } catch (NotUniqueEntityException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                     addError(req, EMAIL_PARAM, e.getMessage());
                     req.getRequestDispatcher(EMPLOYEE_ADD_JSP)
                             .forward(req, resp);
                     break;
                 } catch (AgeNotConsistentException e) {
+                    logger.error(e.getMessage(), e);
                     addError(req, AGE_PARAM, e.getMessage());
                     req.getRequestDispatcher(EMPLOYEE_ADD_JSP)
                             .forward(req, resp);
                     break;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                     throw new RuntimeException(SMTH_WRONG_MESSAGE);
                 }
                 resp.setStatus(201);
                 resp.sendRedirect(GET_DEPARTMENT_URI + req.getAttribute(DEPARTMENT_ID_PARAM));
                 break;
             case UPDATE:
+                logger.debug("{} launches.", command.toString());
                 this.doPut(req, resp);
                 break;
             case DELETE:
+                logger.debug("{} launches.", command.toString());
                 this.doDelete(req, resp);
                 break;
             default:
-                // TODO
+                logger.debug("Default case in doPost launches.");
                 resp.setStatus(405);
                 req.getRequestDispatcher(EMPLOYEE_ADD_JSP)
                         .forward(req, resp);
@@ -117,12 +127,12 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
         try {
             req.setAttribute(EMPLOYEE_RESOURCE_KEY, employeeService.updateEmployee(employee));
         }catch (ResourceNotFoundException e){
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             addError(req, RESOURCE_NOT_FOUND_MESSAGE, e.getMessage());
             req.getRequestDispatcher(EMPLOYEE_EDIT_JSP)
                     .forward(req, resp);
         } catch (AgeNotConsistentException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             addError(req, AGE_PARAM, e.getMessage());
             req.getRequestDispatcher(EMPLOYEE_EDIT_JSP)
                     .forward(req, resp);
@@ -135,14 +145,15 @@ public class EmployeeServlet extends HttpServlet implements GeneralConstants {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         try {
-            int id = Integer.parseInt(req.getParameter(ID));
+            int id = (Integer)req.getAttribute(ID);
             employeeService.deleteEmployee(id);
             resp.sendRedirect(GET_DEPARTMENT_URI + req.getParameter(DEPARTMENT_ID_PARAM));
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            //TODO
+
         } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            addError(req, RESOURCE_NOT_FOUND_MESSAGE, e.getMessage());
+            req.getRequestDispatcher(EMPLOYEE_EDIT_JSP)
+                    .forward(req, resp);
         }
     }
 

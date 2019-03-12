@@ -55,7 +55,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
-        logger.info("{} is saved successfully. ", newEmployee);
+        logger.debug("{} is saved successfully. ", newEmployee);
         return newEmployee;
     }
 
@@ -91,7 +91,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
-        logger.info("{} update result is [{}].", employee, result);
+        logger.debug("{} update result is [{}].", employee, result);
         return result;
 
     }
@@ -121,7 +121,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
-        logger.info("Employee{id={}} deleted successfully.", id);
+        logger.debug("Employee{id={}} deleted successfully.", id);
     }
 
     @Override
@@ -155,7 +155,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
-        logger.info("{} fetched.", employee);
+        logger.debug("{} fetched.", employee);
         return employee;
 
     }
@@ -189,7 +189,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
-        logger.info("[{}] Employees fetched where email{email={}}.", employees.size(), email);
+        logger.debug("[{}] Employees fetched where email{email={}}.", employees.size(), email);
         return employees;
     }
 
@@ -223,7 +223,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
-        logger.info("[{}] Employees fetched where Department{id={}}.", employeeList.size(), departmentID);
+        logger.debug("[{}] Employees fetched where Department{id={}}.", employeeList.size(), departmentID);
         return employeeList;
     }
 
@@ -259,7 +259,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
-        logger.info("[{}] Employees fetched where Department{id={}} with offset [{}].", employeeList.size(), departmentID, offset);
+        logger.debug("[{}] Employees fetched where Department{id={}} with offset [{}].", employeeList.size(), departmentID, offset);
         return employeeList;
     }
 
@@ -287,7 +287,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
-        logger.info("Employees with Department{id={}} deleted successfully.", departmentID);
+        logger.debug("Employees with Department{id={}} deleted successfully.", departmentID);
     }
 
     public int getAllWhereRowCount(int departmentID) {
@@ -315,7 +315,7 @@ public class EmployeeDaoImpl extends AbstractDao implements EmployeeDao, General
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
-        logger.info("ROW COUNT for Employees of Department{id={}} result is [{}].", departmentID, rowCount);
+        logger.debug("ROW COUNT for Employees of Department{id={}} result is [{}].", departmentID, rowCount);
         return rowCount;
     }
 

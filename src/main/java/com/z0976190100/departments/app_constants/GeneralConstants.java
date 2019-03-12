@@ -22,7 +22,6 @@ public interface GeneralConstants {
     //
 
     // ERRORS AND EXCEPTIONS
-    String BAD_REQUEST_MESSAGE = "Bad request or parameter. ";
     String DB_CONNECTION_FAILURE_MESSAGE = "Connection to DB is failed. ";
     String RESOURCE_NOT_FOUND_MESSAGE = "Resource Not Found. ";
     String EMPTY_PARAM_VALUE_MESSAGE = "Parameter is empty. ";
@@ -57,12 +56,14 @@ public interface GeneralConstants {
     String BIRTH_DATE_PATTERN = "yyyy-MM-dd";
 
     // DEPARTMENT
+    String DEPARTMENT_RESOURCE_KEY = "department";
     String DEPARTMENT_ID_PARAM = "department_id";
     String DEPARTMENT_NEW_TITLE_PARAM = "department_new_title";
     String DEPARTMENTS_LIST_PARAM = "departments_list";
     String SQL_NOT_UNIQUE_ERROR_PATTERN = "duplicate key value violates unique constraint";
 
     // EMPLOYEE
+    String EMPLOYEE_RESOURCE_KEY = "employee";
     String EMAIL_PARAM = "email";
     String AGE_PARAM = "age";
     String NAME_PARAM = "name";
@@ -72,14 +73,11 @@ public interface GeneralConstants {
     // EVENTS
     String ERRORS_ATTRIBUTE_NAME = "errors";
     String ERRORS_LIST_ATTRIBUTE_NAME = "errorsList";
-    String SUCCESS_ATTRIBUTE_NAME = "success";
+
 
     //
-    // URLs
+    // RESOURCE IDENTIFIERS
     //
-
-    String DEPARTMENTS_URL = "/departments?command=get_all";
-    String WELCOME_PAGE_URL = "/index";
 
     // JSPs
     String DEPARTMENTS_JSP = "departments.jsp?command=get_all";
@@ -91,9 +89,7 @@ public interface GeneralConstants {
 
     // URIs
     String GET_DEPARTMENT_URI = "departments?command=get&id=";
-    String DEPARTMENTS_URI = "departments";
     String EMPLOYEES_URI = "employees";
-    String DEPARTMENT_RESOURCE_KEY = "department";
-    String EMPLOYEE_RESOURCE_KEY = "employee";
+    String DEPARTMENTS_URI = "departments?command=get_all";
     String GET_ALL_EMPLOYEES_URI = "employees?command=get_all&department_id=";
 }

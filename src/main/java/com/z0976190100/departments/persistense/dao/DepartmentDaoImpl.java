@@ -61,7 +61,7 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
-        logger.info("{} is saved successfully. ", newDepartment);
+        logger.debug("{} is saved successfully. ", newDepartment);
         return newDepartment;
 
     }
@@ -95,7 +95,7 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
-        logger.info("{} update result is [{}].", department, result);
+        logger.debug("{} update result is [{}].", department, result);
         return result;
     }
 
@@ -125,7 +125,7 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
-        logger.info("Department{id={}} deleted successfully.", id);
+        logger.debug("Department{id={}} deleted successfully.", id);
     }
 
     @Override
@@ -160,7 +160,7 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
-        logger.info("{} fetched.", department);
+        logger.debug("{} fetched.", department);
         return department;
     }
 
@@ -185,7 +185,7 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
-        logger.info("[{}] Departments fetched.", departmentList.size());
+        logger.debug("[{}] Departments fetched.", departmentList.size());
         return departmentList;
     }
 
@@ -212,7 +212,7 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
             logger.error(e.getMessage(), e);
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
-        logger.info("[{}] Departments fetched with offset [{}].", departmentList.size(), offset);
+        logger.debug("[{}] Departments fetched with offset [{}].", departmentList.size(), offset);
         return departmentList;
     }
 
@@ -241,7 +241,7 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
-        logger.info("[{}] Departments fetched with {title={}}.", departments.size(), title);
+        logger.debug("[{}] Departments fetched with {title={}}.", departments.size(), title);
         return departments;
     }
 
@@ -281,7 +281,7 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
-        logger.info("ROW COUNT for ALL Departments result is [{}].", rowCount);
+        logger.debug("ROW COUNT for ALL Departments result is [{}].", rowCount);
         return rowCount;
     }
 }
