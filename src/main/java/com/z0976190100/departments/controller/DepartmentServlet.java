@@ -186,7 +186,7 @@ public class DepartmentServlet extends HttpServlet implements GeneralConstants {
                                   int sc,
                                   String error_message) throws ServletException, IOException {
 
-        e.printStackTrace();
+        //e.printStackTrace();
         resp.setStatus(sc);
         req.setAttribute(ERRORS_ATTRIBUTE_NAME, error_message);
         this.doGet(req, resp);

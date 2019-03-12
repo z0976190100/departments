@@ -38,4 +38,27 @@ public class Department {
     public void setEmployeeList(List<Employee> employeeList) {
         this.employeeList = employeeList;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Department)) return false;
+
+        Department that = (Department) o;
+
+        return getTitle().equals(that.getTitle());
+    }
+
+    @Override
+    public int hashCode() {
+        return getTitle().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Department{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                '}';
+    }
 }

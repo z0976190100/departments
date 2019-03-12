@@ -4,6 +4,9 @@ import com.z0976190100.departments.app_constants.GeneralConstants;
 import com.z0976190100.departments.exceptions.SQLAppRuntimeException;
 import com.z0976190100.departments.exceptions.RequestParameterValidationException;
 import com.z0976190100.departments.persistense.entity.Department;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,37 +14,54 @@ import java.util.List;
 
 public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, GeneralConstants {
 
+    private static Logger logger = LoggerFactory.getLogger(DepartmentDaoImpl.class);
+    private static final String SAVE_DEPARTMENT_QUERY = "INSERT INTO department (title , id) VALUES ( ? , DEFAULT) RETURNING *;";
+    private static final String UPDATE_DEPARTMENT_QUERY = "UPDATE department SET title = ? WHERE id = ?;";
+    private static final String DELETE_DEPARTMENT_QUERY = "DELETE FROM department WHERE id = ?;";
+    private static final String GET_DEPARTMENT_BY_ID_QUERY = "SELECT * FROM department WHERE id = ?;";
+    private static final String GET_DEPARTMENTS_LIST_QUERY = "SELECT * FROM department";
+    private static final String GET_DEPARTMENTS_BY_TITLE_QUERY = "SELECT * FROM department WHERE title = ?;";
+    private static final String ALL_ROW_COUNT_QUERY = "SELECT COUNT(*) FROM department ;";
+
     @Override
     public Department saveEntity(Department department) throws RequestParameterValidationException {
 
+        Department newDepartment = null;
+
         try (Connection connection = getConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("INSERT INTO department (title , id) VALUES ( ? , DEFAULT);")) {
+            try (PreparedStatement ps = connection.prepareStatement(SAVE_DEPARTMENT_QUERY)) {
 
                 ps.setString(1, department.getTitle());
 
                 try {
-                    ps.executeUpdate();
+
+                    ResultSet resultSet = ps.executeQuery();
+
+                    while (resultSet.next()) {
+                        newDepartment = new Department(resultSet.getInt(ID), resultSet.getString(TITLE));
+                    }
+
 
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
 
                     for (Throwable t : e) {
                         if (t.getMessage().contains(SQL_NOT_UNIQUE_ERROR_PATTERN))
                             throw new RequestParameterValidationException(DEPARTMENT_TITLE_NOT_UNIQUE_MESSAGE);
                     }
-                    //TODO init fails
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
         } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
-        return department;
+        logger.info("{} is saved successfully. ", newDepartment);
+        return newDepartment;
 
     }
 
@@ -52,7 +72,7 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
 
         try (Connection connection = getConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("UPDATE department SET title = ? WHERE id = ?;")) {
+            try (PreparedStatement ps = connection.prepareStatement(UPDATE_DEPARTMENT_QUERY)) {
 
                 ps.setString(1, department.getTitle());
                 ps.setInt(2, department.getId());
@@ -62,20 +82,19 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
                     result = ps.executeUpdate();
 
                 } catch (SQLException e) {
-                    e.printStackTrace();
-                    for (Throwable t : e) {
-                        t.printStackTrace();
-                    }
+                    logger.error(e.getMessage(), e);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
+
+        logger.info("{} update result is [{}].", department, result);
         return result;
     }
 
@@ -84,7 +103,7 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
 
         try (Connection connection = getConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("DELETE FROM department WHERE id = ?;")) {
+            try (PreparedStatement ps = connection.prepareStatement(DELETE_DEPARTMENT_QUERY)) {
 
                 ps.setInt(1, id);
 
@@ -92,31 +111,30 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
                     ps.executeUpdate();
 
                 } catch (SQLException e) {
-                    e.printStackTrace();
-
-                    for (Throwable t : e) {
-                        System.out.println(t.getMessage());
-                    }
-                    //TODO init fails
+                    logger.error(e.getMessage(), e);
                 }
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
+
+        logger.info("Department{id={}} deleted successfully.", id);
     }
 
     @Override
     public Department getEntityById(int id) {
 
+        Department department = null;
+
         try (Connection connection = getConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM department WHERE id = ?;")) {
+            try (PreparedStatement ps = connection.prepareStatement(GET_DEPARTMENT_BY_ID_QUERY)) {
 
                 ps.setInt(1, id);
 
@@ -125,28 +143,26 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
                     ResultSet rs = ps.executeQuery();
 
                     rs.next();
-                    return new Department(rs.getInt(ID), rs.getString(TITLE));
+
+                    department = new Department(rs.getInt(ID), rs.getString(TITLE));
+
+                    logger.info("{} fetched.", department);
 
                 } catch (SQLException e) {
-                    e.printStackTrace();
-
-                    for (Throwable t : e) {
-                        System.out.println(t.getMessage());
-                    }
-                    //TODO init fails
+                    logger.error(e.getMessage(), e);
                 }
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
-        return null;
+        return department;
     }
 
     @Override
@@ -156,20 +172,21 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
 
         try (Connection connection = getConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM department ORDER BY id ;")) {
+            try (PreparedStatement ps = connection.prepareStatement(GET_DEPARTMENTS_LIST_QUERY)) {
 
                 getEntityListHelper(departmentList, ps);
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
 
+        logger.info("[{}] Departments fetched.", departmentList.size());
         return departmentList;
     }
 
@@ -180,32 +197,33 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
 
         try (Connection connection = getConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM department" +
+            try (PreparedStatement ps = connection.prepareStatement(GET_DEPARTMENTS_LIST_QUERY +
                     " ORDER BY id" +
                     " LIMIT " + limit + " OFFSET " + offset + ";")) {
 
                 getEntityListHelper(departmentList, ps);
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
-
+        logger.info("[{}] Departments fetched with offset [{}].", departmentList.size(), offset);
         return departmentList;
     }
 
     @Override
     public List<Department> getAllWhere(String title) {
+
         List<Department> departments = new ArrayList<>();
 
         try (Connection connection = getConnection()) {
 
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM department WHERE title = ?;")) {
+            try (PreparedStatement ps = connection.prepareStatement(GET_DEPARTMENTS_BY_TITLE_QUERY)) {
 
                 ps.setString(1, title);
 
@@ -214,14 +232,16 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
 
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
+
+        logger.info("[{}] Departments fetched with {title={}}.", departments.size(), title);
         return departments;
     }
 
@@ -234,12 +254,7 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
-
-            for (Throwable t : e) {
-                System.out.println(t.getMessage());
-            }
-            //TODO init fails
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -248,27 +263,25 @@ public class DepartmentDaoImpl extends AbstractDao implements DepartmentDao, Gen
         int rowCount = 0;
 
         try (Connection connection = getConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) FROM department ;")) {
+            try (PreparedStatement ps = connection.prepareStatement(ALL_ROW_COUNT_QUERY)) {
 
                 try {
                     ResultSet rs = ps.executeQuery();
                     rs.next();
                     rowCount = rs.getInt(1);
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
-
-                for (Throwable t : e) {
-                    System.out.println(t.getMessage());
-                }
+                logger.error(e.getMessage(), e);
                 throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
             }
         } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new SQLAppRuntimeException(DB_CONNECTION_FAILURE_MESSAGE);
         }
+
+        logger.info("ROW COUNT for ALL Departments result is [{}].", rowCount);
         return rowCount;
     }
 }
