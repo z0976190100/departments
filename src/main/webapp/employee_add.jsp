@@ -71,7 +71,7 @@
                                 <i class="material-icons prefix red-text">error</i>
                             </c:if>
                         </c:if>
-                        <input placeholder="Age" name="age" id="age" type="text" class="validate" value="${param.age}">
+                        <input placeholder="Age" name="age" id="age" type="number" class="validate" value="${param.age}">
                         <span class="helper-text"
                               data-error="Field can contain numbers only. Cannot be empty."
                               data-success="Well done!"
@@ -85,7 +85,7 @@
                                 <i class="material-icons prefix red-text">error</i>
                             </c:if>
                         </c:if>
-                        <input placeholder="Date of Birth" name="birth_date" id="birth_date" type="text"
+                        <input placeholder="Date of Birth" name="birth_date" id="birth_date" type="date"
                                class="datepicker"
                                value="${param.birth_date}"
                                min="${min_date}"
@@ -101,7 +101,6 @@
                 </div>
                 <div class="row">
                     <button type="submit" class="waves-effect waves-green btn-flat green-text right">Save</button>
-                    <button type="reset" class="waves-effect waves-green btn-flat red-text right">Reset</button>
                 </div>
             </form>
         </div>

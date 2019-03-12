@@ -96,7 +96,6 @@
                 </div>
                 <div class="row">
                     <button type="submit" class="waves-effect waves-green btn-flat green-text right">Save</button>
-                    <button type="reset" class="waves-effect waves-green btn-flat red-text right">Reset</button>
                 </div>
             </form>
         </div>

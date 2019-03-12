@@ -67,6 +67,10 @@ public class EmployeeFilter implements Filter, GeneralConstants {
                 }
                 req.getRequestDispatcher(EMPLOYEE_EDIT_JSP).forward(req, response);
                 break;
+            case DELETE:
+                setIntAttribute(ID, req);
+                chain.doFilter(req, response);
+                break;
             default:
                 chain.doFilter(request, response);
                 break;
