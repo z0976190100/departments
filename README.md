@@ -1,12 +1,12 @@
-Basic CRUD MVC application with humble stack of technologies, such as:
+Basic CRUD MVC application with humble stack of technologies:
 
-HTML
-CSS (Materialize.css)
-JavaScript
-Servlet API
-JSP
-JDBC
-PostgreSQL
+- HTML
+- CSS (Materialize.css)
+- JavaScript
+- Servlet API
+- JSP + JSTL
+- JDBC
+- PostgreSQL
 
 Main goal of application is to provide web interface for operations with two type of enteties, Department and Employee, such as:
 
